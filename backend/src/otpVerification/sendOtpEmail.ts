@@ -31,7 +31,7 @@ export const sendOtpEmail = async (userId: string) => {
       pass: process.env.APP_PASSWORD,
     },
     // Add timeout and connection settings
-    connectionTimeout: 10000, // 10 seconds
+    connectionTimeout: 60000, // 10 seconds
     greetingTimeout: 5000,    // 5 seconds
   });
 
