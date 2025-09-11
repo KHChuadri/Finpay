@@ -1,13 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import nodemailer from "nodemailer";
 import { createOtp } from "./createOtp";
 import HTTPError from "http-errors";
 
-/**
- * <Sends a OTP Email to user's registered email>
- * 
- * @param {string} userId  
- * @returns {otpId: string} object containing the otpid that was sent
- */
 export const sendOtpEmail = async (userId: string) => {
   console.log("SEND OTP EMAIL BE CALLED");
   if (!userId) {
@@ -21,18 +16,27 @@ export const sendOtpEmail = async (userId: string) => {
 
   // Verify APP_PASSWORD exists
   if (!process.env.APP_PASSWORD) {
-    throw HTTPError(500, "Email configuration missing");
+    throw HTTPError(500, "APP_PASSWORD environment variable is missing");
   }
 
+  // Use explicit SMTP config instead of service: "gmail"
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use STARTTLS
+    requireTLS: true,
     auth: {
       user: "finpay.comp3900@gmail.com",
       pass: process.env.APP_PASSWORD,
     },
-    // Add timeout and connection settings
-    connectionTimeout: 60000, // 10 seconds
-    greetingTimeout: 5000,    // 5 seconds
+    // Critical timeout settings
+    connectionTimeout: 60000,  // 1 minute
+    greetingTimeout: 30000,    // 30 seconds  
+    socketTimeout: 60000,      // 1 minute
+    dnsTimeout: 30000,         // 30 seconds
+    // Enable debugging
+    debug: true,
+    logger: true
   });
 
   const mailOptions = {
@@ -43,11 +47,15 @@ export const sendOtpEmail = async (userId: string) => {
   };
 
   try {
-    // Use Promise version (no callback) with timeout
+    // Test connection first
+    await transporter.verify();
+    console.log("SMTP connection verified successfully");
+
+    // Send email with longer timeout
     await Promise.race([
-      transporter.sendMail(mailOptions), // This returns a Promise when no callback is provided
+      transporter.sendMail(mailOptions),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Email timeout")), 10000)
+        setTimeout(() => reject(new Error("Email timeout after 60 seconds")), 60000)
       ),
     ]);
 
@@ -55,7 +63,12 @@ export const sendOtpEmail = async (userId: string) => {
     return { otpId: otpId };
 
   } catch (error) {
-    console.error("Email sending error:", error);
-    throw HTTPError(500, "Unable to send otp number to your email");
+    console.error("Detailed email error:", {
+      message: (error as any).message,
+      code: (error as any).code,
+      command: (error as any).command,
+      response: (error as any).response
+    });
+    throw HTTPError(500, `Unable to send OTP email: ${(error as any).message}`);
   }
 };
