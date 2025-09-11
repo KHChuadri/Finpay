@@ -25,7 +25,7 @@ export const sendOtpEmail = async (userId: string) => {
     port: 587,
     secure: false,
     auth: {
-      user: "finpay.comp3900@gmail.com",
+      user: "96cc07001@smtp-brevo.com",
       pass: process.env.BREVO_API_KEY,
     },
     connectionTimeout: 60000,
@@ -34,7 +34,7 @@ export const sendOtpEmail = async (userId: string) => {
 
   try {
     const result = await transporter.sendMail({
-      from: 'finpay.comp3900@gmail.com',
+      from: '96cc07001@smtp-brevo.com',
       to: userEmail,
       subject: '6 Digits OTP from Finpay',
       text: `Your otp number is ${otp}`,
