@@ -12,7 +12,7 @@ import { initializeMonthlyBalanceCheck } from "./challenges/monthlyBalanceCheck"
 
 dotenv.config();
 
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 10000;
 
 let server: Server;
 const queueEvents = new QueueEvents("scheduled-payments", { connection });
