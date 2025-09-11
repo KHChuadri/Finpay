@@ -6,6 +6,7 @@ import Layout from '../Layout'
 import useAuthStore from '@/stores/authStore';
 import RecipientInfo from './RecipientInfo';
 import { useTransactionStore } from '@/stores/transactionStore';
+import { API_URL } from '@/constants/API_URL';
 
 interface SavedUsers {
   email: string;
@@ -35,7 +36,7 @@ const SavedRecipient = () => {
       try {
         const response = await axios({
           method: 'GET',
-          url: `http://localhost:3000/transaction/save-recipient/${userId}`
+          url: `${API_URL}/transaction/save-recipient/${userId}`
         });
         setSavedUsers(response.data.recipients);
       } catch (err: unknown) {

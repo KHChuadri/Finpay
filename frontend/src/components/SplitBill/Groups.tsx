@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LeaveGroupModal from "./LeaveGroupModal";
+import { API_URL } from "@/constants/API_URL";
 
 export interface Props {
   _id: string;
@@ -26,7 +27,7 @@ function Groups({ list, onProcessed }: GroupList) {
   const userId = useAuthStore((state) => state.userId);
   const handleLeaveGroup = async (groupId: string) => {
     try {
-      await axios.put("http://localhost:3000/groups/leave", null, {
+      await axios.put(`${API_URL}/groups/leave`, null, {
         params: {
           groupId: groupId,
           userId: userId,

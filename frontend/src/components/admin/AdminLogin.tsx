@@ -4,6 +4,7 @@ import AdminLoginForm from "./AdminLoginForm";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuthStore from "@/stores/authStore";
+import { API_URL } from "@/constants/API_URL";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3000/isAdmin/${userId}`, {
+      const response = await axios.get(`${API_URL}/isAdmin/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

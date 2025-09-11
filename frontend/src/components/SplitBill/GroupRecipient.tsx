@@ -9,6 +9,7 @@ import { ClipLoader } from 'react-spinners';
 import { FiAlertCircle } from 'react-icons/fi';
 import { TriangleAlert } from 'lucide-react';
 import { useGroupTransactionStore } from '@/stores/groupTransactionStore';
+import { API_URL } from '@/constants/API_URL';
 
 const GroupRecipient = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const GroupRecipient = () => {
         setLoading(false);
         return;
     }
-    const response = await axios.get(`http://localhost:3000/find/recipients/${recipientEmail}/${userId}`);
+    const response = await axios.get(`${API_URL}/find/recipients/${recipientEmail}/${userId}`);
     setLoading(false);
 
     setRecipient(response.data);

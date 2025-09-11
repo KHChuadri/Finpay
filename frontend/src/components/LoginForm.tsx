@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/authStore";
 import AuthenticationModal from "@/components/modal/authenticationModal";
 import useOtpStore from "@/stores/otpStore";
+import { API_URL } from "@/constants/API_URL";
 
 const LoginForm = () => {
   const { setEmail } = useAuthStore();
@@ -53,7 +54,7 @@ const LoginForm = () => {
     try {
       const response = await axios({
         method: "POST",
-        url: "http://localhost:3000/login",
+        url: `${API_URL}/login`,
         data: { email: emailInput, password: password },
       });
       setUserId(response.data.userId);
@@ -70,7 +71,7 @@ const LoginForm = () => {
 
       // Logout if user change its password
       if (token && userId) {
-        await axios.post("http://localhost:3000/logout", { token, userId });
+        await axios.post(`${API_URL}/logout`, { token, userId });
       }
       resetOtpStore();
       resetAuth();

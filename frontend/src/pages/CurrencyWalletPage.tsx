@@ -9,6 +9,7 @@ import FlagGetter from '@/components/FlagGetter';
 import useAuthStore from '@/stores/authStore';
 import ConfirmationModal from '@/components/modal/ConfirmationModal';
 import { useTransactionStore } from '@/stores/transactionStore';
+import { API_URL } from '@/constants/API_URL';
 
 interface UserWalletData {
   walletId: string,
@@ -94,7 +95,7 @@ const CurrencyWalletPage = () => {
         return;
       }
 
-      await axios.delete(`http://localhost:3000/currencywallet/${currencyCode}/${userId}`, {
+      await axios.delete(`${API_URL}/${currencyCode}/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

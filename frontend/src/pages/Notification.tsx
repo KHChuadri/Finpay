@@ -5,6 +5,7 @@ import HeaderButtons from "@/components/dashboard/HeaderButtons";
 import useAuthStore from "@/stores/authStore";
 import NotificationList, { type Props } from "@/components/NotificationList";
 import { IoMdRefresh } from "react-icons/io";
+import { API_URL } from "@/constants/API_URL";
 
 const GroupPage = () => {
   const userId = useAuthStore.getState().userId;
@@ -17,7 +18,7 @@ const GroupPage = () => {
 
   const fetchNotification = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/notification/${userId}`, {
+      const res = await axios.get(`${API_URL}/notification/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

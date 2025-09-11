@@ -10,6 +10,7 @@ import axios from "axios";
 import useOtpStore from "@/stores/otpStore";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useGroupTransactionStore } from "@/stores/groupTransactionStore";
+import { API_URL } from "@/constants/API_URL";
 
 interface Wallet {
   _id: string;
@@ -77,7 +78,7 @@ const GroupPay = () => {
 
         try {
           const response = await axios.get(
-            `http://localhost:3000/wallet/${userId}?currency=${currencyFrom.code}`,
+            `${API_URL}/wallet/${userId}?currency=${currencyFrom.code}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -109,7 +110,7 @@ const GroupPay = () => {
       }
 
       const response = await axios.get(
-        `http://localhost:3000/groups/${groupId}`,
+        `${API_URL}/groups/${groupId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -184,7 +185,7 @@ const GroupPay = () => {
         };
 
         response = await axios.post(
-          "http://localhost:3000/topup",
+          `${API_URL}/topup`,
           transferPayload,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -200,7 +201,7 @@ const GroupPay = () => {
           destCurrency: currencyTo.code,
         };
         response = await axios.post(
-          "http://localhost:3000/withdraw",
+          `${API_URL}/withdraw`,
           transferPayload,
           {
             headers: { Authorization: `Bearer ${token}` },

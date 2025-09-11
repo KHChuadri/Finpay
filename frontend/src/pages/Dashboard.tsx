@@ -11,6 +11,7 @@ import useAuthStore from "@/stores/authStore";
 import { useTransactionStore } from "@/stores/transactionStore";
 import { syncUserStatus } from "@/utils/syncUserStatus";
 import useDarkModeStore from "@/stores/darkModeStore";
+import { API_URL } from "@/constants/API_URL";
 
 export interface UserWalletInfo {
   _id?: string;
@@ -45,7 +46,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await axios.get(`http://localhost:3000/wallet/${userId}`, {
+      const response = await axios.get(`${API_URL}/wallet/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

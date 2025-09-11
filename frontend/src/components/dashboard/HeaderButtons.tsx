@@ -10,6 +10,7 @@ import { VscBellDot } from "react-icons/vsc";
 import useAuthStore from "@/stores/authStore";
 import axios from "axios";
 import useDarkModeStore from "@/stores/darkModeStore";
+import { API_URL } from "@/constants/API_URL";
 
 function HeaderButtons() {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ function HeaderButtons() {
     if (!userId) return;
     const checkNewNotif = async (userId: string) => {
       try {
-        const response = await axios.get(`http://localhost:3000/notification/new/${userId}`, {});
+        const response = await axios.get(`${API_URL}/notification/new/${userId}`, {});
         if (response.data) {
           setNewNotif(true);
         } else {

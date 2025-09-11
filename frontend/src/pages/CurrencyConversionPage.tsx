@@ -8,6 +8,7 @@ import Layout from '@/components/Layout';
 import type { Currency } from '@/stores/transactionStore';
 import { LiaTimesSolid } from 'react-icons/lia';
 import { useConversionStore } from '@/stores/conversionStore';
+import { API_URL } from '@/constants/API_URL';
 
 const CurrencyConversionPage = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const CurrencyConversionPage = () => {
   } = useQuery({
     queryKey: ['exchangeRate', srcCurrency?.code, destCurrency?.code],
     queryFn: async () => {
-      const response = await axios.get(`http://localhost:3000/exchangerate/${srcCurrency?.code ?? 'AUD'}/${destCurrency?.code ?? 'IDR'}`);
+      const response = await axios.get(`${API_URL}/${srcCurrency?.code ?? 'AUD'}/${destCurrency?.code ?? 'IDR'}`);
       return response.data.rate;
     },
     enabled: !!srcCurrency?.code && !!destCurrency?.code,

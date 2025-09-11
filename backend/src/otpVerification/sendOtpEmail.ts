@@ -11,6 +11,9 @@ export const sendOtpEmail = async (userId: string) => {
   }
 
   const { otp, otpId, userEmail } = await createOtp(userId);
+  
+  console.log(otp, otpId, userEmail);
+
   if (!userEmail) {
     throw HTTPError(404, 'Email cannot be found');
   }

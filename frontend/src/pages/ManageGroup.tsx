@@ -3,6 +3,7 @@ import HeaderButtons from "@/components/dashboard/HeaderButtons";
 import Groups, { type Props } from "@/components/SplitBill/Groups";
 import type { InvitationProps } from "@/components/SplitBill/Invites";
 import Invites from "@/components/SplitBill/Invites";
+import { API_URL } from "@/constants/API_URL";
 import useAuthStore from "@/stores/authStore";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ const ManageGroup = () => {
 
   const fetchGroupList = async (userId: string) => {
     try {
-      const response = await axios.get("http://localhost:3000/groups/batch", {
+      const response = await axios.get(`${API_URL}/groups/batch`, {
         params: { userId },
       });
       const GroupList = response.data;

@@ -8,6 +8,7 @@ import type { UserWalletInfo } from "@/pages/Dashboard";
 import useAuthStore from "@/stores/authStore";
 import { FaTimes } from "react-icons/fa";
 import useDarkModeStore from "@/stores/darkModeStore";
+import { API_URL } from "@/constants/API_URL";
 
 interface WalletList {
   onAddWallet: () => void;
@@ -44,7 +45,7 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
 
   const handleCurrencyAddition = async (newCurrency: UserWalletInfo) => {
     try {
-      await axios.put(`http://localhost:3000/wallet/${userId}`, {
+      await axios.put(`${API_URL}/wallet/${userId}`, {
         walletCurrency: newCurrency.walletCurrency,
       });
 

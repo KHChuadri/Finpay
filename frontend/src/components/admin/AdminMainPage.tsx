@@ -2,6 +2,7 @@ import { MagnifyingGlassIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
+import { API_URL } from '@/constants/API_URL';
 
 interface AdminMainPageProps {
   activeTab: string
@@ -28,7 +29,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
 
   const fetchUsers = async (pageNumber = 1) => {
     try {
-      const response = await axios.get("http://localhost:3000/admin/users", {
+      const response = await axios.get(`${API_URL}/admin/users`, {
         params: {
           page: pageNumber,
           limit: 20,
@@ -48,7 +49,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
 
   const handleAdminVerify = async (userId: string, verify: boolean) => {
     try {
-      await axios.put(`http://localhost:3000/admin/verify/${userId}`, {
+      await axios.put(`${API_URL}/admin/verify/${userId}`, {
         isVerified: verify,
       });
 
@@ -68,7 +69,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
 
   const handleAdminBlock = async (userId: string, block: boolean) => {
     try {
-      await axios.put(`http://localhost:3000/admin/block/${userId}`, {
+      await axios.put(`${API_URL}/admin/block/${userId}`, {
         isLocked: block,
       });
 

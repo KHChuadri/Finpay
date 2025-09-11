@@ -6,6 +6,7 @@ import HistoryFilterModal from "@/components/modal/HistoryFilterModal";
 import useHistoryStore from "@/stores/historyStore";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { API_URL } from "@/constants/API_URL";
 
 interface Transaction {
   _id: string;
@@ -39,7 +40,7 @@ const GroupHistory = () => {
 
   const getHistory = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/group/transaction/history', {
+      const response = await axios.get(`${API_URL}/group/transaction/history`, {
         params: { groupId }
       });
       setHistoryData(response.data.reverse());

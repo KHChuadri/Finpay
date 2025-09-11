@@ -3,6 +3,7 @@ import crossSymbol from "../../assets/cross.png.png";
 import { useState } from "react";
 import useAuthStore from "@/stores/authStore";
 import { TriangleAlert, X } from "lucide-react";
+import { API_URL } from "@/constants/API_URL";
 
 export interface Props {
   id: string;
@@ -24,7 +25,7 @@ function ManageMembers({ list, groupId, onMemberUpdate }: MemberList) {
     try {
       const recipient = list[recipientIndex].id;
       const response = await axios.put(
-        `http://localhost:3000/groups/remove/${groupId}/${recipient}/${userId}`
+        `${API_URL}/groups/remove/${groupId}/${recipient}/${userId}`
       );
       onMemberUpdate();
       return response.data;

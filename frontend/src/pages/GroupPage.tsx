@@ -12,6 +12,7 @@ import PendingInvites from "@/components/SplitBill/PendingInvites";
 import { useTransactionStore } from "@/stores/transactionStore";
 import FlagGetter from "@/components/FlagGetter";
 import { useGroupTransactionStore } from "@/stores/groupTransactionStore";
+import { API_URL } from "@/constants/API_URL";
 
 interface GroupInfo {
   _id: string;
@@ -56,7 +57,7 @@ const GroupPage = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/groups/${groupId}`,
+          `${API_URL}/groups/${groupId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

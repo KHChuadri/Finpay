@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import useAuthStore from '@/stores/authStore';
 import { format } from 'date-fns';
 import CircularProgress from "@mui/material/CircularProgress";
+import { API_URL } from '@/constants/API_URL';
 
 interface Request {
   requestId: string;
@@ -24,7 +25,7 @@ const RequestListPage = () => {
       try {
         const response = await axios({
           method: 'GET',
-          url: `http://localhost:3000/transaction/request/${userId}`
+          url: `${API_URL}/transaction/request/${userId}`
         });
         setRequestList(response.data.request);
       } catch (err: unknown) {
@@ -43,7 +44,7 @@ const RequestListPage = () => {
   const handleAccept = async (requestId: string) => {
     setLoadingStates(prev => ({ ...prev, [requestId]: "accept" }));
     try {
-      await axios.post(`http://localhost:3000/transaction/request/accept`, {
+      await axios.post(`${API_URL}/transaction/request/accept`, {
         requestId,
       });
 
@@ -62,7 +63,7 @@ const RequestListPage = () => {
 
   const handleDelete = async (requestId: string) => {
     try {
-      await axios.delete(`http://localhost:3000/transaction/request/delete/${requestId}`);
+      await axios.delete(`${API_URL}/transaction/request/delete/${requestId}`);
       setRequestList((prev) => prev.filter((r) => r.requestId !== requestId));
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

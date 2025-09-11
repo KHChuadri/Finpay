@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "@/stores/authStore";
 import Notice from "../Notice";
+import { API_URL } from "@/constants/API_URL";
 
 const Deposit = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Deposit = () => {
   const handleDeposit = async () => {
     try {
       setValid(false);
-      await axios.get(`http://localhost:3000/bankintegration/deposit`, {
+      await axios.get(`h${API_URL}/bankintegration/deposit`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

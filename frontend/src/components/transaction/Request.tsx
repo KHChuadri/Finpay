@@ -6,6 +6,7 @@ import useAuthStore from '@/stores/authStore';
 import { useState } from 'react';
 import SuccessfulRequestModal from '../modal/SuccessfulRequestModal';
 import FailedRequestModal from '../modal/FailedRequestModal';
+import { API_URL } from '@/constants/API_URL';
 
 const Request = () => {
   const {
@@ -37,7 +38,7 @@ const Request = () => {
     }
 
     try {
-      await axios.post('http://localhost:3000/transaction/send-request', requestData);
+      await axios.post(`${API_URL}/transaction/send-request`, requestData);
 
       setShowSuccessModal(true);
     } catch (err: unknown) {

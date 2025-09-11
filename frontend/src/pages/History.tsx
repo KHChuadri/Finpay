@@ -7,6 +7,7 @@ import useAuthStore from "@/stores/authStore";
 import useHistoryStore from "@/stores/historyStore";
 import axios from "axios";
 import useDarkModeStore from "@/stores/darkModeStore";
+import { API_URL } from "@/constants/API_URL";
 
 interface Transaction {
   _id: string;
@@ -41,7 +42,7 @@ const History = () => {
 
   const getHistory = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/user/transaction/history', {
+      const response = await axios.get(`${API_URL}/user/transaction/history`, {
         params: { userId }
       });
       setHistoryData(response.data.reverse());

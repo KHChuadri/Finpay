@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuthStore from '@/stores/authStore';
 import Layout from '../components/Layout';
+import { API_URL } from '@/constants/API_URL';
 
 const GroupInvite = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const GroupInvite = () => {
 
   const handleInvite = async (recipient: string) => {
     try {
-      const response = await axios.put(`http://localhost:3000/groups/invite/${groupId}/${recipient}/${userId}`)
+      const response = await axios.put(`${API_URL}/groups/invite/${groupId}/${recipient}/${userId}`)
       return response.data;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -38,7 +39,7 @@ const GroupInvite = () => {
   const inviteMember = async () => {
     try {
       setValid(false);
-      const response = await axios.get(`http://localhost:3000/find/invitee/${recipientEmail}/${userId}/${groupId}`);
+      const response = await axios.get(`${API_URL}/find/invitee/${recipientEmail}/${userId}/${groupId}`);
       handleInvite(response.data);
       navigate(`/groups/${groupId}`);
     } catch (err: unknown) {

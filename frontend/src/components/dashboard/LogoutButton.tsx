@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "@/stores/authStore";
 import useDarkModeStore from "@/stores/darkModeStore";
+import { API_URL } from "@/constants/API_URL";
 
 const LogoutButton = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/logout", { token, userId });
+      await axios.post(`${API_URL}/logout`, { token, userId });
       resetAuth();
       setIsAuthenticated(false);
       setDarkMode(false);

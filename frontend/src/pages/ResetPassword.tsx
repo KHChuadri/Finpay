@@ -4,6 +4,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import { FaEyeSlash, FaTimes } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import axios from "axios";
+import { API_URL } from "@/constants/API_URL";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const ResetPassword = () => {
       try {
         await axios({
           method: 'GET',
-          url: `http://localhost:3000/reset-password-token/${token}`
+          url: `${API_URL}/reset-password-token/${token}`
         })
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -56,7 +57,7 @@ const ResetPassword = () => {
 
   const handleResetPassword = async (token: string, password: string) => {
     try {
-      const response = await axios.put('http://localhost:3000/reset-password', { token, password });
+      const response = await axios.put(`${API_URL}/reset-password`, { token, password });
       if (response.status === 200) {
         setSuccess(true);
         setErrorMessage(null);

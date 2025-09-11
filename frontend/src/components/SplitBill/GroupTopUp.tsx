@@ -9,6 +9,7 @@ import Currencies from '@/components/transaction/Currencies';
 import Layout from '@/components/Layout';
 import type { Currency } from '@/stores/transactionStore';
 import useAuthStore from '@/stores/authStore';
+import { API_URL } from '@/constants/API_URL';
 
 const GroupTopUp = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const GroupTopUp = () => {
   useEffect(() => {
     const getUserRank = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/${userId}/rank`);
+        const response = await axios.get(`${API_URL}/${userId}/rank`);
         setUserRank(response.data.rank);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -86,7 +87,7 @@ const GroupTopUp = () => {
   } = useQuery({
     queryKey: ['exchangeRate', currencyFrom?.code, currencyTo?.code],
     queryFn: async () => {
-      const response = await axios.get(`http://localhost:3000/exchangerate/${currencyFrom?.code ?? 'AUD'}/${currencyTo?.code ?? 'IDR'}`);
+      const response = await axios.get(`${API_URL}/exchangerate/${currencyFrom?.code ?? 'AUD'}/${currencyTo?.code ?? 'IDR'}`);
       return response.data.rate;
     },
     enabled: !!currencyFrom?.code && !!currencyTo?.code,

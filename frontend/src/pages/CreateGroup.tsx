@@ -8,6 +8,7 @@ import { FiSearch } from "react-icons/fi";
 import ReactCountryFlag from "react-country-flag";
 import { useTransactionStore } from "@/stores/transactionStore";
 import Notice from "@/components/Notice";
+import { API_URL } from "@/constants/API_URL";
 
 const CreateGroup = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,7 +37,7 @@ const CreateGroup = () => {
 
   const handleCreate = async () => {
     try {
-      const response = await axios.post(`http://localhost:3000/groups/create`, {
+      const response = await axios.post(`${API_URL}/groups/create`, {
         groupName: groupName,
         description: description,
         userId: userId,

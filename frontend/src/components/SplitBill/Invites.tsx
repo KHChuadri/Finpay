@@ -1,3 +1,4 @@
+import { API_URL } from "@/constants/API_URL";
 import axios from "axios";
 import { TriangleAlert, X } from "lucide-react";
 import { useState } from "react";
@@ -19,7 +20,7 @@ function Invites({ list, onProcessed }: InvitationList) {
   const [errorMsg, setErrorMsg] = useState("");
   const handleInvitation = async (invitationIndex: number, mode: string) => {
     try {
-      const response = await axios.put(`http://localhost:3000/invitation/process/${list[invitationIndex]._id.toString()}/${mode}`);
+      const response = await axios.put(`${API_URL}/invitation/process/${list[invitationIndex]._id.toString()}/${mode}`);
 
       onProcessed();
       return response.data;

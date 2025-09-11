@@ -7,6 +7,7 @@ import useHistoryStore from "@/stores/historyStore";
 import { FaFilter, FaSearch } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import axios from "axios";
+import { API_URL } from "@/constants/API_URL";
 
 interface ScheduledPayment {
   _id: string;
@@ -91,7 +92,7 @@ const ViewScheduledPayments = () => {
   const getScheduledPayments = async (pageNumber = 1) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/getScheduledPayments/${userId}`,
+        `${API_URL}/getScheduledPayments/${userId}`,
         {
           params: {
             page: pageNumber,
@@ -118,7 +119,7 @@ const ViewScheduledPayments = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:3000/schedule/payment/${paymentId}?userId=${userId}`
+        `${API_URL}/schedule/payment/${paymentId}?userId=${userId}`
       );
 
       if (response.data.success) {

@@ -13,6 +13,7 @@ import AuthenticationModal from "@/components/modal/authenticationModal";
 import axios from "axios";
 import useOtpStore from "@/stores/otpStore";
 import CircularProgress from "@mui/material/CircularProgress";
+import { API_URL } from "@/constants/API_URL";
 
 const Pay = () => {
   const {
@@ -58,7 +59,7 @@ const Pay = () => {
           return;
         }
         const res = await axios.get(
-          `http://localhost:3000/exchangerate/${currencyFrom.code}/AUD`
+          `${API_URL}/exchangerate/${currencyFrom.code}/AUD`
         );
         const rate = Number(res.data?.rate ?? NaN);
         const aud = rate * Number(rawSourceCurrencyAmount);
@@ -100,7 +101,7 @@ const Pay = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3000/wallet/${userId}?currency=${currencyFrom.code}`,
+          `${API_URL}/wallet/${userId}?currency=${currencyFrom.code}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -168,7 +169,7 @@ const Pay = () => {
         };
 
         response = await axios.post(
-          "http://localhost:3000/schedule/payment",
+          `${API_URL}/schedule/payment`,
           schedulePaymentPayload,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -185,7 +186,7 @@ const Pay = () => {
         };
 
         response = await axios.post(
-          "http://localhost:3000/p2ptransfer",
+          `${API_URL}/p2ptransfer`,
           transferPayload,
           {
             headers: { Authorization: `Bearer ${token}` },

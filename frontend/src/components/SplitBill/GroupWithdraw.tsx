@@ -8,6 +8,7 @@ import Currencies from "@/components/transaction/Currencies";
 import Layout from "@/components/Layout";
 import type { Currency } from "@/stores/transactionStore";
 import { useGroupTransactionStore } from "@/stores/groupTransactionStore";
+import { API_URL } from "@/constants/API_URL";
 
 const GroupWithdraw = () => {
   const navigate = useNavigate();
@@ -81,7 +82,7 @@ const GroupWithdraw = () => {
     queryKey: ["exchangeRate", currencyFrom?.code, currencyTo?.code],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:3000/exchangerate/${currencyFrom?.code ?? "AUD"}/${
+        `${API_URL}/exchangerate/${currencyFrom?.code ?? "AUD"}/${
           currencyTo?.code ?? "IDR"
         }`
       );

@@ -4,6 +4,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/authStore";
+import { API_URL } from "@/constants/API_URL";
 
 const AdminLoginForm = () => {
   const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ const AdminLoginForm = () => {
     try {
       const response = await axios({
         method: "POST",
-        url: "http://localhost:3000/admin/login",
+        url: `${API_URL}/admin/login`,
         data: { email: email, password: password },
       });
       setAuth(response.data.token, response.data.userId);

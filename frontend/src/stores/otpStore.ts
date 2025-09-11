@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import useAuthStore from './authStore';
+import { API_URL } from '@/constants/API_URL';
 
 interface OtpState {
   otpId: string,
@@ -77,7 +78,7 @@ const useOtpStore = create<OtpState>()((set, get) => ({
       setErrorMsg('');
       const response = await axios({
         method: 'POST',
-        url: 'http://localhost:3000/authentication/create/otp',
+        url: `${API_URL}/authentication/create/otp`,
         data: { userId: userId },
         signal
       });

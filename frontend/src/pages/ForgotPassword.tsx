@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "@/components/Layout";
+import { API_URL } from "@/constants/API_URL";
 
 const COOLDOWN = 60;
 
@@ -14,7 +15,7 @@ const ForgotPassword = () => {
 
   const handleFindUserEmail = async (email: string) => {
     try {
-      const response = await axios.get('http://localhost:3000/send-password-reset-email', {
+      const response = await axios.get(`${API_URL}/send-password-reset-email`, {
         params: { email }
       });
 

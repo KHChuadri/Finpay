@@ -8,6 +8,7 @@ import Layout from '../Layout';
 import Header from './Header';
 import { ClipLoader } from 'react-spinners';
 import Notice from '../Notice';
+import { API_URL } from '@/constants/API_URL';
 
 const Recipient = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const Recipient = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:3000/find/recipients/${emailToUse}/${userId}`);
+      const response = await axios.get(`${API_URL}/find/recipients/${emailToUse}/${userId}`);
       setLoading(false);
 
       // If transaction is a transfer transaction

@@ -2,6 +2,7 @@ import { UserIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaTimes } from "react-icons/fa";
+import { API_URL } from "@/constants/API_URL";
 
 interface TransactionItem {
   itemid: string;
@@ -20,7 +21,7 @@ const AdminWithdraw = () => {
 
   const fetchRequest = async (pageNumber = 1) => {
     try {
-      const response = await axios.get("http://localhost:3000/admin/requests", {
+      const response = await axios.get(`${API_URL}/admin/requests`, {
         params: {
           page: pageNumber,
           limit: 20,
@@ -36,7 +37,7 @@ const AdminWithdraw = () => {
 
   const handleWithdraw = async (transactionId: string) => {
     try {
-      await axios.get(`http://localhost:3000/bankintegration/doTransaction/${transactionId}`);
+      await axios.get(`${API_URL}/bankintegration/doTransaction/${transactionId}`);
       setTimeout(() => {
         fetchRequest(page);
       }, 200);

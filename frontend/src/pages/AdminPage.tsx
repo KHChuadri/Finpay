@@ -9,6 +9,7 @@ import AdminChallengePage from '@/components/admin/AdminChallengePage';
 import AdminWithdraw from '@/components/transaction/adminWithdraw';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
+import { API_URL } from "../constants/API_URL"
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const AdminPage = () => {
 
   const getUserIsAdmin = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/isAdmin/${userId}`);
+      const response = await axios.get(`${API_URL}/isAdmin/${userId}`);
       
       if (!(response.data.success && response.data.isAdmin)) {
         navigate('/');

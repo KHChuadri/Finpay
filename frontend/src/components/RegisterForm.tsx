@@ -5,6 +5,7 @@ import { IoEyeSharp } from 'react-icons/io5';
 import validator from 'validator';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
+import { API_URL } from '@/constants/API_URL';
 
 const RegisterForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -115,7 +116,7 @@ const RegisterForm = () => {
     try {
       const response = await axios({
         method: 'POST',
-        url: 'http://localhost:3000/register',
+        url: `${API_URL}/register`,
         data: userData,
       });
       setAuth(response.data.token, response.data.userId)

@@ -5,6 +5,7 @@ import { FaSearch, FaTrophy, FaCalendarAlt, FaCoins, FaPlay, FaCheckCircle, FaCl
 import useAuthStore from '../stores/authStore';
 import axios from 'axios';
 import useDarkModeStore from '../stores/darkModeStore';
+import { API_URL } from '@/constants/API_URL';
 
 interface Challenge {
   _id: string;
@@ -61,7 +62,7 @@ const ChallengesList = () => {
 
   const fetchChallenges = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/view/challenges/${userId}`);
+      const response = await axios.get(`${API_URL}/challenges/${userId}`);
       
       if (response.data.success) {
         setChallenges(response.data.challenge);

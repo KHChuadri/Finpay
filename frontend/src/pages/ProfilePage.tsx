@@ -10,6 +10,7 @@ import useAuthStore from "@/stores/authStore";
 import PersonalDetails from "../components/profile/PersonalDetails";
 import BankDetails from "../components/profile/BankDetails";
 import useDarkModeStore from "@/stores/darkModeStore";
+import { API_URL } from "@/constants/API_URL";
 
 const rankColour: Record<string, string> = {
   bronze: "from-yellow-800 to-yellow-600",
@@ -101,7 +102,7 @@ const ProfilePage = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/user/profile/${userId}`, {
+      const res = await axios.get(`${API_URL}/user/profile/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -240,7 +241,7 @@ const ProfilePage = () => {
         country: personalDetails.country.trim() || null
       }
 
-      await axios.put(`http://localhost:3000/user/profile/${userId}`, payload);
+      await axios.put(`${API_URL}/user/profile/${userId}`, payload);
 
       setDisplayDetails({
         ...displayDetails,
@@ -288,7 +289,7 @@ const ProfilePage = () => {
       }
 
       // Upload the image and update profile
-      const response = await axios.put(`http://localhost:3000/user/profile/${userId}`, payload, {
+      const response = await axios.put(`${API_URL}/user/profile/${userId}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -314,7 +315,7 @@ const ProfilePage = () => {
   const handleClearImage = async () => {
     try {
       // Revert back to default logo
-      await axios.put(`http://localhost:3000/user/profile/${userId}`, {
+      await axios.put(`h${API_URL}/user/profile/${userId}`, {
         profileImg: '/profile icon.png'
       }, {
         headers: {
@@ -340,7 +341,7 @@ const ProfilePage = () => {
       formData.append('kycImage', file);
       formData.append('userId', userId!);
 
-      const response = await axios.put('http://localhost:3000/user/profile/upload-kyc', formData, {
+      const response = await axios.put(`${API_URL}/user/profile/upload-kyc`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -381,7 +382,7 @@ const ProfilePage = () => {
 
   const handleUserBlock = async () => {
     try {
-      await axios.put(`http://localhost:3000/admin/block/${userId}`, {
+      await axios.put(`${API_URL}/admin/block/${userId}`, {
         isLocked: true,
       });
       setIsLocked(true);
@@ -419,7 +420,7 @@ const ProfilePage = () => {
     const newType = personalDetails.accountType === 'personal' ? 'business' : 'personal';
 
     try {
-      await axios.put(`http://localhost:3000/user/profile/${userId}`, {
+      await axios.put(`${API_URL}/user/profile/${userId}`, {
         accountType: newType
       });
       fetchProfile();

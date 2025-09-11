@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { API_URL } from "@/constants/API_URL";
 
 // Previously was passed into AdminChallengePage as a prop
 // interface AdminChallengePageProp {
@@ -36,7 +37,7 @@ const AdminChallengePage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3000/admin/createChallenge", {
+      const response = await axios.post(`${API_URL}/admin/createChallenge`, {
         category, title, description, startDate, endDate, exp, amountToGoal
       });
 

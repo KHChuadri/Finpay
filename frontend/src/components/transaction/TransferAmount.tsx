@@ -12,6 +12,7 @@ import type { Currency } from '@/stores/transactionStore';
 import { ServiceFee } from './ServiceFee';
 import useAuthStore from '@/stores/authStore';
 import Notice from "../Notice";
+import { API_URL } from '@/constants/API_URL';
 
 const TransferAmount = () => {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ const TransferAmount = () => {
   useEffect(() => {
     const getUserRank = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/${userId}/rank`);
+        const response = await axios.get(`${API_URL}/${userId}/rank`);
         setUserRank(response.data.rank);
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
@@ -105,7 +106,7 @@ const TransferAmount = () => {
   } = useQuery({
     queryKey: ['exchangeRate', currencyFrom?.code, currencyTo?.code],
     queryFn: async () => {
-      const response = await axios.get(`http://localhost:3000/exchangerate/${currencyFrom?.code ?? 'AUD'}/${currencyTo?.code ?? 'IDR'}`);
+      const response = await axios.get(`${API_URL}/exchangerate/${currencyFrom?.code ?? 'AUD'}/${currencyTo?.code ?? 'IDR'}`);
       return response.data.rate;
     },
     enabled: !!currencyFrom?.code && !!currencyTo?.code,
