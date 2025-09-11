@@ -1,6 +1,9 @@
 FROM node:20-alpine
 
 WORKDIR /app
+
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 COPY package*.json .
 COPY tsconfig*.json .
 COPY eslint.config.mjs .
