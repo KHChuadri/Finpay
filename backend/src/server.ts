@@ -22,7 +22,7 @@ const start = async () => {
     await connectToDB();
     const app: Express = createApp();
     initializeMonthlyBalanceCheck();
-    server = app.listen(PORT, '0.0.0.0',() => {
+    server = app.listen(PORT,() => {
       console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
       console.log(`📘 Swagger docs at http://localhost:${PORT}/api-docs`);
     });
