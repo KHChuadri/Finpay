@@ -19,12 +19,20 @@ export const sendOtpEmail = async (userId: string) => {
     throw HTTPError(404, 'Email cannot be found');
   }
 
+  // Verify APP_PASSWORD exists
+  if (!process.env.APP_PASSWORD) {
+    throw HTTPError(500, "Email configuration missing");
+  }
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "finpay.comp3900@gmail.com",
-      pass: process.env.APP_PASSWORD!,
+      pass: process.env.APP_PASSWORD,
     },
+    // Add timeout and connection settings
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 5000,    // 5 seconds
   });
 
   const mailOptions = {
@@ -34,16 +42,20 @@ export const sendOtpEmail = async (userId: string) => {
     text: `Your otp number is ${otp}.`,
   };
 
-  await Promise.race([
-    transporter.sendMail(mailOptions, (error) => {
-      if (error) {
-        throw HTTPError(500, "Unable to send otp number to your email");
-      }
-    }),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Email timeout")), 5000)
-    ),
-  ]);
+  try {
+    // Use Promise version (no callback) with timeout
+    await Promise.race([
+      transporter.sendMail(mailOptions), // This returns a Promise when no callback is provided
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Email timeout")), 10000)
+      ),
+    ]);
 
-  return { otpId: otpId };
+    console.log("OTP email sent successfully to:", userEmail);
+    return { otpId: otpId };
+
+  } catch (error) {
+    console.error("Email sending error:", error);
+    throw HTTPError(500, "Unable to send otp number to your email");
+  }
 };
