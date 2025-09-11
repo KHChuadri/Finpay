@@ -1,18 +1,25 @@
-import Redis from "ioredis";
+// config/redis.ts
+import Redis, { RedisOptions } from "ioredis";
 
-const connection = new Redis({
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  port: parseInt(process.env.REDIS_PORT || '6379'),
-  password: process.env.REDIS_PASSWORD,
+const redisUrl = process.env.REDIS_URL;
+
+if (!redisUrl) {
+  throw new Error("REDIS_URL environment variable not set");
+}
+
+console.log("🔄 Connecting to Redis...");
+console.log(
+  "📍 Redis URL (first 30 chars):",
+  redisUrl.substring(0, 30) + "..."
+);
+
+const options: RedisOptions = {
   maxRetriesPerRequest: null,
-});
+  connectTimeout: 10000,
+  lazyConnect: true,
+  keepAlive: 30000,
+};
 
-connection.on('connect', () => {
-  console.log('✅ Connected to Redis');
-});
-
-connection.on('error', (err) => {
-  console.error('Redis connection error:', err);
-});
+const connection = new Redis(redisUrl, options);
 
 export default connection;
