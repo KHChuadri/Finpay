@@ -16,7 +16,7 @@ export const sendOtpEmail = async (userId: string) => {
   }
 
   // Check for Brevo credentials
-  if (!process.env.BREVO_EMAIL || !process.env.BREVO_PASSWORD) {
+  if (!process.env.BREVO_API_KEY) {
     throw HTTPError(500, "BREVO_EMAIL or BREVO_PASSWORD environment variable is missing");
   }
 
