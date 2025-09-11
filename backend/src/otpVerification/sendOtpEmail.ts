@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createOtp } from "./createOtp";
 import HTTPError from "http-errors";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 export const sendOtpEmail = async (userId: string) => {
   console.log("SEND OTP EMAIL BACKEND CALLED");
@@ -15,28 +15,37 @@ export const sendOtpEmail = async (userId: string) => {
     throw HTTPError(404, 'Email cannot be found');
   }
 
-  // Check for RESEND_API_KEY instead of APP_PASSWORD
-  if (!process.env.RESEND_API_KEY) {
-    throw HTTPError(500, "RESEND_API_KEY environment variable is missing");
+  // Check for Brevo credentials
+  if (!process.env.BREVO_EMAIL || !process.env.BREVO_PASSWORD) {
+    throw HTTPError(500, "BREVO_EMAIL or BREVO_PASSWORD environment variable is missing");
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const transporter = nodemailer.createTransport({
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: "finpay.comp3900@gmail.com",
+      pass: process.env.BREVO_API_KEY,
+    },
+    connectionTimeout: 60000,
+    socketTimeout: 60000,
+  });
 
   try {
-    // ADD AWAIT HERE - this was missing!
-    const result = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+    const result = await transporter.sendMail({
+      from: 'finpay.comp3900@gmail.com',
       to: userEmail,
       subject: '6 Digits OTP from Finpay',
-      text: `Your otp number is ${otp}`
+      text: `Your otp number is ${otp}`,
     });
 
     console.log("OTP email sent successfully to:", userEmail);
-    console.log("Resend result:", result);
+    console.log("Brevo result:", result);
     return { otpId: otpId };
 
   } catch (error) {
-    console.error("Resend email error:", error);
+    console.error("Brevo email error:", error);
     throw HTTPError(500, `Unable to send OTP email: ${(error as any).message}`);
   }
 };
