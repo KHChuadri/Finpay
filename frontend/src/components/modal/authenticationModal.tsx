@@ -160,7 +160,7 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
           </h2>
 
           <p className="text-gray-600 text-center mb-6">
-            Enter the 6-digit code we sent to your email
+            Enter the 6-digit code we sent to your email (check spam folder as well)
           </p>
 
           {errorMsg && (

@@ -1,15 +1,21 @@
 FROM node:20-alpine
 
 WORKDIR /app
-COPY package*.json .
-COPY tsconfig*.json .
-COPY vite.config.ts .
-COPY eslint.config.js .
 
-RUN npm install 
+# Copy package files
+COPY package*.json ./
 
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
 COPY . .
 
-EXPOSE 5173
+# Build the app
+RUN npm run build
 
-CMD [ "npm", "run", "dev", "--", "--host", "0.0.0.0" ]
+# Install serve globally
+RUN npm install -g serve
+
+# Serve the built static files
+CMD ["serve", "-s", "dist", "-l", "$PORT"]
