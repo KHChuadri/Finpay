@@ -12,8 +12,8 @@ const __dirname = path.dirname(__filename);
 // Serve static files from dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Handle React Router - use a more compatible catch-all route
-app.get('/*', (req, res) => {
+// Handle React Router - use middleware catch-all instead of route
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
