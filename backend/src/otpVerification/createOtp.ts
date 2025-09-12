@@ -40,7 +40,7 @@ export const createOtp = async (userId: string) => {
   })
 
   const otpId = newOtp._id;
-
+  console.log("CREATE_OTP RETURNING")
   return {
     otp: otp,
     otpId: otpId.toString(),

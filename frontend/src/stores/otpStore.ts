@@ -121,7 +121,7 @@ const useOtpStore = create<OtpState>()((set, get) => ({
     try {
       const response = await axios({
         method: 'POST',
-        url: 'http://localhost:3000/authentication/verify/otp',
+        url: `${API_URL}/authentication/verify/otp`,
         data: { otpId: otpId, otp: parseInt(otpCode), userId, email }
       });
       setToken(response.data.token);
