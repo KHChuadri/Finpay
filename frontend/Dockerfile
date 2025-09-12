@@ -5,13 +5,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (including dev deps needed for build)
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build the app
+# Build the app (now tsc will be available)
 RUN npm run build
 
 # Install serve globally
