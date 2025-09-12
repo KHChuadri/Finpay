@@ -8,17 +8,16 @@ COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY eslint.config.js ./
 
-# Install ALL dependencies (needed for build)
+# Install ALL dependencies
 RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build the React app
-RUN npm run build
+# Build the app with debug output
+RUN npm run build && ls -la dist/
 
-# Install express for production server
-RUN npm install express
+# Force install Express v4
+RUN npm install express@4.18.2
 
-# Start the server
 CMD ["node", "server.js"]
