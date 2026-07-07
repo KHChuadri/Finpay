@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import User, { UserType } from '../../model/User';
 import WalletInfo from '../../model/WalletInfo';
+import ScheduledPayment from '../../model/ScheduledPayment';
 
 export const createTestUser = async (overrides: Partial<UserType> = {}) => {
   const defaultUser = {
@@ -55,4 +56,34 @@ export const createTestWallet = async (
   });
 
   return wallet;
+};
+
+// Factory to create a test scheduled payment
+export const createTestScheduledPayment = async (
+  overrides: Partial<{
+    debtorId: string;
+    creditorId: string;
+    amountSrc: number;
+    amountDest: number;
+    currencySrc: string;
+    currencyDest: string;
+    scheduledDate: Date;
+    status: string;
+    jobId: string;
+  }> = {}
+) => {
+  const defaults = {
+    debtorId: new mongoose.Types.ObjectId().toString(),
+    creditorId: new mongoose.Types.ObjectId().toString(),
+    amountSrc: 100,
+    amountDest: 100,
+    currencySrc: 'AUD',
+    currencyDest: 'AUD',
+    scheduledDate: new Date(Date.now() + 60_000),
+  };
+
+  return ScheduledPayment.create({
+    ...defaults,
+    ...overrides,
+  });
 };
