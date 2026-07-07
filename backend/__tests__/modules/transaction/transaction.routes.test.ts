@@ -4,6 +4,7 @@ import express from "express";
 import { transactionRouter } from "../../../src/modules/transaction/transaction.routes";
 import { createTestUser, createTestWallet } from "../../helpers/testFactories";
 import { UserType } from "../../../model/User";
+import WalletInfo from "../../../model/WalletInfo";
 
 vi.mock("../../../src/challenges/trackChallengeProgress", () => ({
   trackChallengeProgress: vi.fn().mockResolvedValue(undefined),
@@ -72,5 +73,29 @@ describe("POST /p2ptransfer", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toEqual({ errorMsg: "Insufficient balance" });
+  });
+
+  it("nets a same-currency self-transfer to startBalance - fee (no inflation)", async () => {
+    const startBalance = 1000; // debtor seeded with 1000 AUD in beforeEach
+
+    const res = await request(makeApp())
+      .post("/p2ptransfer")
+      .send({
+        debtorUserId: debtor._id.toString(),
+        creditor: debtor.email, // self-transfer
+        amountSrc: 100,
+        amountDest: 100,
+        srcCurrency: "AUD",
+        destCurrency: "AUD",
+      });
+
+    expect(res.status).toBe(200);
+
+    const wallet = await WalletInfo.findOne({
+      userId: debtor._id,
+      walletCurrency: "AUD",
+    });
+    // Not inflated to startBalance + amount - fee; correctly nets to startBalance - fee.
+    expect(wallet?.walletBalance).toBeCloseTo(startBalance - 0.05, 5);
   });
 });

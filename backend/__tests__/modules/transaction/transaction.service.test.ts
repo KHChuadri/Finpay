@@ -115,4 +115,52 @@ describe("transaction.service.transfer", () => {
     });
     expect(repo.createWallet).toHaveBeenCalledWith("c1", "USD");
   });
+
+  it("nets a same-currency self-transfer to startBalance - fee (no inflation)", async () => {
+    // Legacy bug: two separate wallet reads let the debit be lost, inflating funds.
+    // The refactor debits/credits the SAME wallet via cumulative adjustWalletBalance,
+    // so a same-currency self-transfer nets startBalance - fee, not + amount - fee.
+    const startBalance = 1000;
+    const balances = new Map<string, number>([["w-self", startBalance]]);
+    const selfRepo: ITransactionRepository = {
+      findUserById: vi.fn(async () => debtor),
+      findUserByEmail: vi.fn(async () => debtor),
+      // Same userId + same currency for both debtor and creditor lookups -> same wallet id.
+      findWallet: vi.fn(async (): Promise<WalletRecord> => ({
+        id: "w-self",
+        userId: debtor.id,
+        balance: balances.get("w-self")!,
+        currency: "AUD",
+      })),
+      createWallet: vi.fn(async (userId, currency) => ({
+        id: "w-new", userId, balance: 0, currency,
+      })),
+      // Mutable, cumulative: the second call sees the first call's mutation.
+      adjustWalletBalance: vi.fn(async (walletId, delta) => {
+        const next = balances.get(walletId)! + delta;
+        balances.set(walletId, next);
+        return next;
+      }),
+      recordTransaction: vi.fn(async () => "tx1"),
+    };
+    const service = createTransactionService(makeDeps(selfRepo));
+
+    const result = await service.transfer({
+      debtorUserId: "d1",
+      creditorEmail: debtor.email, // self-transfer
+      amountSrc: 100,
+      amountDest: 100,
+      currencySource: "AUD",
+      currencyDest: "AUD",
+    });
+
+    // Debit is the intermediate value; credit is the final single-wallet balance.
+    expect(result.newDebtorBalance).toBe(startBalance - 100);
+    expect(result.newCreditorBalance).toBe(startBalance - 0.05);
+    expect(balances.get("w-self")).toBe(startBalance - 0.05);
+    // Both adjustments hit the SAME wallet id.
+    expect(selfRepo.adjustWalletBalance).toHaveBeenCalledTimes(2);
+    expect(selfRepo.adjustWalletBalance).toHaveBeenNthCalledWith(1, "w-self", -100);
+    expect(selfRepo.adjustWalletBalance).toHaveBeenNthCalledWith(2, "w-self", 100 - 0.05);
+  });
 });
