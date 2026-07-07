@@ -1,27 +1,6 @@
-import WalletInfo from "../model/WalletInfo";
-import mongoose from "mongoose";
-import HTTPError from "http-errors";
+// Legacy entry point retained during the strangler migration.
+// Delegates to the layered wallet service so existing callers/tests are unaffected.
+import { walletService } from "./modules/wallet/wallet.container";
 
-/**
- * <get currency wallet information>
- * 
- * @param {string} currency 
- * @param {string} userId 
- * @returns {walletBalance: number, walletCurrency: string} object containing wallet ballence and currency
- */
-export const getCurrentWallet = async (currency: string, userId: string) => {
-  const wallet = await WalletInfo.findOne({
-    walletCurrency: currency,
-    userId: new mongoose.Types.ObjectId(userId),
-  });
-
-  if (!wallet) {
-    throw HTTPError(404, "wallet not found");
-  }
-
-  return {
-    walletId: wallet._id.toString(),
-    walletBalance: wallet.walletBalance,
-    walletCurrency: wallet.walletCurrency,
-  };
-};
+export const getCurrentWallet = async (currency: string, userId: string) =>
+  walletService.getCurrentWallet(userId, currency);

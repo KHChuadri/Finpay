@@ -2,8 +2,6 @@ import express, { Request, Response, Express } from "express";
 import multer from "multer";
 import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
-import { getUserWallet } from "./user/getUserWallet";
-import { getUserWalletInfo } from "./user/getUserWalletInfo";
 import { getUserTransactionHistory } from "./user/getUserTransactionHistory";
 import { adminGetUser } from "./admin/adminGetUser";
 import { adminVerifyId } from "./admin/adminVerifyId";
@@ -29,9 +27,6 @@ import { processInvitation } from "./group/invitations/processInvitation";
 import { setDepositData } from "./group/setDepositData";
 import { sendRequest } from "./transactions/sendRequest";
 import { getRequestList } from "./transactions/getRequestList";
-import { getCurrentWallet } from "./getCurrentWallet";
-import { storeMultiWallet } from "./storeMultiWallet";
-import { deleteWallet } from "./deleteWallet";
 import { acceptRequest } from "./transactions/acceptRequest";
 import { deleteRequest } from "./transactions/deleteRequest";
 import swaggerUI from "swagger-ui-express";
@@ -61,6 +56,7 @@ import { transactionRouter } from "./modules/transaction/transaction.routes";
 import { authRouter } from "./modules/auth/auth.routes";
 import { passwordResetRouter } from "./modules/passwordReset/passwordReset.routes";
 import { otpRouter } from "./modules/otp/otp.routes";
+import { walletRouter } from "./modules/wallet/wallet.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -72,6 +68,7 @@ export function createApp(): Express {
   app.use(authRouter);
   app.use(passwordResetRouter);
   app.use(otpRouter);
+  app.use(walletRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -96,21 +93,6 @@ export function createApp(): Express {
     }
   });
 
-  // Get Either All User's Wallet or Specific Currency
-  app.get("/wallet/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const currency = req.query.currency as string;
-      const response = currency
-        ? await getUserWalletInfo(userId, currency)
-        : await getUserWallet(userId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
   // Get User Rank
   app.get("/:userId/rank", async (req: Request, res: Response) => {
     const userId = req.params.userId;
@@ -130,19 +112,6 @@ export function createApp(): Express {
     try {
       const response = await getUserIsAdmin(userId);
       res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Create New Currency Wallet
-  app.put("/wallet/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const { walletCurrency } = req.body;
-
-      const response = await storeMultiWallet(userId, walletCurrency);
-      res.json(response);
     } catch (err: unknown) {
       handleHTTPError(err, res);
     }
@@ -636,36 +605,6 @@ export function createApp(): Express {
         const { userId } = req.params;
         const response = await getRequestList(userId);
         res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // get current currency wallet information
-  app.get(
-    "/currencywallet/:currency/:userId",
-    async (req: Request, res: Response) => {
-      try {
-        const { currency, userId } = req.params;
-        const response = await getCurrentWallet(currency, userId);
-
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // delete wallet
-  app.delete(
-    "/currencywallet/:currency/:userId",
-    async (req: Request, res: Response) => {
-      try {
-        const { currency, userId } = req.params;
-        const response = await deleteWallet(currency, userId);
-
-        res.json(response);
       } catch (err: unknown) {
         handleHTTPError(err, res);
       }

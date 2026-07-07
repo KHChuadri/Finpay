@@ -1,20 +1,6 @@
-import User from "../../model/User";
-import HTTPError from "http-errors";
-import WalletInfo from "../../model/WalletInfo";
+// Legacy entry point retained during the strangler migration.
+// Delegates to the layered wallet service so existing callers/tests are unaffected.
+import { walletService } from "../modules/wallet/wallet.container";
 
-/**
- * <Get All Personal Wallet Owned By User>
- * 
- * @param {string} userId 
- * @returns { wallets } object containing array of user's walletinfo
- */
-export const getUserWallet = async (userId: string) => {
-  const user = await User.findById(userId);
-
-  if (!user) {
-    throw HTTPError(404, "getUserWallet: user not found");
-  }
-  const wallets = await WalletInfo.find({ userId: userId });
-
-  return { wallets };
-};
+export const getUserWallet = async (userId: string) =>
+  walletService.getAllWallets(userId);
