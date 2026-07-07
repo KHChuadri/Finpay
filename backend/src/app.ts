@@ -1,14 +1,8 @@
 import express, { Request, Response, Express } from "express";
 import cors from "cors";
-import { handleHTTPError } from "./helper/handleHTTPError";
-import { exchangeRate } from "./exchangeRate";
 import { swaggerSpec } from "./swagger/swagger";
 import swaggerUI from "swagger-ui-express";
-import createHttpError from "http-errors";
 import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
-import { getTransactionToken } from "./bankIntegration/getTransactionToken";
-import { createItem } from "./bankIntegration/createItem";
-import { doWithdraw } from "./bankIntegration/doWithdraw";
 import { checkBalanceChallenges } from "./challenges/checkBalanceChallenges";
 import User from "../model/User";
 import WalletInfo from "../model/WalletInfo";
@@ -27,6 +21,8 @@ import { profileRouter } from "./modules/profile/profile.routes";
 import { challengeRouter } from "./modules/challenge/challenge.routes";
 import { adminRouter } from "./modules/admin/admin.routes";
 import { notificationRouter } from "./modules/notification/notification.routes";
+import { exchangeRouter } from "./modules/exchange/exchange.routes";
+import { bankRouter } from "./modules/bank/bank.routes";
 
 export function createApp(): Express {
   const app: Express = express();
@@ -45,6 +41,8 @@ export function createApp(): Express {
   app.use(challengeRouter);
   app.use(adminRouter);
   app.use(notificationRouter);
+  app.use(exchangeRouter);
+  app.use(bankRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -56,43 +54,6 @@ export function createApp(): Express {
   // Home EndPoint
   app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Finpay Backend Endpoint");
-  });
-
-  // get currency conversion rate
-  app.get(
-    "/exchangerate/:currencySource/:currencyDest",
-    async (req: Request, res: Response) => {
-      try {
-        const { currencySource, currencyDest } = req.params;
-        const response = await exchangeRate(currencySource, currencyDest);
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // create a transaction item to Zai
-  app.get("/bankintegration/withdraw", async (req: Request, res: Response) => {
-    try {
-      const { amount, userId } = req.query;
-      const getToken = await getTransactionToken();
-      const response = await createItem(
-        userId as string,
-        "Withdraw-Request",
-        Number(amount),
-        "buyer-1556502326027",
-        "buyer-6543217890",
-        getToken
-      );
-      res.json(response);
-    } catch (err: unknown) {
-      if (createHttpError.isHttpError(err)) {
-        res.status(err.status).json({ errorMsg: err.message });
-      } else {
-        res.status(500).json({ errorMsg: "Unexpected error" });
-      }
-    }
   });
 
   // Checking the status of scheduled payment queue
@@ -138,48 +99,6 @@ export function createApp(): Express {
       res.status(404).json({ error: "Job not found" });
     }
   });
-
-  // create Zai deposit Item
-  app.get("/bankintegration/deposit", async (req: Request, res: Response) => {
-    try {
-      const { amount, userId } = req.query;
-      const getToken = await getTransactionToken();
-      const response = await createItem(
-        userId as string,
-        "Deposit-Request",
-        Number(amount),
-        "buyer-6543217890",
-        "buyer-1556502326027",
-        getToken
-      );
-      res.json(response);
-    } catch (err: unknown) {
-      if (createHttpError.isHttpError(err)) {
-        res.status(err.status).json({ errorMsg: err.message });
-      } else {
-        res.status(500).json({ errorMsg: "Unexpected error" });
-      }
-    }
-  });
-
-  // handle withdraw done by admin
-  app.get(
-    "/bankintegration/doTransaction/:transactionId",
-    async (req: Request, res: Response) => {
-      try {
-        const { transactionId } = req.params;
-        const getToken = await getTransactionToken();
-        const response = await doWithdraw(getToken, transactionId);
-        res.json(response);
-      } catch (err: unknown) {
-        if (createHttpError.isHttpError(err)) {
-          res.status(err.status).json({ errorMsg: err.message });
-        } else {
-          res.status(500).json({ errorMsg: "Unexpected error" });
-        }
-      }
-    }
-  );
 
   // Create new Wallet if user does not have target currency
   app.post(
