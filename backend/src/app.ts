@@ -2,14 +2,11 @@ import express, { Request, Response, Express } from "express";
 import multer from "multer";
 import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
-import { register } from "./auth/register";
 import { sendPasswordResetEmail } from "./forgotPassword/sendPasswordResetEmail";
 import { resetPassword } from "./forgotPassword/resetPassword";
-import { login } from "./auth/login";
 import { getUserWallet } from "./user/getUserWallet";
 import { getUserWalletInfo } from "./user/getUserWalletInfo";
 import { getUserTransactionHistory } from "./user/getUserTransactionHistory";
-import { logout } from "./auth/logout";
 import { adminGetUser } from "./admin/adminGetUser";
 import { adminVerifyId } from "./admin/adminVerifyId";
 import { adminBlockId } from "./admin/adminBlockId";
@@ -62,11 +59,11 @@ import { getSavedRecipient } from "./savedRecipient";
 import { getChallenges } from "./challenges/getChallenges";
 import { resetPasswordToken } from "./forgotPassword/resetPasswordToken";
 import { getUserIsAdmin } from "./user/getUserIsAdmin";
-import { adminLogin } from "./admin/adminLogin";
 import { topup } from "./group/topup";
 import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
 import { withdraw } from "./group/withdraw";
 import { transactionRouter } from "./modules/transaction/transaction.routes";
+import { authRouter } from "./modules/auth/auth.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -75,6 +72,7 @@ export function createApp(): Express {
   app.use(cors());
   app.use(express.json({ limit: "2mb" }));
   app.use(transactionRouter);
+  app.use(authRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -94,39 +92,6 @@ export function createApp(): Express {
       const depositData = req.body;
       const response = await setDepositData(depositData);
       res.status(201).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Handle Registration
-  app.post("/register", async (req: Request, res: Response) => {
-    try {
-      const { firstName, lastName, email, password } = req.body;
-      const response = await register(firstName, lastName, email, password);
-      res.status(201).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Handle Login
-  app.post("/login", async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
-      const response = await login(email, password);
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Handle Admin Login
-  app.post("/admin/login", async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
-      const response = await adminLogin(email, password);
-      res.json(response);
     } catch (err: unknown) {
       handleHTTPError(err, res);
     }
@@ -360,18 +325,6 @@ export function createApp(): Express {
       }
     }
   );
-
-  // handle logout
-  app.post("/logout", async (req: Request, res: Response) => {
-    try {
-      const { token, userId } = req.body;
-      const response = await logout(token, userId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
 
   // create new challenge
   app.post("/admin/createChallenge", async (req: Request, res: Response) => {
