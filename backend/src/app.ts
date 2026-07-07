@@ -8,7 +8,6 @@ import { resetPassword } from "./forgotPassword/resetPassword";
 import { login } from "./auth/login";
 import { getUserWallet } from "./user/getUserWallet";
 import { getUserWalletInfo } from "./user/getUserWalletInfo";
-import { p2pTransfer } from "./transactions/p2ptransfer";
 import { getUserTransactionHistory } from "./user/getUserTransactionHistory";
 import { logout } from "./auth/logout";
 import { adminGetUser } from "./admin/adminGetUser";
@@ -67,6 +66,7 @@ import { adminLogin } from "./admin/adminLogin";
 import { topup } from "./group/topup";
 import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
 import { withdraw } from "./group/withdraw";
+import { transactionRouter } from "./modules/transaction/transaction.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -74,6 +74,7 @@ export function createApp(): Express {
   const app: Express = express();
   app.use(cors());
   app.use(express.json({ limit: "2mb" }));
+  app.use(transactionRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -217,33 +218,6 @@ export function createApp(): Express {
 
       const response = await storeMultiWallet(userId, walletCurrency);
       res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Handle p2pTransfer
-  app.post("/p2ptransfer", async (req: Request, res: Response) => {
-    try {
-      const {
-        debtorUserId,
-        creditor,
-        amountSrc,
-        amountDest,
-        srcCurrency,
-        destCurrency,
-      } = req.body;
-
-      const response = await p2pTransfer(
-        debtorUserId,
-        creditor,
-        amountSrc,
-        amountDest,
-        srcCurrency,
-        destCurrency
-      );
-
-      res.status(200).json(response);
     } catch (err: unknown) {
       handleHTTPError(err, res);
     }
