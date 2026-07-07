@@ -6,7 +6,8 @@ Reference slice: `transaction/`. Replicate per feature area.
 - `*.types.ts` — DTOs + repository/service interfaces. No imports of Mongoose or Express.
 - `*.repository.ts` — the ONLY file that imports `model/*`. Maps Mongoose docs → flat records.
 - `*.service.ts` — business logic. Deps (repo + cross-slice functions) injected via `create*Service(deps)`. Throws `http-errors`. No Express, no Mongoose.
-- `*.controller.ts` — composition root (wires real deps once) + thin `req`/`res` parsing.
+- `*.container.ts` — composition root: wires the real dependencies once and exports the wired service singleton.
+- `*.controller.ts` — thin `req`/`res` parsing only; imports the wired service from `*.container.ts`.
 - `*.routes.ts` — `express.Router`, wraps controllers in `asyncHandler`.
 
 ## Rules

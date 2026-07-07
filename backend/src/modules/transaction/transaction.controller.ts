@@ -1,17 +1,5 @@
 import { Request, Response } from "express";
-import { createTransactionService } from "./transaction.service";
-import { transactionRepository } from "./transaction.repository";
-import { exchangeRate } from "../../exchangeRate";
-import { checkBalanceChallenges } from "../../challenges/checkBalanceChallenges";
-import { trackChallengeProgress } from "../../challenges/trackChallengeProgress";
-
-// Composition root for the transaction slice: wires real dependencies once.
-export const transactionService = createTransactionService({
-  repo: transactionRepository,
-  exchangeRate,
-  checkBalanceChallenges,
-  trackChallengeProgress,
-});
+import { transactionService } from "./transaction.container";
 
 export const p2pTransferController = async (req: Request, res: Response) => {
   const {
