@@ -1,14 +1,10 @@
 import express, { Request, Response, Express } from "express";
-import multer from "multer";
 import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
 import { adminGetUser } from "./admin/adminGetUser";
 import { adminVerifyId } from "./admin/adminVerifyId";
 import { adminBlockId } from "./admin/adminBlockId";
 import { exchangeRate } from "./exchangeRate";
-import { getProfile } from "./profile/getProfile";
-import { editProfile } from "./profile/editProfile";
-import { uploadKyc } from "./profile/uploadKyc";
 import { adminCreateChallenge } from "./admin/adminCreateChallenge";
 import { swaggerSpec } from "./swagger/swagger";
 import { getNotification } from "./getNotifications";
@@ -35,10 +31,9 @@ import { userRouter } from "./modules/user/user.routes";
 import { requestRouter } from "./modules/request/request.routes";
 import { scheduledPaymentRouter } from "./modules/scheduledPayment/scheduledPayment.routes";
 import { groupRouter } from "./modules/group/group.routes";
+import { profileRouter } from "./modules/profile/profile.routes";
 
 export function createApp(): Express {
-  const upload = multer({ storage: multer.memoryStorage() });
-
   const app: Express = express();
   app.use(cors());
   app.use(express.json({ limit: "2mb" }));
@@ -51,6 +46,7 @@ export function createApp(): Express {
   app.use(requestRouter);
   app.use(scheduledPaymentRouter);
   app.use(groupRouter);
+  app.use(profileRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -91,63 +87,6 @@ export function createApp(): Express {
       handleHTTPError(err, res);
     }
   });
-
-  // get user profile information
-  app.get("/user/profile/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const response = await getProfile(userId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // update verification image
-  app.put(
-    "/user/profile/upload-kyc",
-    upload.single("kycImage"),
-    async (req: Request, res: Response) => {
-      try {
-        const { userId } = req.body;
-        const kycImg = req.file;
-        const response = await uploadKyc(userId, kycImg);
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // edit profile information and image
-  app.put(
-    "/user/profile/:userId",
-    upload.single("profileImg"),
-    async (req: Request, res: Response) => {
-      try {
-        const { userId } = req.params;
-        let profileImg: Express.Multer.File | string | undefined;
-
-        if (req.file) {
-          profileImg = req.file;
-        } else if (!req.file && req.body.profileImg !== undefined) {
-          profileImg = req.body.profileImg;
-        }
-
-        const payload = {
-          ...req.body,
-          profileImg,
-        };
-
-        const response = await editProfile(userId, payload);
-
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
 
   // get user list in admin control
   app.get("/admin/users", async (req: Request, res: Response) => {
