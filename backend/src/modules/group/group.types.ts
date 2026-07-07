@@ -97,6 +97,65 @@ export interface WithdrawResult {
   newDeptorBalance: number;
 }
 
+export interface UserNameRecord {
+  id: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface UserDetailRecord {
+  id: string;
+  email: string;
+  groups: string[];
+  invitation: string[];
+}
+
+export interface GroupDetailRecord {
+  id: string;
+  groupName: string;
+  description: string | null;
+  admin: string;
+  members: string[];
+  pendingInvite: string[];
+  walletBalance: number;
+  walletCurrency: string;
+  transactionHistoryIds: string[];
+}
+
+export interface CreateGroupInput {
+  groupName: string;
+  description: string;
+  creatorId: string;
+  currency: string;
+}
+
+export interface CreateGroupResult {
+  groupId: string;
+}
+
+export interface CreateInvitationInput {
+  groupName: string;
+  groupId: string;
+  senderId: string;
+  receiverId: string;
+  senderName: string;
+  receiverName: string;
+}
+
+export interface CreateNotificationInput {
+  type: string;
+  senderId: string;
+  receiverId: string;
+  description: string;
+}
+
+export interface MemberRecord {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 export interface IGroupRepository {
   findUserById(id: string, session?: ClientSession): Promise<UserRecord | null>;
   findUserByEmail(
@@ -167,6 +226,50 @@ export interface IGroupRepository {
     input: RecordGroupTransactionInput,
     session?: ClientSession
   ): Promise<string>;
+
+  // --- Group management / invitations ---
+
+  findUserNameById(id: string): Promise<UserNameRecord | null>;
+  /** `groups`/`invitation` are the user's referenced-id arrays as strings. */
+  findUserDetailById(id: string): Promise<UserDetailRecord | null>;
+  /** Raw (non-flattened) User doc — the frontend reads `_id` directly. */
+  findUserRawById(id: string): Promise<Record<string, unknown> | null>;
+  /** Raw (non-flattened) User docs — the frontend reads `_id` directly. */
+  findUsersByIds(ids: string[]): Promise<Record<string, unknown>[]>;
+  findMembersByIds(ids: string[]): Promise<MemberRecord[]>;
+  appendUserGroup(userId: string, groupId: string): Promise<void>;
+  removeUserGroup(userId: string, groupId: string): Promise<void>;
+  addUserInvitation(userId: string, invitationId: string): Promise<void>;
+  removeUserInvitation(userId: string, invitationId: string): Promise<void>;
+  addUserNotification(userId: string, notificationId: string): Promise<void>;
+
+  findGroupDetailById(id: string): Promise<GroupDetailRecord | null>;
+  /** Raw (non-flattened) Group docs — the frontend reads `_id` directly. */
+  findGroupsByIds(ids: string[]): Promise<Record<string, unknown>[]>;
+  createGroup(input: CreateGroupInput): Promise<{ id: string }>;
+  deleteGroupById(groupId: string): Promise<void>;
+  /** Overwrites `members` (and `admin`, if provided) in one write. */
+  setGroupMembersAndAdmin(
+    groupId: string,
+    members: string[],
+    admin?: string
+  ): Promise<void>;
+  addGroupMember(groupId: string, userId: string): Promise<void>;
+  removeGroupMember(groupId: string, userId: string): Promise<void>;
+  addGroupPendingInvite(groupId: string, invitationId: string): Promise<void>;
+  removeGroupPendingInvite(
+    groupId: string,
+    invitationId: string
+  ): Promise<void>;
+
+  findInvitationById(
+    id: string
+  ): Promise<{ id: string; groupId: string; receiver: string } | null>;
+  /** Raw (non-flattened) Invitation docs — the frontend reads `_id` directly. */
+  findInvitationsByIds(ids: string[]): Promise<Record<string, unknown>[]>;
+  createInvitation(input: CreateInvitationInput): Promise<{ id: string }>;
+  createNotification(input: CreateNotificationInput): Promise<{ id: string }>;
+  deleteInvitationById(invitationId: string): Promise<void>;
 }
 
 export interface GroupServiceDeps {
