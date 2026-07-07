@@ -1,8 +1,0 @@
-// Legacy entry point retained during the strangler migration.
-// Delegates to the layered wallet service so existing callers/tests are unaffected.
-import { walletService } from "./modules/wallet/wallet.container";
-
-export const storeMultiWallet = async (
-  userId: string,
-  walletCurrency: string
-) => walletService.createCurrencyWallet(userId, walletCurrency);
