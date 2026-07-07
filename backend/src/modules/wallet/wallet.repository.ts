@@ -25,9 +25,9 @@ export const walletRepository: IWalletRepository = {
   },
 
   async findUserWithWallets(userId): Promise<UserWithWallets | null> {
-    const doc = await User.findById(userId).populate<{
-      walletInfo: WalletInfoType[];
-    }>("walletInfo");
+    const doc = await User.findById(userId)
+      .populate<{ walletInfo: WalletInfoType[] }>("walletInfo")
+      .lean();
 
     if (!doc) {
       return null;
@@ -35,13 +35,12 @@ export const walletRepository: IWalletRepository = {
 
     return {
       id: String(doc._id),
-      wallets: doc.walletInfo.map(toWalletRecord),
+      wallets: doc.walletInfo,
     };
   },
 
   async findWalletsByUserId(userId) {
-    const docs = await WalletInfo.find({ userId });
-    return docs.map(toWalletRecord);
+    return WalletInfo.find({ userId }).lean();
   },
 
   async findWallet(userId, currency) {

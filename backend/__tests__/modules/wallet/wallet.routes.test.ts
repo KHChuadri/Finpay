@@ -85,8 +85,16 @@ describe("Wallet routes", () => {
 
   describe("GET /wallet/:userId (no currency)", () => {
     it("returns all of the user's wallets", async () => {
-      await createTestWallet(user._id.toString(), "AUD", 1000);
-      await createTestWallet(user._id.toString(), "USD", 500);
+      const audWallet = await createTestWallet(
+        user._id.toString(),
+        "AUD",
+        1000
+      );
+      const usdWallet = await createTestWallet(
+        user._id.toString(),
+        "USD",
+        500
+      );
 
       const res = await request(makeApp()).get(
         `/wallet/${user._id.toString()}`
@@ -97,17 +105,24 @@ describe("Wallet routes", () => {
       expect(res.body.wallets).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
+            _id: audWallet._id.toString(),
             walletCurrency: "AUD",
             walletBalance: 1000,
             userId: user._id.toString(),
           }),
           expect.objectContaining({
+            _id: usdWallet._id.toString(),
             walletCurrency: "USD",
             walletBalance: 500,
             userId: user._id.toString(),
           }),
         ])
       );
+      // Locks the raw-doc shape: `_id`, not a flattened `id`.
+      for (const wallet of res.body.wallets) {
+        expect(wallet._id).toBeDefined();
+        expect(wallet.id).toBeUndefined();
+      }
     });
 
     it("returns 404 when the user does not exist", async () => {
@@ -122,7 +137,7 @@ describe("Wallet routes", () => {
 
   describe("GET /wallet/:userId?currency=", () => {
     it("returns the matching currency wallet", async () => {
-      await createTestWallet(user._id.toString(), "AUD", 1000);
+      const wallet = await createTestWallet(user._id.toString(), "AUD", 1000);
 
       const res = await request(makeApp()).get(
         `/wallet/${user._id.toString()}?currency=AUD`
@@ -130,10 +145,14 @@ describe("Wallet routes", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.correspondingWallet).toMatchObject({
+        _id: wallet._id.toString(),
         walletCurrency: "AUD",
         walletBalance: 1000,
         userId: user._id.toString(),
       });
+      // Locks the raw-doc shape: `_id`, not a flattened `id`.
+      expect(res.body.correspondingWallet._id).toBeDefined();
+      expect(res.body.correspondingWallet.id).toBeUndefined();
     });
 
     it("returns 404 when the user has no wallet in that currency", async () => {
