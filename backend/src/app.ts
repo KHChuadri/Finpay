@@ -3,8 +3,6 @@ import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
 import { exchangeRate } from "./exchangeRate";
 import { swaggerSpec } from "./swagger/swagger";
-import { getNotification } from "./getNotifications";
-import { checkNewNotification } from "./checkNewNotification";
 import swaggerUI from "swagger-ui-express";
 import createHttpError from "http-errors";
 import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
@@ -28,6 +26,7 @@ import { groupRouter } from "./modules/group/group.routes";
 import { profileRouter } from "./modules/profile/profile.routes";
 import { challengeRouter } from "./modules/challenge/challenge.routes";
 import { adminRouter } from "./modules/admin/admin.routes";
+import { notificationRouter } from "./modules/notification/notification.routes";
 
 export function createApp(): Express {
   const app: Express = express();
@@ -45,6 +44,7 @@ export function createApp(): Express {
   app.use(profileRouter);
   app.use(challengeRouter);
   app.use(adminRouter);
+  app.use(notificationRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -56,28 +56,6 @@ export function createApp(): Express {
   // Home EndPoint
   app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Finpay Backend Endpoint");
-  });
-
-  // check if user has new notification
-  app.get("/notification/new/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const response = await checkNewNotification(userId);
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get notification list
-  app.get("/notification/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const response = await getNotification(userId);
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
   });
 
   // get currency conversion rate
