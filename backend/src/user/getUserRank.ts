@@ -1,24 +1,6 @@
-import User from "../../model/User";
-import HTTPError from "http-errors";
+// Legacy entry point retained during the strangler migration.
+// Delegates to the layered user service so existing callers/tests are unaffected.
+import { userService } from "../modules/user/user.container";
 
-/**
- * <Get user's Account Rank>
- * 
- * @param {string} userId 
- * @returns {rank : string} object with user's rank
- */
-export const getUserRank = async (userId: string) => {
-  if (!userId) {
-    throw HTTPError(400, "getUserRank: missing required field: userId");
-  }
-
-  const correspondingUser = await User.findById(userId);
-
-  if (!correspondingUser) {
-    throw HTTPError(404, `getUserRank: User with id ${userId} not found!`);
-  }
-
-  return {
-    rank: correspondingUser.rank
-  }
-}
+export const getUserRank = async (userId: string) =>
+  userService.getUserRank(userId);

@@ -1,24 +1,6 @@
-import User from "../../model/User";
-import HTTPError from "http-errors";
-import TransactionHistory from "../../model/TransactionHistory";
+// Legacy entry point retained during the strangler migration.
+// Delegates to the layered user service so existing callers/tests are unaffected.
+import { userService } from "../modules/user/user.container";
 
-/**
- * <Get User's Transaction History>
- * 
- * @param {string} userId 
- * @returns Array of Transaction History Owned By User
- */
-export const getUserTransactionHistory = async (userId: string) => {
-  const findUser = await User.findById(userId);
-
-  // error checking for non-existent user
-  if (!findUser) {
-    throw HTTPError(400, "User not found or does not exist");
-  }
-
-  const History = await TransactionHistory.find({
-    _id: { $in: findUser.transactionHistory },
-  });
-
-  return History;
-};
+export const getUserTransactionHistory = async (userId: string) =>
+  userService.getUserTransactionHistory(userId);

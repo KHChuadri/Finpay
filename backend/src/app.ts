@@ -2,7 +2,6 @@ import express, { Request, Response, Express } from "express";
 import multer from "multer";
 import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
-import { getUserTransactionHistory } from "./user/getUserTransactionHistory";
 import { adminGetUser } from "./admin/adminGetUser";
 import { adminVerifyId } from "./admin/adminVerifyId";
 import { adminBlockId } from "./admin/adminBlockId";
@@ -30,7 +29,6 @@ import { getRequestList } from "./transactions/getRequestList";
 import { acceptRequest } from "./transactions/acceptRequest";
 import { deleteRequest } from "./transactions/deleteRequest";
 import swaggerUI from "swagger-ui-express";
-import { getUserRank } from "./user/getUserRank";
 import { initiateScheduledPayment } from "./transactions/initiateScheduledPayment";
 import createHttpError from "http-errors";
 import { cancelScheduledPayment } from "./transactions/cancelScheduledPayment";
@@ -48,7 +46,6 @@ import Challenge from "../model/Challenge";
 import { getScheduledPayment } from "./transactions/getScheduledPayments";
 import { getSavedRecipient } from "./savedRecipient";
 import { getChallenges } from "./challenges/getChallenges";
-import { getUserIsAdmin } from "./user/getUserIsAdmin";
 import { topup } from "./group/topup";
 import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
 import { withdraw } from "./group/withdraw";
@@ -57,6 +54,7 @@ import { authRouter } from "./modules/auth/auth.routes";
 import { passwordResetRouter } from "./modules/passwordReset/passwordReset.routes";
 import { otpRouter } from "./modules/otp/otp.routes";
 import { walletRouter } from "./modules/wallet/wallet.routes";
+import { userRouter } from "./modules/user/user.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -69,6 +67,7 @@ export function createApp(): Express {
   app.use(passwordResetRouter);
   app.use(otpRouter);
   app.use(walletRouter);
+  app.use(userRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -88,30 +87,6 @@ export function createApp(): Express {
       const depositData = req.body;
       const response = await setDepositData(depositData);
       res.status(201).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Get User Rank
-  app.get("/:userId/rank", async (req: Request, res: Response) => {
-    const userId = req.params.userId;
-
-    try {
-      const response = await getUserRank(userId);
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Check if User is Admin
-  app.get("/isAdmin/:userId", async (req: Request, res: Response) => {
-    const userId = req.params.userId;
-
-    try {
-      const response = await getUserIsAdmin(userId);
-      res.status(200).json(response);
     } catch (err: unknown) {
       handleHTTPError(err, res);
     }
@@ -215,18 +190,6 @@ export function createApp(): Express {
       }
     }
   );
-
-  // get user transaction history
-  app.get("/user/transaction/history", async (req: Request, res: Response) => {
-    try {
-      const userId = req.query.userId as string;
-      const response = await getUserTransactionHistory(userId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
 
   // get group transaction history
   app.get("/group/transaction/history", async (req: Request, res: Response) => {
