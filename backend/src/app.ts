@@ -24,9 +24,7 @@ import { getInvitationList } from "./group/invitations/getInvitation";
 import { processInvitation } from "./group/invitations/processInvitation";
 import { setDepositData } from "./group/setDepositData";
 import swaggerUI from "swagger-ui-express";
-import { initiateScheduledPayment } from "./transactions/initiateScheduledPayment";
 import createHttpError from "http-errors";
-import { cancelScheduledPayment } from "./transactions/cancelScheduledPayment";
 import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
 import { getTransactionToken } from "./bankIntegration/getTransactionToken";
 import { createItem } from "./bankIntegration/createItem";
@@ -38,7 +36,6 @@ import User from "../model/User";
 import WalletInfo from "../model/WalletInfo";
 import UserChallengeProgress from "../model/UserChallengeProgress";
 import Challenge from "../model/Challenge";
-import { getScheduledPayment } from "./transactions/getScheduledPayments";
 import { getChallenges } from "./challenges/getChallenges";
 import { topup } from "./group/topup";
 import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
@@ -50,6 +47,7 @@ import { otpRouter } from "./modules/otp/otp.routes";
 import { walletRouter } from "./modules/wallet/wallet.routes";
 import { userRouter } from "./modules/user/user.routes";
 import { requestRouter } from "./modules/request/request.routes";
+import { scheduledPaymentRouter } from "./modules/scheduledPayment/scheduledPayment.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -64,6 +62,7 @@ export function createApp(): Express {
   app.use(walletRouter);
   app.use(userRouter);
   app.use(requestRouter);
+  app.use(scheduledPaymentRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -141,51 +140,6 @@ export function createApp(): Express {
       handleHTTPError(err, res);
     }
   });
-
-  // Create scheduled payment
-  app.post("/schedule/payment", async (req: Request, res: Response) => {
-    try {
-      const {
-        debtorUserId,
-        creditorUserEmail,
-        scheduledDate,
-        amountSrc,
-        amountDest,
-        currencySrc,
-        currencyDest,
-      } = req.body;
-
-      const response = await initiateScheduledPayment(
-        debtorUserId,
-        creditorUserEmail,
-        scheduledDate,
-        amountSrc,
-        amountDest,
-        currencySrc,
-        currencyDest
-      );
-
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // cancel scheduled payment
-  app.delete(
-    "/schedule/payment/:paymentId",
-    async (req: Request, res: Response) => {
-      try {
-        const { paymentId } = req.params;
-        const userId = req.query.userId as string;
-
-        const response = await cancelScheduledPayment(paymentId, userId);
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
 
   // get group transaction history
   app.get("/group/transaction/history", async (req: Request, res: Response) => {
@@ -942,23 +896,6 @@ export function createApp(): Express {
     }
   );
 
-  // get user scheduledpayment list
-  app.get(
-    "/getScheduledPayments/:userId",
-    async (req: Request, res: Response) => {
-      const { userId } = req.params;
-      const page = parseInt(req.query.page as string);
-      const limit = parseInt(req.query.limit as string);
-
-      try {
-        const response = await getScheduledPayment(userId, page, limit);
-
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
   // get user challenge list
   app.get("/view/challenges/:userId", async (req: Request, res: Response) => {
     const { userId } = req.params;
