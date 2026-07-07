@@ -5,7 +5,6 @@ import { handleHTTPError } from "./helper/handleHTTPError";
 import { adminGetUser } from "./admin/adminGetUser";
 import { adminVerifyId } from "./admin/adminVerifyId";
 import { adminBlockId } from "./admin/adminBlockId";
-import { findRecipient } from "./findRecipient";
 import { exchangeRate } from "./exchangeRate";
 import { getProfile } from "./profile/getProfile";
 import { editProfile } from "./profile/editProfile";
@@ -24,10 +23,6 @@ import { checkNewNotification } from "./checkNewNotification";
 import { getInvitationList } from "./group/invitations/getInvitation";
 import { processInvitation } from "./group/invitations/processInvitation";
 import { setDepositData } from "./group/setDepositData";
-import { sendRequest } from "./transactions/sendRequest";
-import { getRequestList } from "./transactions/getRequestList";
-import { acceptRequest } from "./transactions/acceptRequest";
-import { deleteRequest } from "./transactions/deleteRequest";
 import swaggerUI from "swagger-ui-express";
 import { initiateScheduledPayment } from "./transactions/initiateScheduledPayment";
 import createHttpError from "http-errors";
@@ -44,7 +39,6 @@ import WalletInfo from "../model/WalletInfo";
 import UserChallengeProgress from "../model/UserChallengeProgress";
 import Challenge from "../model/Challenge";
 import { getScheduledPayment } from "./transactions/getScheduledPayments";
-import { getSavedRecipient } from "./savedRecipient";
 import { getChallenges } from "./challenges/getChallenges";
 import { topup } from "./group/topup";
 import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
@@ -55,6 +49,7 @@ import { passwordResetRouter } from "./modules/passwordReset/passwordReset.route
 import { otpRouter } from "./modules/otp/otp.routes";
 import { walletRouter } from "./modules/wallet/wallet.routes";
 import { userRouter } from "./modules/user/user.routes";
+import { requestRouter } from "./modules/request/request.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -68,6 +63,7 @@ export function createApp(): Express {
   app.use(otpRouter);
   app.use(walletRouter);
   app.use(userRouter);
+  app.use(requestRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -202,21 +198,6 @@ export function createApp(): Express {
       handleHTTPError(err, res);
     }
   });
-
-  // Find tranbsaction recipient
-  app.get(
-    "/find/recipients/:email/:userId",
-    async (req: Request, res: Response) => {
-      try {
-        const { email, userId } = req.params;
-        const response = await findRecipient(email, userId);
-
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
 
   // create new challenge
   app.post("/admin/createChallenge", async (req: Request, res: Response) => {
@@ -536,65 +517,6 @@ export function createApp(): Express {
       try {
         const { currencySource, currencyDest } = req.params;
         const response = await exchangeRate(currencySource, currencyDest);
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // send a new request
-  app.post("/transaction/send-request", async (req: Request, res: Response) => {
-    try {
-      const { email, senderId, amount, currency, notes } = req.body;
-      const response = await sendRequest(
-        email,
-        senderId,
-        amount,
-        currency,
-        notes
-      );
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get request list
-  app.get(
-    "/transaction/request/:userId",
-    async (req: Request, res: Response) => {
-      try {
-        const { userId } = req.params;
-        const response = await getRequestList(userId);
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // accept request
-  app.post(
-    "/transaction/request/accept",
-    async (req: Request, res: Response) => {
-      try {
-        const { requestId } = req.body;
-        const response = await acceptRequest(requestId);
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // decline or delete request
-  app.delete(
-    "/transaction/request/delete/:requestId",
-    async (req: Request, res: Response) => {
-      try {
-        const { requestId } = req.params;
-        const response = await deleteRequest(requestId);
         res.json(response);
       } catch (err: unknown) {
         handleHTTPError(err, res);
@@ -1037,24 +959,6 @@ export function createApp(): Express {
       }
     }
   );
-  // Get saved recipients
-  app.get(
-    "/transaction/save-recipient/:userId",
-    async (req: Request, res: Response) => {
-      try {
-        const { userId } = req.params;
-        const response = await getSavedRecipient(userId);
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        if (createHttpError.isHttpError(err)) {
-          res.status(err.status).json({ errorMsg: err.message });
-        } else {
-          res.status(500).json({ errorMsg: "Unexpected error" });
-        }
-      }
-    }
-  );
-
   // get user challenge list
   app.get("/view/challenges/:userId", async (req: Request, res: Response) => {
     const { userId } = req.params;
