@@ -21,7 +21,6 @@ import User from "../model/User";
 import WalletInfo from "../model/WalletInfo";
 import UserChallengeProgress from "../model/UserChallengeProgress";
 import Challenge from "../model/Challenge";
-import { getChallenges } from "./challenges/getChallenges";
 import { transactionRouter } from "./modules/transaction/transaction.routes";
 import { authRouter } from "./modules/auth/auth.routes";
 import { passwordResetRouter } from "./modules/passwordReset/passwordReset.routes";
@@ -32,6 +31,7 @@ import { requestRouter } from "./modules/request/request.routes";
 import { scheduledPaymentRouter } from "./modules/scheduledPayment/scheduledPayment.routes";
 import { groupRouter } from "./modules/group/group.routes";
 import { profileRouter } from "./modules/profile/profile.routes";
+import { challengeRouter } from "./modules/challenge/challenge.routes";
 
 export function createApp(): Express {
   const app: Express = express();
@@ -47,6 +47,7 @@ export function createApp(): Express {
   app.use(scheduledPaymentRouter);
   app.use(groupRouter);
   app.use(profileRouter);
+  app.use(challengeRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -281,28 +282,6 @@ export function createApp(): Express {
         } else {
           res.status(500).json({ errorMsg: "Unexpected error" });
         }
-      }
-    }
-  );
-
-  // check user balance challenges
-  app.post(
-    "/user/checkBalanceChallenges",
-    async (req: Request, res: Response) => {
-      const { userId } = req.body;
-
-      if (!userId) {
-        res.status(400).json({
-          success: false,
-          errorMsg: "userId is required",
-        });
-      }
-
-      try {
-        const result = await checkBalanceChallenges(userId);
-        res.status(200).json(result);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
       }
     }
   );
@@ -593,22 +572,6 @@ export function createApp(): Express {
       }
     }
   );
-
-  // get user challenge list
-  app.get("/view/challenges/:userId", async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const page = parseInt(req.query.page as string);
-    const limit = parseInt(req.query.limit as string);
-    try {
-      const response = await getChallenges(userId, page, limit);
-
-      if (response.success) {
-        res.status(200).json(response);
-      }
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
 
   return app;
 }
