@@ -22,7 +22,6 @@ import { getNotification } from "./getNotifications";
 import { checkNewNotification } from "./checkNewNotification";
 import { getInvitationList } from "./group/invitations/getInvitation";
 import { processInvitation } from "./group/invitations/processInvitation";
-import { setDepositData } from "./group/setDepositData";
 import swaggerUI from "swagger-ui-express";
 import createHttpError from "http-errors";
 import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
@@ -37,9 +36,6 @@ import WalletInfo from "../model/WalletInfo";
 import UserChallengeProgress from "../model/UserChallengeProgress";
 import Challenge from "../model/Challenge";
 import { getChallenges } from "./challenges/getChallenges";
-import { topup } from "./group/topup";
-import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
-import { withdraw } from "./group/withdraw";
 import { transactionRouter } from "./modules/transaction/transaction.routes";
 import { authRouter } from "./modules/auth/auth.routes";
 import { passwordResetRouter } from "./modules/passwordReset/passwordReset.routes";
@@ -48,6 +44,7 @@ import { walletRouter } from "./modules/wallet/wallet.routes";
 import { userRouter } from "./modules/user/user.routes";
 import { requestRouter } from "./modules/request/request.routes";
 import { scheduledPaymentRouter } from "./modules/scheduledPayment/scheduledPayment.routes";
+import { groupRouter } from "./modules/group/group.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -63,6 +60,7 @@ export function createApp(): Express {
   app.use(userRouter);
   app.use(requestRouter);
   app.use(scheduledPaymentRouter);
+  app.use(groupRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -74,83 +72,6 @@ export function createApp(): Express {
   // Home EndPoint
   app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Finpay Backend Endpoint");
-  });
-
-  // Webhook Endpoint
-  app.post("/webhook", async (req: Request, res: Response) => {
-    try {
-      const depositData = req.body;
-      const response = await setDepositData(depositData);
-      res.status(201).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Handle Group Topup
-  app.post("/topup", async (req: Request, res: Response) => {
-    try {
-      const {
-        debtorAccountWallet,
-        groupId,
-        amountSrc,
-        amountDest,
-        srcCurrency,
-        destCurrency,
-      } = req.body;
-
-      const response = await topup(
-        debtorAccountWallet,
-        groupId,
-        amountSrc,
-        amountDest,
-        srcCurrency,
-        destCurrency
-      );
-
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Handle Group Payment
-  app.post("/withdraw", async (req: Request, res: Response) => {
-    try {
-      const {
-        creditorInfo,
-        groupId,
-        amountSrc,
-        amountDest,
-        srcCurrency,
-        destCurrency,
-      } = req.body;
-
-      const response = await withdraw(
-        creditorInfo,
-        groupId,
-        amountSrc,
-        amountDest,
-        srcCurrency,
-        destCurrency
-      );
-
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get group transaction history
-  app.get("/group/transaction/history", async (req: Request, res: Response) => {
-    try {
-      const groupId = req.query.groupId as string;
-      const response = await getGroupTransactionHistory(groupId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
   });
 
   // create new challenge
