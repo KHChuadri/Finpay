@@ -1,7 +1,9 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { createOtp } from '../../src/otpVerification/createOtp';
-import { sendOtpEmail } from '../../src/otpVerification/sendOtpEmail';
-import { verifyOtp } from '../../src/otpVerification/verifyOtp';
+import { otpService } from "../../src/modules/otp/otp.container";
+const createOtp = (userId: string) => otpService.createOtp(userId);
+const sendOtpEmail = (userId: string) => otpService.sendOtpEmail(userId);
+const verifyOtp = (otpId: string, otp: number, userId: string, email: string) =>
+  otpService.verifyOtp(otpId, otp, userId, email);
 import HTTPError from "http-errors";
 import Otp from '../../model/Otp';
 import User from '../../model/User';

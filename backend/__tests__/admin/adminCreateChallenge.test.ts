@@ -1,6 +1,24 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import HTTPError from 'http-errors';
-import { adminCreateChallenge } from '../../src/admin/adminCreateChallenge';
+import { adminService } from "../../src/modules/admin/admin.container";
+const adminCreateChallenge = (
+  category: string,
+  title: string,
+  description: string,
+  startDate: string,
+  endDate: string,
+  exp: number,
+  amountToGoal: number
+) =>
+  adminService.createChallenge({
+    category,
+    title,
+    description,
+    startDate,
+    endDate,
+    exp,
+    amountToGoal,
+  });
 import Challenge from '../../model/Challenge';
 import type { Document } from 'mongoose';
 

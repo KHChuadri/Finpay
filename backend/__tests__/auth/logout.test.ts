@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { logout } from "../../src/auth/logout";
+import { authService } from "../../src/modules/auth/auth.container";
+const logout = (token: string, userId: string) =>
+  authService.logout(token, userId);
 import User from "../../model/User";
 import HTTPError from "http-errors";
 

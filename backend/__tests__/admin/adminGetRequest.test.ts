@@ -1,6 +1,8 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { adminGetRequest } from '../../src/admin/adminGetRequest';
+import { adminService } from "../../src/modules/admin/admin.container";
+const adminGetRequest = (page: number, limit: number) =>
+  adminService.getRequests(page, limit);
 import TransactionItem from '../../model/TransactionItem';
 import type { Document, Types } from 'mongoose';
 

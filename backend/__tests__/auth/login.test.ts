@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import bcrypt from 'bcrypt';
 import HTTPError from 'http-errors';
-import { login } from '../../src/auth/login';
+import { authService } from "../../src/modules/auth/auth.container";
+const login = (email: string, password: string) =>
+  authService.login(email, password);
 import User from '../../model/User';
 
 vi.mock('../../model/User', () => ({

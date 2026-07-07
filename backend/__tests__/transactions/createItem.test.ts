@@ -2,7 +2,23 @@ import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import axios from "axios";
 import { UUID } from "mongodb";
 import HttpError from "http-errors";
-import { createItem } from "../../src/bankIntegration/createItem";
+import { bankService } from "../../src/modules/bank/bank.container";
+const createItem = (
+  userId: string,
+  requestType: string,
+  amount: number,
+  buyer_id: string,
+  seller_id: string,
+  transaction_token: string
+) =>
+  bankService.createItem(
+    userId,
+    requestType,
+    amount,
+    buyer_id,
+    seller_id,
+    transaction_token
+  );
 import TransactionItem from "../../model/TransactionItem";
 import User from "../../model/User";
 import WalletInfo from "../../model/WalletInfo";

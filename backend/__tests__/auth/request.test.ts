@@ -1,8 +1,16 @@
 import HTTPError from "http-errors";
 import Request from "../../model/Request";
 import User from "../../model/User";
-import { sendRequest } from "../../src/transactions/sendRequest";
-import { acceptRequest } from "../../src/transactions/acceptRequest";
+import { requestService } from "../../src/modules/request/request.container";
+const sendRequest = (
+  email: string,
+  senderId: string,
+  amount: number,
+  currency: string,
+  notes: string
+) => requestService.sendRequest(email, senderId, amount, currency, notes);
+const acceptRequest = (requestId: string) =>
+  requestService.acceptRequest(requestId);
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 
 type RequestCreateReturn = Awaited<ReturnType<typeof Request.create>>;

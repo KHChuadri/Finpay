@@ -1,22 +1,21 @@
 import { vi } from "vitest";
 
-// Mock trackChallengeProgress
-vi.mock("../../src/challenges/trackChallengeProgress", () => ({
-  trackChallengeProgress: vi.fn().mockResolvedValue({
-    success: true,
-    completedChallenges: [],
-  }),
+// Mock the challenge slice's cross-slice deps (checkBalanceChallenges + trackChallengeProgress)
+vi.mock("../../src/modules/challenge/challenge.container", () => ({
+  challengeService: {
+    trackChallengeProgress: vi.fn().mockResolvedValue({
+      success: true,
+      completedChallenges: [],
+    }),
+    checkBalanceChallenges: vi.fn().mockResolvedValue(undefined),
+  },
 }));
 
-// Mock checkBalanceChallenges
-vi.mock("../../src/challenges/checkBalanceChallenges", () => ({
-  checkBalanceChallenges: vi.fn().mockResolvedValue(undefined),
-}));
-
-vi.mock("../../src/exchangeRate", () => ({
-  exchangeRate: vi
-    .fn()
-    .mockImplementation(async (source: string, destination: string) => {
+vi.mock("../../src/modules/exchange/exchange.container", () => ({
+  exchangeService: {
+    getRate: vi
+      .fn()
+      .mockImplementation(async (source: string, destination: string) => {
       // Simulate exchange rates
       const rates: Record<string, number> = {
         USD: 1.0,
@@ -42,6 +41,7 @@ vi.mock("../../src/exchangeRate", () => ({
       const rate = rates[destination] / rates[source];
       return { rate };
     }),
+  },
 }));
 
 vi.mock("../../src/ranks", () => ({
@@ -54,7 +54,23 @@ vi.mock("../../src/ranks", () => ({
 }));
 
 import { describe, it, expect, beforeEach } from "vitest";
-import { p2pTransfer } from "../../src/transactions/p2ptransfer";
+import { transactionService } from "../../src/modules/transaction/transaction.container";
+const p2pTransfer = (
+  debtorUserId: string,
+  creditorEmail: string,
+  amountSrc: number,
+  amountDest: number,
+  currencySource: string,
+  currencyDest: string
+) =>
+  transactionService.transfer({
+    debtorUserId,
+    creditorEmail,
+    amountSrc,
+    amountDest,
+    currencySource,
+    currencyDest,
+  });
 import { createTestUser, createTestWallet } from "../helpers/testFactories";
 import WalletInfo, { WalletInfoType } from "../../model/WalletInfo";
 import TransactionHistory from "../../model/TransactionHistory";

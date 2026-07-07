@@ -7,8 +7,10 @@ import { UserType } from "../../../model/User";
 import Challenge from "../../../model/Challenge";
 import User from "../../../model/User";
 
-vi.mock("../../../src/exchangeRate", () => ({
-  exchangeRate: vi.fn().mockResolvedValue({ rate: 1 }),
+vi.mock("../../../src/modules/exchange/exchange.container", () => ({
+  exchangeService: {
+    getRate: vi.fn().mockResolvedValue({ rate: 1 }),
+  },
 }));
 
 const makeApp = () => {

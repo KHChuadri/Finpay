@@ -2,11 +2,16 @@ import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
-import { getUserWallet } from "../../../src/user/getUserWallet";
-import { getUserWalletInfo } from "../../../src/user/getUserWalletInfo";
-import { storeMultiWallet } from "../../../src/storeMultiWallet";
-import { getCurrentWallet } from "../../../src/getCurrentWallet";
-import { deleteWallet } from "../../../src/deleteWallet";
+import { walletService } from "../../../src/modules/wallet/wallet.container";
+const getUserWallet = (userId: string) => walletService.getAllWallets(userId);
+const getUserWalletInfo = (userId: string, currency: string) =>
+  walletService.getWalletInfoByCurrency(userId, currency);
+const storeMultiWallet = (userId: string, walletCurrency: string) =>
+  walletService.createCurrencyWallet(userId, walletCurrency);
+const getCurrentWallet = (currency: string, userId: string) =>
+  walletService.getCurrentWallet(userId, currency);
+const deleteWallet = (currency: string, userId: string) =>
+  walletService.deleteWallet(userId, currency);
 import { handleHTTPError } from "../../../src/helper/handleHTTPError";
 import { createTestUser, createTestWallet } from "../../helpers/testFactories";
 import { UserType } from "../../../model/User";

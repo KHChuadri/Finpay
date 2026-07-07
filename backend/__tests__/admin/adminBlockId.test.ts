@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { adminBlockId } from "../../src/admin/adminBlockId";
+import { adminService } from "../../src/modules/admin/admin.container";
+const adminBlockId = (userId: string, block: boolean) =>
+  adminService.blockUser(userId, block);
 import User from "../../model/User";
 import HTTPError from "http-errors";
 import { Types } from "mongoose";

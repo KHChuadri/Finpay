@@ -1,8 +1,12 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import HTTPError from "http-errors";
-import { sendPasswordResetEmail } from '../../src/forgotPassword/sendPasswordResetEmail';
-import { resetPasswordToken } from '../../src/forgotPassword/resetPasswordToken';
-import { resetPassword } from '../../src/forgotPassword/resetPassword';
+import { passwordResetService } from "../../src/modules/passwordReset/passwordReset.container";
+const sendPasswordResetEmail = (email: string) =>
+  passwordResetService.sendPasswordResetEmail(email);
+const resetPasswordToken = (token: string) =>
+  passwordResetService.resetPasswordToken(token);
+const resetPassword = (token: string, newPassword: string) =>
+  passwordResetService.resetPassword(token, newPassword);
 import User from '../../model/User';
 import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";

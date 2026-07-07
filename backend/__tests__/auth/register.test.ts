@@ -3,7 +3,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import HTTPError from "http-errors";
 import { UUID } from "mongodb";
-import { register } from "../../src/auth/register";
+import { authService } from "../../src/modules/auth/auth.container";
+const register = (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string
+) => authService.register(firstName, lastName, email, password);
 import User from "../../model/User";
 import WalletInfo from "../../model/WalletInfo";
 import { Types } from "mongoose";

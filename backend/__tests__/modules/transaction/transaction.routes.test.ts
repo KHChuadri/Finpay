@@ -6,14 +6,16 @@ import { createTestUser, createTestWallet } from "../../helpers/testFactories";
 import { UserType } from "../../../model/User";
 import WalletInfo from "../../../model/WalletInfo";
 
-vi.mock("../../../src/challenges/trackChallengeProgress", () => ({
-  trackChallengeProgress: vi.fn().mockResolvedValue(undefined),
+vi.mock("../../../src/modules/challenge/challenge.container", () => ({
+  challengeService: {
+    trackChallengeProgress: vi.fn().mockResolvedValue(undefined),
+    checkBalanceChallenges: vi.fn().mockResolvedValue(undefined),
+  },
 }));
-vi.mock("../../../src/challenges/checkBalanceChallenges", () => ({
-  checkBalanceChallenges: vi.fn().mockResolvedValue(undefined),
-}));
-vi.mock("../../../src/exchangeRate", () => ({
-  exchangeRate: vi.fn().mockResolvedValue({ rate: 1 }),
+vi.mock("../../../src/modules/exchange/exchange.container", () => ({
+  exchangeService: {
+    getRate: vi.fn().mockResolvedValue({ rate: 1 }),
+  },
 }));
 vi.mock("../../../src/ranks", () => ({
   Ranks: [{ name: "bronze", serviceFee: 0.05 }],

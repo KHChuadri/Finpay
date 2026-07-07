@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { adminGetUser } from "../../src/admin/adminGetUser";
+import { adminService } from "../../src/modules/admin/admin.container";
+const adminGetUser = (page: number, limit: number) =>
+  adminService.getUsers(page, limit);
 import User from "../../model/User";
 import type { Document, Types } from "mongoose";
 

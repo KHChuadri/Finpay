@@ -2,7 +2,9 @@ import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import HTTPError from "http-errors";
-import { adminLogin } from "../../src/admin/adminLogin";
+import { authService } from "../../src/modules/auth/auth.container";
+const adminLogin = (email: string, password: string) =>
+  authService.adminLogin(email, password);
 import User from "../../model/User";
 import type { Document, Types } from "mongoose";
 

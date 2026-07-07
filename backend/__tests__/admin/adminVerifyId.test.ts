@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import mongoose from "mongoose";
 import HTTPError from "http-errors";
-import { adminVerifyId } from "../../src/admin/adminVerifyId";
+import { adminService } from "../../src/modules/admin/admin.container";
+const adminVerifyId = (userId: string, verify: boolean) =>
+  adminService.verifyUser(userId, verify);
 import User from "../../model/User";
 import type { Document, Types } from "mongoose";
 
