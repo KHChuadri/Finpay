@@ -1,3 +1,5 @@
+import type { ClientSession } from "mongoose";
+
 export interface UserRecord {
   id: string;
   email: string;
@@ -41,15 +43,33 @@ export interface RecordTransactionInput {
 }
 
 export interface ITransactionRepository {
-  findUserById(id: string): Promise<UserRecord | null>;
-  findUserByEmail(email: string): Promise<UserRecord | null>;
-  findWallet(userId: string, currency: string): Promise<WalletRecord | null>;
-  createWallet(userId: string, currency: string): Promise<WalletRecord>;
+  findUserById(id: string, session?: ClientSession): Promise<UserRecord | null>;
+  findUserByEmail(
+    email: string,
+    session?: ClientSession
+  ): Promise<UserRecord | null>;
+  findWallet(
+    userId: string,
+    currency: string,
+    session?: ClientSession
+  ): Promise<WalletRecord | null>;
+  createWallet(
+    userId: string,
+    currency: string,
+    session?: ClientSession
+  ): Promise<WalletRecord>;
   /** Applies delta to the wallet balance, persists, returns the new balance. */
-  adjustWalletBalance(walletId: string, delta: number): Promise<number>;
+  adjustWalletBalance(
+    walletId: string,
+    delta: number,
+    session?: ClientSession
+  ): Promise<number>;
   /** Creates a TransactionHistory doc and appends its id to both users' history
    *  (once only when fromUser.id === toUser.id). Returns the new transaction id. */
-  recordTransaction(input: RecordTransactionInput): Promise<string>;
+  recordTransaction(
+    input: RecordTransactionInput,
+    session?: ClientSession
+  ): Promise<string>;
 }
 
 export interface TransactionServiceDeps {
@@ -61,4 +81,7 @@ export interface TransactionServiceDeps {
     userId: string,
     amount: number
   ) => Promise<unknown>;
+  /** Runs `fn` inside a single Mongoose transaction, committing on success and
+   *  rolling back on throw. Keeps the service free of runtime Mongoose imports. */
+  withTransaction: <T>(fn: (session: ClientSession) => Promise<T>) => Promise<T>;
 }

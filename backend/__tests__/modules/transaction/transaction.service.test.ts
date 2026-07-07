@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import HTTPError from "http-errors";
 import { createTransactionService } from "../../../src/modules/transaction/transaction.service";
+import type { ClientSession } from "mongoose";
 import type {
   ITransactionRepository,
   UserRecord,
@@ -39,6 +40,11 @@ const makeDeps = (repo: ITransactionRepository) => ({
   exchangeRate: vi.fn(async () => ({ rate: 1 })),
   checkBalanceChallenges: vi.fn(async () => undefined),
   trackChallengeProgress: vi.fn(async () => undefined),
+  // No real session in unit tests: just run the callback with the fake repo.
+  withTransaction: vi.fn(
+    async <T>(fn: (session: ClientSession) => Promise<T>) =>
+      fn(undefined as unknown as ClientSession)
+  ),
 });
 
 describe("transaction.service.transfer", () => {
@@ -70,8 +76,8 @@ describe("transaction.service.transfer", () => {
       newDebtorBalance: 900,
       newCreditorBalance: 600 - 0.05,
     });
-    expect(repo.adjustWalletBalance).toHaveBeenCalledWith("w-d", -100);
-    expect(repo.adjustWalletBalance).toHaveBeenCalledWith("w-c", 100 - 0.05);
+    expect(repo.adjustWalletBalance).toHaveBeenCalledWith("w-d", -100, undefined);
+    expect(repo.adjustWalletBalance).toHaveBeenCalledWith("w-c", 100 - 0.05, undefined);
     expect(deps.checkBalanceChallenges).toHaveBeenCalledTimes(2);
     expect(deps.trackChallengeProgress).toHaveBeenCalledWith("pay", "d1", 100);
     expect(deps.trackChallengeProgress).toHaveBeenCalledWith("receive", "c1", 100);
@@ -160,7 +166,7 @@ describe("transaction.service.transfer", () => {
     expect(balances.get("w-self")).toBe(startBalance - 0.05);
     // Both adjustments hit the SAME wallet id.
     expect(selfRepo.adjustWalletBalance).toHaveBeenCalledTimes(2);
-    expect(selfRepo.adjustWalletBalance).toHaveBeenNthCalledWith(1, "w-self", -100);
-    expect(selfRepo.adjustWalletBalance).toHaveBeenNthCalledWith(2, "w-self", 100 - 0.05);
+    expect(selfRepo.adjustWalletBalance).toHaveBeenNthCalledWith(1, "w-self", -100, undefined);
+    expect(selfRepo.adjustWalletBalance).toHaveBeenNthCalledWith(2, "w-self", 100 - 0.05, undefined);
   });
 });

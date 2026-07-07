@@ -7,8 +7,13 @@ import type {
 } from "./transaction.types";
 
 export const createTransactionService = (deps: TransactionServiceDeps) => {
-  const { repo, exchangeRate, checkBalanceChallenges, trackChallengeProgress } =
-    deps;
+  const {
+    repo,
+    exchangeRate,
+    checkBalanceChallenges,
+    trackChallengeProgress,
+    withTransaction,
+  } = deps;
 
   const transfer = async (input: TransferInput): Promise<TransferResult> => {
     const {
@@ -56,23 +61,39 @@ export const createTransactionService = (deps: TransactionServiceDeps) => {
     const serviceFee =
       Ranks.find((rank) => rank.name === debtor.rank)?.serviceFee ?? 0;
 
-    await repo.recordTransaction({
-      fromUser: debtor,
-      toUser: creditor,
-      amountSrc,
-      amountDest,
-      currencySource,
-      currencyDest,
-      description: "P2P Transfer",
-    });
+    // Atomic money movement: record + both balance adjustments commit or roll
+    // back together, so a mid-transfer failure never leaves funds inconsistent.
+    const { newDebtorBalance, newCreditorBalance } = await withTransaction(
+      async (session) => {
+        await repo.recordTransaction(
+          {
+            fromUser: debtor,
+            toUser: creditor,
+            amountSrc,
+            amountDest,
+            currencySource,
+            currencyDest,
+            description: "P2P Transfer",
+          },
+          session
+        );
 
-    const newDebtorBalance = await repo.adjustWalletBalance(
-      debtorWallet.id,
-      -Number(amountSrc)
-    );
-    const newCreditorBalance = await repo.adjustWalletBalance(
-      creditorWallet.id,
-      Number(amountDest - serviceFee)
+        const debtorBalance = await repo.adjustWalletBalance(
+          debtorWallet.id,
+          -Number(amountSrc),
+          session
+        );
+        const creditorBalance = await repo.adjustWalletBalance(
+          creditorWallet.id,
+          Number(amountDest - serviceFee),
+          session
+        );
+
+        return {
+          newDebtorBalance: debtorBalance,
+          newCreditorBalance: creditorBalance,
+        };
+      }
     );
 
     await checkBalanceChallenges(debtorUserId);

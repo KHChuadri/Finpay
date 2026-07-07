@@ -1,13 +1,14 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 
-let mongoServer: MongoMemoryServer;
+let mongoServer: MongoMemoryReplSet;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
+  // Single-node replica set so Mongoose transactions work in tests.
+  mongoServer = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
   const mongoUri = mongoServer.getUri();
-  
+
   await mongoose.connect(mongoUri);
 });
 

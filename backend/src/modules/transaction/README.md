@@ -15,6 +15,10 @@ Reference slice: `transaction/`. Replicate per feature area.
 - Preserve exact HTTP behavior when migrating (routes, bodies, status codes, JSON).
 - Errors: `throw HTTPError(status, msg)`; `asyncHandler` translates.
 
+## Atomicity
+- Repository methods accept an optional trailing `session?: ClientSession` (type-only import; no runtime Mongoose in types).
+- The container provides a `withTransaction(fn)` dep (real `mongoose.startSession()` + `session.withTransaction`). Services wrap multi-write operations in it and thread the `session` into the participating repo calls, so a mid-operation failure rolls back.
+
 ## Strangler steps per slice
 1. Build `types → service (unit test, fake repo) → repository (integration test)`.
 2. Add `controller + routes`; supertest the route.

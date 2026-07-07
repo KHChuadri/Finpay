@@ -32,61 +32,76 @@ const toWalletRecord = (doc: {
 });
 
 export const transactionRepository: ITransactionRepository = {
-  async findUserById(id) {
-    const doc = await User.findById(id);
+  async findUserById(id, session) {
+    const doc = await User.findById(id, null, { session });
     return doc ? toUserRecord(doc) : null;
   },
 
-  async findUserByEmail(email) {
-    const doc = await User.findOne({ email });
+  async findUserByEmail(email, session) {
+    const doc = await User.findOne({ email }, null, { session });
     return doc ? toUserRecord(doc) : null;
   },
 
-  async findWallet(userId, currency) {
-    const doc = await WalletInfo.findOne({
-      userId,
-      walletCurrency: currency,
-    });
+  async findWallet(userId, currency, session) {
+    const doc = await WalletInfo.findOne(
+      {
+        userId,
+        walletCurrency: currency,
+      },
+      null,
+      { session }
+    );
     return doc ? toWalletRecord(doc) : null;
   },
 
-  async createWallet(userId, currency) {
-    const doc = await WalletInfo.create({
-      userId,
-      walletBalance: 0,
-      walletCurrency: currency,
-    });
+  async createWallet(userId, currency, session) {
+    const [doc] = await WalletInfo.create(
+      [
+        {
+          userId,
+          walletBalance: 0,
+          walletCurrency: currency,
+        },
+      ],
+      { session }
+    );
     await User.updateOne(
       { _id: userId },
-      { $push: { walletInfo: doc._id } }
+      { $push: { walletInfo: doc._id } },
+      { session }
     );
     return toWalletRecord(doc);
   },
 
-  async adjustWalletBalance(walletId, delta) {
-    const doc = await WalletInfo.findById(walletId);
+  async adjustWalletBalance(walletId, delta, session) {
+    const doc = await WalletInfo.findById(walletId, null, { session });
     if (!doc) {
       throw HTTPError(404, "Wallet not found");
     }
     doc.walletBalance += delta;
-    await doc.save();
+    await doc.save({ session });
     return doc.walletBalance;
   },
 
-  async recordTransaction(input: RecordTransactionInput) {
-    const tx = await TransactionHistory.create({
-      amountSrc: input.amountSrc,
-      currencySource: input.currencySource,
-      amountDest: input.amountDest,
-      currencyDest: input.currencyDest,
-      fromAccount: input.fromUser.id,
-      toAccount: input.toUser.id,
-      fromAccountEmail: input.fromUser.email,
-      toAccountEmail: input.toUser.email,
-      fromAccountId: input.fromUser.id,
-      toAccountId: input.toUser.id,
-      description: input.description,
-    });
+  async recordTransaction(input: RecordTransactionInput, session) {
+    const [tx] = await TransactionHistory.create(
+      [
+        {
+          amountSrc: input.amountSrc,
+          currencySource: input.currencySource,
+          amountDest: input.amountDest,
+          currencyDest: input.currencyDest,
+          fromAccount: input.fromUser.id,
+          toAccount: input.toUser.id,
+          fromAccountEmail: input.fromUser.email,
+          toAccountEmail: input.toUser.email,
+          fromAccountId: input.fromUser.id,
+          toAccountId: input.toUser.id,
+          description: input.description,
+        },
+      ],
+      { session }
+    );
 
     const userIds =
       input.fromUser.id === input.toUser.id
@@ -95,7 +110,8 @@ export const transactionRepository: ITransactionRepository = {
 
     await User.updateMany(
       { _id: { $in: userIds } },
-      { $push: { transactionHistory: tx._id } }
+      { $push: { transactionHistory: tx._id } },
+      { session }
     );
 
     return tx._id.toString();
