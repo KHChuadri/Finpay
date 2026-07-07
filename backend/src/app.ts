@@ -1,11 +1,7 @@
 import express, { Request, Response, Express } from "express";
 import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
-import { adminGetUser } from "./admin/adminGetUser";
-import { adminVerifyId } from "./admin/adminVerifyId";
-import { adminBlockId } from "./admin/adminBlockId";
 import { exchangeRate } from "./exchangeRate";
-import { adminCreateChallenge } from "./admin/adminCreateChallenge";
 import { swaggerSpec } from "./swagger/swagger";
 import { getNotification } from "./getNotifications";
 import { checkNewNotification } from "./checkNewNotification";
@@ -15,7 +11,6 @@ import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
 import { getTransactionToken } from "./bankIntegration/getTransactionToken";
 import { createItem } from "./bankIntegration/createItem";
 import { doWithdraw } from "./bankIntegration/doWithdraw";
-import { adminGetRequest } from "./admin/adminGetRequest";
 import { checkBalanceChallenges } from "./challenges/checkBalanceChallenges";
 import User from "../model/User";
 import WalletInfo from "../model/WalletInfo";
@@ -32,6 +27,7 @@ import { scheduledPaymentRouter } from "./modules/scheduledPayment/scheduledPaym
 import { groupRouter } from "./modules/group/group.routes";
 import { profileRouter } from "./modules/profile/profile.routes";
 import { challengeRouter } from "./modules/challenge/challenge.routes";
+import { adminRouter } from "./modules/admin/admin.routes";
 
 export function createApp(): Express {
   const app: Express = express();
@@ -48,6 +44,7 @@ export function createApp(): Express {
   app.use(groupRouter);
   app.use(profileRouter);
   app.use(challengeRouter);
+  app.use(adminRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -59,60 +56,6 @@ export function createApp(): Express {
   // Home EndPoint
   app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to Finpay Backend Endpoint");
-  });
-
-  // create new challenge
-  app.post("/admin/createChallenge", async (req: Request, res: Response) => {
-    const {
-      category,
-      title,
-      description,
-      startDate,
-      endDate,
-      exp,
-      amountToGoal,
-    } = req.body;
-
-    try {
-      const response = await adminCreateChallenge(
-        category,
-        title,
-        description,
-        startDate,
-        endDate,
-        exp,
-        amountToGoal
-      );
-      res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get user list in admin control
-  app.get("/admin/users", async (req: Request, res: Response) => {
-    try {
-      const page = parseInt(req.query.page as string);
-      const limit = parseInt(req.query.limit as string);
-      const response = await adminGetUser(page, limit);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get request list in admin control
-  app.get("/admin/requests", async (req: Request, res: Response) => {
-    try {
-      const page = parseInt(req.query.page as string);
-      const limit = parseInt(req.query.limit as string);
-      const response = await adminGetRequest(page, limit);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
   });
 
   // check if user has new notification
@@ -132,32 +75,6 @@ export function createApp(): Express {
       const { userId } = req.params;
       const response = await getNotification(userId);
       res.status(200).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // verify user by admin
-  app.put("/admin/verify/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const verify = req.body.isVerified;
-      const response = await adminVerifyId(userId, verify);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // block user by admin
-  app.put("/admin/block/:userId", async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const block = req.body.isLocked;
-      const response = await adminBlockId(userId, block);
-
-      res.json(response);
     } catch (err: unknown) {
       handleHTTPError(err, res);
     }
@@ -282,38 +199,6 @@ export function createApp(): Express {
         } else {
           res.status(500).json({ errorMsg: "Unexpected error" });
         }
-      }
-    }
-  );
-
-  // check balance challenges of all user
-  app.post(
-    "/admin/checkAllBalanceChallenges",
-    async (req: Request, res: Response) => {
-      try {
-        const users = await User.find({ isActive: true });
-        const results = [];
-
-        for (const user of users) {
-          try {
-            const result = await checkBalanceChallenges(user._id.toString());
-            results.push({ userId: user._id, ...result });
-          } catch (error) {
-            results.push({
-              userId: user._id,
-              success: false,
-              error: error,
-            });
-          }
-        }
-
-        res.status(200).json({
-          success: true,
-          totalUsers: users.length,
-          results,
-        });
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
       }
     }
   );
