@@ -2,8 +2,6 @@ import express, { Request, Response, Express } from "express";
 import multer from "multer";
 import cors from "cors";
 import { handleHTTPError } from "./helper/handleHTTPError";
-import { sendPasswordResetEmail } from "./forgotPassword/sendPasswordResetEmail";
-import { resetPassword } from "./forgotPassword/resetPassword";
 import { getUserWallet } from "./user/getUserWallet";
 import { getUserWalletInfo } from "./user/getUserWalletInfo";
 import { getUserTransactionHistory } from "./user/getUserTransactionHistory";
@@ -57,13 +55,13 @@ import Challenge from "../model/Challenge";
 import { getScheduledPayment } from "./transactions/getScheduledPayments";
 import { getSavedRecipient } from "./savedRecipient";
 import { getChallenges } from "./challenges/getChallenges";
-import { resetPasswordToken } from "./forgotPassword/resetPasswordToken";
 import { getUserIsAdmin } from "./user/getUserIsAdmin";
 import { topup } from "./group/topup";
 import { getGroupTransactionHistory } from "./group/getGroupTransactionHistory";
 import { withdraw } from "./group/withdraw";
 import { transactionRouter } from "./modules/transaction/transaction.routes";
 import { authRouter } from "./modules/auth/auth.routes";
+import { passwordResetRouter } from "./modules/passwordReset/passwordReset.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -73,6 +71,7 @@ export function createApp(): Express {
   app.use(express.json({ limit: "2mb" }));
   app.use(transactionRouter);
   app.use(authRouter);
+  app.use(passwordResetRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -92,45 +91,6 @@ export function createApp(): Express {
       const depositData = req.body;
       const response = await setDepositData(depositData);
       res.status(201).json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Send User Admin Login
-  app.get("/send-password-reset-email", async (req: Request, res: Response) => {
-    try {
-      const email = req.query.email as string;
-      const response = await sendPasswordResetEmail(email);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // Find User From Reset Password Token
-  app.get(
-    "/reset-password-token/:token",
-    async (req: Request, res: Response) => {
-      try {
-        // Reset password token
-        const { token } = req.params;
-        const response = await resetPasswordToken(token);
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // Change User Password
-  app.put("/reset-password", async (req: Request, res: Response) => {
-    try {
-      const { token, password } = req.body;
-      const response = await resetPassword(token, password);
-
-      res.json(response);
     } catch (err: unknown) {
       handleHTTPError(err, res);
     }
