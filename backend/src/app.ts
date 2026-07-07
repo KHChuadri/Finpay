@@ -9,19 +9,10 @@ import { exchangeRate } from "./exchangeRate";
 import { getProfile } from "./profile/getProfile";
 import { editProfile } from "./profile/editProfile";
 import { uploadKyc } from "./profile/uploadKyc";
-import { leaveGroup } from "./group/leaveGroup";
 import { adminCreateChallenge } from "./admin/adminCreateChallenge";
 import { swaggerSpec } from "./swagger/swagger";
-import { getGroup } from "./group/getGroup";
-import { getGroupList } from "./group/getGrouplist";
-import { getMemberList } from "./group/getMemberlist";
-import { findInvitee } from "./group/findInvitee";
-import { editGroupMember } from "./group/editGroupMember";
-import { setGroup } from "./group/setGroups";
 import { getNotification } from "./getNotifications";
 import { checkNewNotification } from "./checkNewNotification";
-import { getInvitationList } from "./group/invitations/getInvitation";
-import { processInvitation } from "./group/invitations/processInvitation";
 import swaggerUI from "swagger-ui-express";
 import createHttpError from "http-errors";
 import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
@@ -29,7 +20,6 @@ import { getTransactionToken } from "./bankIntegration/getTransactionToken";
 import { createItem } from "./bankIntegration/createItem";
 import { doWithdraw } from "./bankIntegration/doWithdraw";
 import { adminGetRequest } from "./admin/adminGetRequest";
-import { getPendingInvitation } from "./group/getPendingInvitation";
 import { checkBalanceChallenges } from "./challenges/checkBalanceChallenges";
 import User from "../model/User";
 import WalletInfo from "../model/WalletInfo";
@@ -159,144 +149,6 @@ export function createApp(): Express {
     }
   );
 
-  // create new group/sharedwallet
-  app.post("/groups/create", async (req: Request, res: Response) => {
-    try {
-      const { groupName, description, userId, currency } = req.body;
-      const response = await setGroup(groupName, description, userId, currency);
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // leave shared wallet
-  app.put("/groups/leave", async (req: Request, res: Response) => {
-    try {
-      const { groupId, userId } = req.query as {
-        groupId: string;
-        userId: string;
-      };
-      const response = await leaveGroup(groupId, userId);
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // send invitation for shared wallet
-  app.put(
-    "/groups/invite/:groupId/:targetId/:creatorId",
-    async (req: Request, res: Response) => {
-      try {
-        const { groupId, targetId, creatorId } = req.params;
-        const response = await editGroupMember(
-          groupId,
-          targetId,
-          "add",
-          creatorId
-        );
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // kick member from shared wallet
-  app.put(
-    "/groups/remove/:groupId/:targetId/:creatorId",
-    async (req: Request, res: Response) => {
-      try {
-        const { groupId, targetId, creatorId } = req.params;
-        const response = await editGroupMember(
-          groupId,
-          targetId,
-          "remove",
-          creatorId
-        );
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // accept or decline invitation
-  app.put(
-    "/invitation/process/:invitationId/:mode",
-    async (req: Request, res: Response) => {
-      try {
-        const { invitationId, mode } = req.params;
-        const response = await processInvitation(invitationId, mode);
-
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // get user's group list
-  app.get("/groups/batch", async (req: Request, res: Response) => {
-    try {
-      const userId = req.query.userId as string;
-      const response = await getGroupList(userId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-  
-  // get invitation list
-  app.get("/invitation/batch", async (req: Request, res: Response) => {
-    try {
-      const userId = req.query.userId as string;
-      const response = await getInvitationList(userId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get pending invitation list
-  app.get("/groups/invitation/pending", async (req: Request, res: Response) => {
-    try {
-      const groupId = req.query.groupId as string;
-      const response = await getPendingInvitation(groupId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-  
-  // get group member
-  app.get("/groups/member", async (req: Request, res: Response) => {
-    try {
-      const groupId = req.query.groupId as string;
-      const response = await getMemberList(groupId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
-  // get specific group information and details
-  app.get("/groups/:groupId", async (req: Request, res: Response) => {
-    try {
-      const { groupId } = req.params;
-      const response = await getGroup(groupId);
-
-      res.json(response);
-    } catch (err: unknown) {
-      handleHTTPError(err, res);
-    }
-  });
-
   // get user list in admin control
   app.get("/admin/users", async (req: Request, res: Response) => {
     try {
@@ -322,20 +174,6 @@ export function createApp(): Express {
       handleHTTPError(err, res);
     }
   });
-
-  // find recepient of invitation
-  app.get(
-    "/find/invitee/:email/:userId/:groupId",
-    async (req: Request, res: Response) => {
-      try {
-        const { email, userId, groupId } = req.params;
-        const response = await findInvitee(email, userId, groupId);
-        res.status(200).json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
 
   // check if user has new notification
   app.get("/notification/new/:userId", async (req: Request, res: Response) => {
