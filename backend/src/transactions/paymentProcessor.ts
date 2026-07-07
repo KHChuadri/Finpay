@@ -4,7 +4,9 @@ import TransactionHistory from "../../model/TransactionHistory";
 import WalletInfo from "../../model/WalletInfo";
 import ScheduledPayment from "../../model/ScheduledPayment";
 import { createWallet } from "../helper/createWallet";
-import { checkBalanceChallenges } from "../challenges/checkBalanceChallenges";
+import { challengeService } from "../modules/challenge/challenge.container";
+
+const { checkBalanceChallenges } = challengeService;
 
 interface PaymentTransactionData {
   debtorId: string;

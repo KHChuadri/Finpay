@@ -3,9 +3,8 @@ import mongoose from "mongoose";
 import type { ClientSession } from "mongoose";
 import { createGroupService } from "./group.service";
 import { groupRepository } from "./group.repository";
-import { exchangeRate } from "../../exchangeRate";
-import { checkBalanceChallenges } from "../../challenges/checkBalanceChallenges";
-import { trackChallengeProgress } from "../../challenges/trackChallengeProgress";
+import { exchangeService } from "../exchange/exchange.container";
+import { challengeService } from "../challenge/challenge.container";
 
 // Runs `fn` inside a Mongoose transaction, committing on success and rolling
 // back on throw. The only place the group slice touches Mongoose runtime
@@ -27,8 +26,8 @@ const withTransaction = async <T>(
 
 export const groupService = createGroupService({
   repo: groupRepository,
-  exchangeRate,
-  checkBalanceChallenges,
-  trackChallengeProgress,
+  exchangeRate: exchangeService.getRate,
+  checkBalanceChallenges: challengeService.checkBalanceChallenges,
+  trackChallengeProgress: challengeService.trackChallengeProgress,
   withTransaction,
 });

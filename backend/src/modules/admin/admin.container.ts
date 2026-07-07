@@ -2,9 +2,9 @@
 // cross-slice checkBalanceChallenges delegate once.
 import { createAdminService } from "./admin.service";
 import { adminRepository } from "./admin.repository";
-import { checkBalanceChallenges } from "../../challenges/checkBalanceChallenges";
+import { challengeService } from "../challenge/challenge.container";
 
 export const adminService = createAdminService({
   repo: adminRepository,
-  checkBalanceChallenges,
+  checkBalanceChallenges: challengeService.checkBalanceChallenges,
 });

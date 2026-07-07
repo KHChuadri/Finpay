@@ -1,6 +1,8 @@
 import cron from "node-cron";
 import User from "../../model/User";
-import { checkBalanceChallenges } from "./checkBalanceChallenges";
+import { challengeService } from "../modules/challenge/challenge.container";
+
+const { checkBalanceChallenges } = challengeService;
 
 /**
  * <Checks User's End Balance for Saving Challenges>

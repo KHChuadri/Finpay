@@ -3,9 +3,8 @@ import mongoose from "mongoose";
 import type { ClientSession } from "mongoose";
 import { createTransactionService } from "./transaction.service";
 import { transactionRepository } from "./transaction.repository";
-import { exchangeRate } from "../../exchangeRate";
-import { checkBalanceChallenges } from "../../challenges/checkBalanceChallenges";
-import { trackChallengeProgress } from "../../challenges/trackChallengeProgress";
+import { exchangeService } from "../exchange/exchange.container";
+import { challengeService } from "../challenge/challenge.container";
 
 // Runs `fn` inside a Mongoose transaction, committing on success and rolling
 // back on throw. The only place the transaction slice touches Mongoose runtime.
@@ -26,8 +25,8 @@ const withTransaction = async <T>(
 
 export const transactionService = createTransactionService({
   repo: transactionRepository,
-  exchangeRate,
-  checkBalanceChallenges,
-  trackChallengeProgress,
+  exchangeRate: exchangeService.getRate,
+  checkBalanceChallenges: challengeService.checkBalanceChallenges,
+  trackChallengeProgress: challengeService.trackChallengeProgress,
   withTransaction,
 });
