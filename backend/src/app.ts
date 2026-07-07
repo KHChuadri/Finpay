@@ -37,8 +37,6 @@ import { deleteRequest } from "./transactions/deleteRequest";
 import swaggerUI from "swagger-ui-express";
 import { getUserRank } from "./user/getUserRank";
 import { initiateScheduledPayment } from "./transactions/initiateScheduledPayment";
-import { sendOtpEmail } from "./otpVerification/sendOtpEmail";
-import { verifyOtp } from "./otpVerification/verifyOtp";
 import createHttpError from "http-errors";
 import { cancelScheduledPayment } from "./transactions/cancelScheduledPayment";
 import { scheduledPaymentQueue } from "../queues/scheduledPaymentQueue";
@@ -62,6 +60,7 @@ import { withdraw } from "./group/withdraw";
 import { transactionRouter } from "./modules/transaction/transaction.routes";
 import { authRouter } from "./modules/auth/auth.routes";
 import { passwordResetRouter } from "./modules/passwordReset/passwordReset.routes";
+import { otpRouter } from "./modules/otp/otp.routes";
 
 export function createApp(): Express {
   const upload = multer({ storage: multer.memoryStorage() });
@@ -72,6 +71,7 @@ export function createApp(): Express {
   app.use(transactionRouter);
   app.use(authRouter);
   app.use(passwordResetRouter);
+  app.use(otpRouter);
 
   // Serve Swagger API documentation
   app.use(
@@ -693,34 +693,6 @@ export function createApp(): Express {
       try {
         const { requestId } = req.params;
         const response = await deleteRequest(requestId);
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // Create an otp and send it to user (This should be done after the user has seen a request)
-  app.post(
-    "/authentication/create/otp",
-    async (req: Request, res: Response) => {
-      try {
-        const { userId } = req.body;
-        const response = await sendOtpEmail(userId);
-        res.json(response);
-      } catch (err: unknown) {
-        handleHTTPError(err, res);
-      }
-    }
-  );
-
-  // Verify the otp
-  app.post(
-    "/authentication/verify/otp",
-    async (req: Request, res: Response) => {
-      try {
-        const { otpId, otp, userId, email } = req.body;
-        const response = await verifyOtp(otpId, otp, userId, email);
         res.json(response);
       } catch (err: unknown) {
         handleHTTPError(err, res);
