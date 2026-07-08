@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
@@ -8,20 +8,18 @@ interface ProgressBarProps {
 }
 
 function prefersReducedMotion(): boolean {
-  return typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return typeof window === 'undefined'
+    || typeof window.matchMedia !== 'function'
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 export function ProgressBar({ value, max, className }: ProgressBarProps) {
   const pct = `${Math.min(max > 0 ? value / max : 0, 1) * 100}%`;
   const [width, setWidth] = useState(prefersReducedMotion() ? pct : '0%');
-  const mounted = useRef(false);
 
   useEffect(() => {
     if (prefersReducedMotion()) { setWidth(pct); return; }
     const id = requestAnimationFrame(() => setWidth(pct));
-    mounted.current = true;
     return () => cancelAnimationFrame(id);
   }, [pct]);
 
