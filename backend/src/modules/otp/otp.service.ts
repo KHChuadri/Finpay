@@ -2,7 +2,7 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import HTTPError from "http-errors";
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import type {
   CreateOtpResult,
   OtpServiceDeps,
@@ -79,15 +79,17 @@ export const createOtpService = (deps: OtpServiceDeps) => {
       throw HTTPError(404, "Email cannot be found");
     }
 
-    if (!process.env.SENDGRID_API_KEY) {
-      throw HTTPError(500, "SENDGRID_API_KEY environment variable is missing");
+    if (!process.env.RESEND_API_KEY) {
+      throw HTTPError(500, "RESEND_API_KEY environment variable is missing");
     }
 
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    // Must be a Resend-verified domain; onboarding@resend.dev works for testing.
+    const from = process.env.OTP_FROM_EMAIL || "Finpay <onboarding@resend.dev>";
 
-    const msg = {
-      to: userEmail, // Can be any email address
-      from: "finpay.comp3900@gmail.com", // Your verified sender
+    const { data, error } = await resend.emails.send({
+      from,
+      to: userEmail,
       subject: "Your Finpay Verification Code",
       text: `Your verification code is: ${otp}. This code expires in 10 minutes.`,
       html: `
@@ -101,19 +103,15 @@ export const createOtpService = (deps: OtpServiceDeps) => {
         <p style="color: #666; font-size: 12px;">If you didn't request this code, please ignore this email.</p>
       </div>
     `,
-    };
+    });
 
-    try {
-      const result = await sgMail.send(msg);
-
-      console.log("✅ SendGrid email sent successfully");
-      console.log("Status:", result[0].statusCode);
-
-      return { otpId };
-    } catch (error) {
-      console.error("❌ SendGrid error:", error);
-      throw HTTPError(500, `Unable to send OTP email: ${(error as any).message}`);
+    if (error) {
+      console.error("❌ Resend error:", error);
+      throw HTTPError(500, `Unable to send OTP email: ${error.message}`);
     }
+
+    console.log("✅ Resend email sent successfully. Id:", data?.id);
+    return { otpId };
   };
 
   const verifyOtp = async (

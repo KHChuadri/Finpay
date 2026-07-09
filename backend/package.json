@@ -18,7 +18,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@sendgrid/mail": "^8.1.5",
     "@types/ioredis": "^4.28.10",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
