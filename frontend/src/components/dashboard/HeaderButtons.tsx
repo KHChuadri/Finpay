@@ -9,7 +9,6 @@ import { FaRegBell } from "react-icons/fa6";
 import { VscBellDot } from "react-icons/vsc";
 import useAuthStore from "@/stores/authStore";
 import axios from "axios";
-import useDarkModeStore from "@/stores/darkModeStore";
 import { API_URL } from "@/constants/API_URL";
 
 function HeaderButtons() {
@@ -20,7 +19,6 @@ function HeaderButtons() {
   const isVerified = useAuthStore((state) => state.isVerified);
   const isLocked = useAuthStore((state) => state.isLocked);
   const profileImage = useAuthStore((state) => state.profileImg) || '/profile icon.png';
-  const { darkMode } = useDarkModeStore();
 
   const navItemsAccount = [
     { Name: "Transaction History", Route: "/history" },
@@ -78,7 +76,7 @@ function HeaderButtons() {
     <div className="flex items-center gap-2 md:gap-4">
       {/* Mobile Menu Button */}
       <button
-        className="md:hidden p-2 rounded-lg hover:bg-[#f98674] transition duration-300 cursor-pointer"
+        className="md:hidden p-2 rounded-lg hover:bg-card transition duration-300 cursor-pointer"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       >
         {mobileMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
@@ -87,19 +85,19 @@ function HeaderButtons() {
       {/* Desktop Menu */}
       <div className="hidden md:flex gap-2 md:gap-4">
         <FlyoutLink FlyoutContent={<ListGroup items={navItemsAccount} />}>
-          <button data-testid="account-header-hover" className={`px-3 py-2 rounded-lg ${darkMode ? "hover:bg-gray-900 text-white" : "hover:bg-[#f98674]"} font-medium cursor-pointer text-sm md:text-base transition duration-300`}>
+          <button data-testid="account-header-hover" className="px-3 py-2 rounded-lg hover:bg-card font-medium cursor-pointer text-sm md:text-base transition duration-300">
             Account
           </button>
         </FlyoutLink>
 
         <FlyoutLink FlyoutContent={<ListGroup items={navItemsTransfer} />}>
-          <button className={`px-3 py-2 rounded-lg ${darkMode ? "hover:bg-gray-900 text-white" : "hover:bg-[#f98674]"} font-medium cursor-pointer text-sm md:text-base transition duration-300`}>
+          <button className="px-3 py-2 rounded-lg hover:bg-card font-medium cursor-pointer text-sm md:text-base transition duration-300">
             Transfer
           </button>
         </FlyoutLink>
 
         <FlyoutLink FlyoutContent={<ListGroup items={navItemsFeatures} />}>
-          <button data-testid="features-header-hover" className={`px-3 py-2 rounded-lg ${darkMode ? "hover:bg-gray-900 text-white" : "hover:bg-[#f98674]"} font-medium cursor-pointer text-sm md:text-base transition duration-300`}>
+          <button data-testid="features-header-hover" className="px-3 py-2 rounded-lg hover:bg-card font-medium cursor-pointer text-sm md:text-base transition duration-300">
             Features
           </button>
         </FlyoutLink>
@@ -107,20 +105,20 @@ function HeaderButtons() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-18 right-6 bg-[#F98674] shadow-xl rounded-lg px-4 py-2 z-50 md:">
+        <div className="absolute top-18 right-6 bg-card shadow-xl rounded-lg px-4 py-2 z-50 md:">
           <div className="flex flex-col gap-2 items-center">
             <FlyoutLink FlyoutContent={<ListGroup items={navItemsAccount} />} mobile={true}>
-              <button className="w-full px-4 py-2 rounded-lg hover:bg-[#E66A56] transition duration-300 cursor-pointer">
+              <button className="w-full px-4 py-2 rounded-lg hover:bg-secondary transition duration-300 cursor-pointer">
                 Account
               </button>
             </FlyoutLink>
             <FlyoutLink FlyoutContent={<ListGroup items={navItemsTransfer} />} mobile={true}>
-              <button className="w-full px-4 py-2 rounded-lg hover:bg-[#E66A56] transition duration-300 cursor-pointer">
+              <button className="w-full px-4 py-2 rounded-lg hover:bg-secondary transition duration-300 cursor-pointer">
                 Transfer
               </button>
             </FlyoutLink>
             <FlyoutLink FlyoutContent={<ListGroup items={navItemsFeatures} />} mobile={true}>
-              <button className="w-full px-4 py-2 rounded-lg hover:bg-[#E66A56] transition duration-300 cursor-pointer">
+              <button className="w-full px-4 py-2 rounded-lg hover:bg-secondary transition duration-300 cursor-pointer">
                 Features
               </button>
             </FlyoutLink>
@@ -133,7 +131,7 @@ function HeaderButtons() {
         <div className="relative group">
           <button
             onClick={() => navigate("/profile")}
-            className="w-14 h-13 bg-gray-200 hover:bg-gray-300 rounded-full border-2 border-white shadow-xl overflow-hidden"
+            className="w-14 h-13 bg-secondary hover:bg-secondary/80 rounded-full border-2 border-background shadow-xl overflow-hidden"
             data-testid="button-profile-icon"
           >
             <img
@@ -147,22 +145,22 @@ function HeaderButtons() {
           <div className="absolute bottom-0 right-1 transform translate-x-1/3 shadow-xl">
             {isLocked ? (
               <div className="relative">
-                <FiAlertCircle className="w-6 h-6 text-red-500 bg-white rounded-full" />
-                <div className="absolute hidden group-hover:block bottom-full left-1/8 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+                <FiAlertCircle className="w-6 h-6 text-destructive bg-card rounded-full" />
+                <div className="absolute hidden group-hover:block bottom-full left-1/8 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
                   Account locked - Contact support
                 </div>
               </div>
             ) : isVerified ? (
               <div className="relative">
-                <CircleCheck className="w-6 h-6 text-green-500 bg-white rounded-full" />
-                <div className="absolute hidden group-hover:block bottom-full -left-2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+                <CircleCheck className="w-6 h-6 text-positive bg-card rounded-full" />
+                <div className="absolute hidden group-hover:block bottom-full -left-2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
                   Account verified
                 </div>
               </div>
             ) : (
               <div className="relative">
-                <CircleAlert className="w-6 h-6 text-yellow-500 bg-white rounded-full" />
-                <div className="absolute hidden group-hover:block bottom-full -left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap">
+                <CircleAlert className="w-6 h-6 text-warning bg-card rounded-full" />
+                <div className="absolute hidden group-hover:block bottom-full -left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
                   Verify your account
                 </div>
               </div>
@@ -173,8 +171,8 @@ function HeaderButtons() {
         <button
           className="flex flex-row size-12 rounded-full items-center justify-center"
           onClick={() => navigate('/notification')}>
-          {newNotif === false && <FaRegBell className={`${darkMode ? 'text-white' : ''} w-3/4 h-3/4 object-cover rounded-full cursor-pointer`} />}
-          {newNotif === true && <VscBellDot className={`${darkMode ? 'text-white' : ''} w-3/4 h-3/4 object-cover rounded-full cursor-pointer`} />}
+          {newNotif === false && <FaRegBell className="text-foreground w-3/4 h-3/4 object-cover rounded-full cursor-pointer" />}
+          {newNotif === true && <VscBellDot className="text-foreground w-3/4 h-3/4 object-cover rounded-full cursor-pointer" />}
         </button>
       </div>
     </div>

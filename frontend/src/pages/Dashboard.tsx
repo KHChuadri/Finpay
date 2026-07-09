@@ -94,11 +94,11 @@ const Dashboard = () => {
     <Layout headerRight={<HeaderButtons />}>
       {/* Error Message */}
       {errorMessage && (
-        <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-200 border-2 border-red-400 text-red-700 rounded z-50">
+        <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
           <p className="break-words w-full pr-8">{errorMessage}</p>
           <button
             onClick={() => setErrorMessage(null)}
-            className="absolute top-4 right-4 text-red-700 hover:text-red-900 cursor-pointer"
+            className="absolute top-4 right-4 text-destructive hover:text-destructive/80 cursor-pointer"
           >
             <FaTimes />
           </button>
