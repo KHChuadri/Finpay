@@ -242,7 +242,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                         {/* Lock/Unlock Button */}
                         {user.isLocked ? (
                           <button
-                            className="text-warning hover:text-warning/80 cursor-pointer"
+                            className="text-primary hover:text-primary/80 cursor-pointer"
                             onClick={() => handleAdminBlock(user.userId, false)}
                           >
                             Unblock
