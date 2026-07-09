@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import HTTPError from "http-errors";
 import { createTransactionService } from "../../../src/modules/transaction/transaction.service";
-import type { ClientSession } from "mongoose";
+import type { Tx } from "../../../lib/db";
 import type {
   ITransactionRepository,
   UserRecord,
@@ -42,8 +42,8 @@ const makeDeps = (repo: ITransactionRepository) => ({
   trackChallengeProgress: vi.fn(async () => undefined),
   // No real session in unit tests: just run the callback with the fake repo.
   withTransaction: vi.fn(
-    async <T>(fn: (session: ClientSession) => Promise<T>) =>
-      fn(undefined as unknown as ClientSession)
+    async <T>(fn: (session: Tx) => Promise<T>) =>
+      fn(undefined as unknown as Tx)
   ),
 });
 

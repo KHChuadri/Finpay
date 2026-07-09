@@ -3,8 +3,11 @@ import request from "supertest";
 import express from "express";
 import { transactionRouter } from "../../../src/modules/transaction/transaction.routes";
 import { createTestUser, createTestWallet } from "../../helpers/testFactories";
-import { UserType } from "../../../model/User";
-import WalletInfo from "../../../model/WalletInfo";
+import { getDb } from "../../../lib/db";
+import { wallets } from "../../../src/db/schema";
+import { and, eq } from "drizzle-orm";
+
+type TestUser = Awaited<ReturnType<typeof createTestUser>>;
 
 vi.mock("../../../src/modules/challenge/challenge.container", () => ({
   challengeService: {
@@ -29,8 +32,8 @@ const makeApp = () => {
 };
 
 describe("POST /p2ptransfer", () => {
-  let debtor: UserType;
-  let creditor: UserType;
+  let debtor: TestUser;
+  let creditor: TestUser;
 
   beforeEach(async () => {
     debtor = await createTestUser({ email: "debtor@test.com", rank: "bronze" });
@@ -93,11 +96,11 @@ describe("POST /p2ptransfer", () => {
 
     expect(res.status).toBe(200);
 
-    const wallet = await WalletInfo.findOne({
-      userId: debtor._id,
-      walletCurrency: "AUD",
-    });
+    const [wallet] = await getDb()
+      .select()
+      .from(wallets)
+      .where(and(eq(wallets.userId, debtor.id), eq(wallets.walletCurrency, "AUD")));
     // Not inflated to startBalance + amount - fee; correctly nets to startBalance - fee.
-    expect(wallet?.walletBalance).toBeCloseTo(startBalance - 0.05, 5);
+    expect(Number(wallet?.walletBalance)).toBeCloseTo(startBalance - 0.05, 5);
   });
 });
