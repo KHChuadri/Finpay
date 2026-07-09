@@ -9,6 +9,7 @@ import type { Currency } from '@/stores/transactionStore';
 import { LiaTimesSolid } from 'react-icons/lia';
 import { useConversionStore } from '@/stores/conversionStore';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 const CurrencyConversionPage = () => {
   const navigate = useNavigate();
@@ -134,13 +135,13 @@ const CurrencyConversionPage = () => {
                 </div>
               </div>
 
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => navigate('/dashboard')}
-                className={`w-full py-3 font-bold rounded-xl transition cursor-pointer ${isValid ? 'bg-primary text-primary-foreground hover:opacity-90' : 'bg-muted text-muted-foreground cursor-not-allowed'
-                }`}
+                className="w-full"
               >
                 Back
-              </button>
+              </Button>
 
             </div>
           </div>
