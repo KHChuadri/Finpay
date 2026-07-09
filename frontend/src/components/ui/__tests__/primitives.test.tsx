@@ -4,6 +4,7 @@ import { Card } from '../Card';
 import { Button } from '../Button';
 import { Pill } from '../Pill';
 import { Input } from '../Input';
+import { Label } from '../Label';
 
 describe('ui primitives', () => {
   it('Card renders children and uses card bg', () => {
@@ -45,5 +46,11 @@ describe('ui primitives', () => {
   it('Input error swaps to destructive border', () => {
     render(<Input placeholder="bad" error />);
     expect(screen.getByPlaceholderText('bad').className).toContain('border-destructive');
+  });
+
+  it('Label renders a required asterisk in destructive color', () => {
+    render(<Label required>Email</Label>);
+    const star = screen.getByText('*');
+    expect(star.className).toContain('text-destructive');
   });
 });
