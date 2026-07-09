@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { Card } from '../Card';
 import { Button } from '../Button';
 import { Pill } from '../Pill';
+import { Input } from '../Input';
 
 describe('ui primitives', () => {
   it('Card renders children and uses card bg', () => {
@@ -34,5 +35,15 @@ describe('ui primitives', () => {
   it('Pill renders mono hairline', () => {
     render(<Pill>LVL 12</Pill>);
     expect(screen.getByText('LVL 12').className).toContain('font-mono');
+  });
+
+  it('Input uses input border by default', () => {
+    render(<Input placeholder="name" />);
+    expect(screen.getByPlaceholderText('name').className).toContain('border-input');
+  });
+
+  it('Input error swaps to destructive border', () => {
+    render(<Input placeholder="bad" error />);
+    expect(screen.getByPlaceholderText('bad').className).toContain('border-destructive');
   });
 });
