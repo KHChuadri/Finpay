@@ -1,12 +1,16 @@
-import mongoose from "mongoose";
+import { getDb, type DbOrTx } from "../../../lib/db";
+import {
+  users,
+  groups,
+  groupMembers,
+  wallets,
+  transactions,
+  transactionItems,
+  invitations,
+  notifications,
+} from "../../db/schema";
+import { eq, and, inArray, sql } from "drizzle-orm";
 import HTTPError from "http-errors";
-import User from "../../../model/User";
-import WalletInfo from "../../../model/WalletInfo";
-import Groups from "../../../model/Groups";
-import TransactionHistory from "../../../model/TransactionHistory";
-import TransactionItem from "../../../model/TransactionItem";
-import Invitation from "../../../model/Invitation";
-import Notification from "../../../model/Notification";
 import type {
   CreateGroupInput,
   CreateInvitationInput,
@@ -22,367 +26,385 @@ import type {
   WalletRecord,
 } from "./group.types";
 
-const toUserRecord = (doc: { _id: unknown; email: string }): UserRecord => ({
-  id: String(doc._id),
-  email: doc.email,
+const run = (session?: DbOrTx) => session ?? getDb();
+
+const toUserRecord = (r: { id: string; email: string }): UserRecord => ({
+  id: r.id,
+  email: r.email,
 });
 
-const toWalletRecord = (doc: {
-  _id: unknown;
-  userId: unknown;
-  walletBalance: number;
+const toWalletRecord = (r: {
+  id: string;
+  userId: string;
+  walletBalance: string;
   walletCurrency: string;
 }): WalletRecord => ({
-  id: String(doc._id),
-  userId: String(doc.userId),
-  balance: doc.walletBalance,
-  currency: doc.walletCurrency,
+  id: r.id,
+  userId: r.userId,
+  balance: Number(r.walletBalance),
+  currency: r.walletCurrency,
 });
 
-const toGroupRecord = (doc: {
-  _id: unknown;
-  groupName: string;
-  walletBalance: number;
-  walletCurrency: string;
-  transactionHistory: unknown[];
-}): GroupRecord => ({
-  id: String(doc._id),
-  groupName: doc.groupName,
-  walletBalance: doc.walletBalance,
-  walletCurrency: doc.walletCurrency,
-  transactionHistoryIds: (doc.transactionHistory ?? []).map((id) =>
-    String(id)
-  ),
-});
+// Legacy `.lean()` doc shape: expose `_id` (uuid) and drop `__v`.
+const withId = <T extends { id: string }>(r: T): Record<string, unknown> => {
+  const { id, ...rest } = r;
+  return { _id: id, ...rest };
+};
 
-const toGroupDetailRecord = (doc: {
-  _id: unknown;
-  groupName: string;
-  description?: string | null;
-  admin: unknown;
-  members: unknown[];
-  pendingInvite: unknown[];
-  walletBalance: number;
-  walletCurrency: string;
-  transactionHistory: unknown[];
-}): GroupDetailRecord => ({
-  id: String(doc._id),
-  groupName: doc.groupName,
-  description: doc.description ?? null,
-  admin: String(doc.admin),
-  members: (doc.members ?? []).map((id) => String(id)),
-  pendingInvite: (doc.pendingInvite ?? []).map((id) => String(id)),
-  walletBalance: doc.walletBalance,
-  walletCurrency: doc.walletCurrency,
-  transactionHistoryIds: (doc.transactionHistory ?? []).map((id) =>
-    String(id)
-  ),
-});
+const groupTransactionIds = async (groupId: string, session?: DbOrTx) => {
+  const rows = await run(session)
+    .select({ id: transactions.id })
+    .from(transactions)
+    .where(eq(transactions.groupId, groupId));
+  return rows.map((r) => r.id);
+};
 
 export const groupRepository: IGroupRepository = {
   async findUserById(id, session) {
-    const doc = await User.findById(id, null, { session });
-    return doc ? toUserRecord(doc) : null;
+    const [r] = await run(session)
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.id, id));
+    return r ? toUserRecord(r) : null;
   },
 
   async findUserByEmail(email, session) {
-    const doc = await User.findOne({ email }, null, { session });
-    return doc ? toUserRecord(doc) : null;
+    const [r] = await run(session)
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.email, email));
+    return r ? toUserRecord(r) : null;
   },
 
   async findUserByDepositId(depositId, session) {
-    const doc = await User.findOne({ depositId }, null, { session });
-    return doc ? toUserRecord(doc) : null;
+    const [r] = await run(session)
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.depositId, depositId));
+    return r ? toUserRecord(r) : null;
   },
 
-  async appendUserTransactionHistory(userId, transactionId, session) {
-    await User.updateOne(
-      { _id: userId },
-      { $push: { transactionHistory: transactionId } },
-      { session }
-    );
-  },
+  // No-op: user transaction history derives from transactions.from/to_account.
+  async appendUserTransactionHistory() {},
 
   async findGroupById(id, session) {
-    const doc = await Groups.findById(id, null, { session });
-    return doc ? toGroupRecord(doc) : null;
+    const [g] = await run(session).select().from(groups).where(eq(groups.id, id));
+    if (!g) return null;
+    const record: GroupRecord = {
+      id: g.id,
+      groupName: g.groupName,
+      walletBalance: Number(g.walletBalance),
+      walletCurrency: g.walletCurrency,
+      transactionHistoryIds: await groupTransactionIds(id, session),
+    };
+    return record;
   },
 
   async adjustGroupBalance(groupId, delta, session) {
-    const doc = await Groups.findById(groupId, null, { session });
-    if (!doc) {
-      throw HTTPError(404, "Group not found");
-    }
-    doc.walletBalance += delta;
-    await doc.save({ session });
-    return doc.walletBalance;
+    const [g] = await run(session)
+      .update(groups)
+      .set({ walletBalance: sql`${groups.walletBalance} + ${String(delta)}` })
+      .where(eq(groups.id, groupId))
+      .returning();
+    if (!g) throw HTTPError(404, "Group not found");
+    return Number(g.walletBalance);
   },
 
   async appendGroupTransactionHistory(groupId, transactionId, session) {
-    await Groups.updateOne(
-      { _id: groupId },
-      { $push: { transactionHistory: transactionId } },
-      { session }
-    );
+    await run(session)
+      .update(transactions)
+      .set({ groupId })
+      .where(eq(transactions.id, transactionId));
   },
 
   async findTransactionHistoryByIds(ids) {
-    return TransactionHistory.find({ _id: { $in: ids } }).lean();
+    if (ids.length === 0) return [];
+    const rows = await getDb()
+      .select()
+      .from(transactions)
+      .where(inArray(transactions.id, ids));
+    return rows.map(withId);
   },
 
   async findWalletById(id, session) {
-    const doc = await WalletInfo.findById(id, null, { session });
-    return doc ? toWalletRecord(doc) : null;
+    const [r] = await run(session).select().from(wallets).where(eq(wallets.id, id));
+    return r ? toWalletRecord(r) : null;
   },
 
   async findWalletByUserAndCurrency(userId, currency, session) {
-    const doc = await WalletInfo.findOne(
-      { userId, walletCurrency: currency },
-      null,
-      { session }
-    );
-    return doc ? toWalletRecord(doc) : null;
+    const [r] = await run(session)
+      .select()
+      .from(wallets)
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, currency)));
+    return r ? toWalletRecord(r) : null;
   },
 
   async findWalletByIdsAndCurrency(ids, currency, session) {
-    const doc = await WalletInfo.findOne(
-      {
-        _id: { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) },
-        walletCurrency: currency,
-      },
-      null,
-      { session }
-    );
-    return doc ? toWalletRecord(doc) : null;
+    if (ids.length === 0) return null;
+    const [r] = await run(session)
+      .select()
+      .from(wallets)
+      .where(and(inArray(wallets.id, ids), eq(wallets.walletCurrency, currency)));
+    return r ? toWalletRecord(r) : null;
   },
 
   async createWallet(userId, currency, session) {
-    const [doc] = await WalletInfo.create(
-      [
-        {
-          userId,
-          walletBalance: 0,
-          walletCurrency: currency,
-        },
-      ],
-      { session }
-    );
-    await User.updateOne(
-      { _id: userId },
-      { $push: { walletInfo: doc._id } },
-      { session }
-    );
-    return toWalletRecord(doc);
+    const [r] = await run(session)
+      .insert(wallets)
+      .values({ userId, walletBalance: "0", walletCurrency: currency })
+      .returning();
+    return toWalletRecord(r);
   },
 
   async adjustWalletBalance(walletId, delta, session) {
-    const doc = await WalletInfo.findById(walletId, null, { session });
-    if (!doc) {
-      throw HTTPError(404, "Wallet not found");
-    }
-    doc.walletBalance += delta;
-    await doc.save({ session });
-    return doc.walletBalance;
+    const [r] = await run(session)
+      .update(wallets)
+      .set({ walletBalance: sql`${wallets.walletBalance} + ${String(delta)}` })
+      .where(eq(wallets.id, walletId))
+      .returning();
+    if (!r) throw HTTPError(404, "Wallet not found");
+    return Number(r.walletBalance);
   },
 
   async deleteTransactionItemByTransactionId(transactionId, session) {
-    const deleted = await TransactionItem.findOneAndDelete(
-      { transactionId },
-      { session }
-    );
-    return deleted !== null;
+    const deleted = await run(session)
+      .delete(transactionItems)
+      .where(eq(transactionItems.transactionId, transactionId))
+      .returning({ id: transactionItems.id });
+    return deleted.length > 0;
   },
 
   async recordTransaction(input: RecordGroupTransactionInput, session) {
-    const [tx] = await TransactionHistory.create(
-      [
-        {
-          transactionType: input.transactionType,
-          amountSrc: input.amountSrc,
-          currencySource: input.currencySource,
-          amountDest: input.amountDest,
-          currencyDest: input.currencyDest,
-          fromAccount: input.fromAccount,
-          toAccount: input.toAccount,
-          fromAccountEmail: input.fromAccountEmail,
-          toAccountEmail: input.toAccountEmail,
-          fromAccountId: input.fromAccountId,
-          toAccountId: input.toAccountId,
-          description: input.description,
-        },
-      ],
-      { session }
-    );
-    return tx._id.toString();
+    const [tx] = await run(session)
+      .insert(transactions)
+      .values({
+        transactionType: input.transactionType,
+        amountSrc: String(input.amountSrc),
+        currencySource: input.currencySource,
+        amountDest: String(input.amountDest),
+        currencyDest: input.currencyDest,
+        fromAccount: input.fromAccount,
+        toAccount: input.toAccount,
+        fromAccountEmail: input.fromAccountEmail,
+        toAccountEmail: input.toAccountEmail,
+        fromAccountId: input.fromAccountId,
+        toAccountId: input.toAccountId,
+        description: input.description,
+      })
+      .returning({ id: transactions.id });
+    return tx.id;
   },
 
   // --- Group management / invitations ---
 
   async findUserNameById(id): Promise<UserNameRecord | null> {
-    const doc = await User.findById(id);
-    return doc
-      ? { id: String(doc._id), firstName: doc.firstName, lastName: doc.lastName }
-      : null;
+    const [r] = await getDb()
+      .select({ id: users.id, firstName: users.firstName, lastName: users.lastName })
+      .from(users)
+      .where(eq(users.id, id));
+    return r ? { id: r.id, firstName: r.firstName, lastName: r.lastName } : null;
   },
 
   async findUserDetailById(id): Promise<UserDetailRecord | null> {
-    const doc = await User.findById(id);
-    return doc
-      ? {
-          id: String(doc._id),
-          email: doc.email,
-          groups: (doc.groups ?? []).map((g) => String(g)),
-          invitation: (doc.invitation ?? []).map((i) => String(i)),
-        }
-      : null;
+    const [u] = await getDb()
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.id, id));
+    if (!u) return null;
+    const groupRows = await getDb()
+      .select({ groupId: groupMembers.groupId })
+      .from(groupMembers)
+      .where(eq(groupMembers.userId, id));
+    const inviteRows = await getDb()
+      .select({ id: invitations.id })
+      .from(invitations)
+      .where(eq(invitations.receiver, id));
+    return {
+      id: u.id,
+      email: u.email,
+      groups: groupRows.map((r) => r.groupId),
+      invitation: inviteRows.map((r) => r.id),
+    };
   },
 
   async findUserRawById(id) {
-    return User.findById(id).lean();
+    const [r] = await getDb().select().from(users).where(eq(users.id, id));
+    return r ? withId(r) : null;
   },
 
   async findUsersByIds(ids) {
-    return User.find({ _id: { $in: ids } }).lean();
+    if (ids.length === 0) return [];
+    const rows = await getDb().select().from(users).where(inArray(users.id, ids));
+    return rows.map(withId);
   },
 
   async findMembersByIds(ids): Promise<MemberRecord[]> {
-    const docs = await User.find({ _id: { $in: ids } }).select(
-      "firstName lastName email"
-    );
-    return docs.map((doc) => ({
-      id: String(doc._id),
-      firstName: doc.firstName,
-      lastName: doc.lastName,
-      email: doc.email,
-    }));
+    if (ids.length === 0) return [];
+    const rows = await getDb()
+      .select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        email: users.email,
+      })
+      .from(users)
+      .where(inArray(users.id, ids));
+    return rows;
   },
 
+  // Membership lives in one join table; both "user side" and "group side"
+  // appends map to the same idempotent insert.
   async appendUserGroup(userId, groupId) {
-    await User.updateOne({ _id: userId }, { $push: { groups: groupId } });
+    await getDb()
+      .insert(groupMembers)
+      .values({ groupId, userId })
+      .onConflictDoNothing();
   },
 
   async removeUserGroup(userId, groupId) {
-    await User.updateOne({ _id: userId }, { $pull: { groups: groupId } });
+    await getDb()
+      .delete(groupMembers)
+      .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
   },
 
-  async addUserInvitation(userId, invitationId) {
-    await User.updateOne(
-      { _id: userId },
-      { $push: { invitation: invitationId } }
-    );
-  },
+  // No-op: pending invites derive from invitations.receiver.
+  async addUserInvitation() {},
+  // No-op: removal is driven by deleteInvitationById.
+  async removeUserInvitation() {},
+  // No-op: notifications derive from notifications.receiver.
+  async addUserNotification() {},
 
-  async removeUserInvitation(userId, invitationId) {
-    await User.updateOne(
-      { _id: userId },
-      { $pull: { invitation: invitationId } }
-    );
-  },
-
-  async addUserNotification(userId, notificationId) {
-    await User.updateOne(
-      { _id: userId },
-      { $push: { notification: notificationId } }
-    );
-  },
-
-  async findGroupDetailById(id) {
-    const doc = await Groups.findById(id);
-    return doc ? toGroupDetailRecord(doc) : null;
+  async findGroupDetailById(id): Promise<GroupDetailRecord | null> {
+    const [g] = await getDb().select().from(groups).where(eq(groups.id, id));
+    if (!g) return null;
+    const memberRows = await getDb()
+      .select({ userId: groupMembers.userId })
+      .from(groupMembers)
+      .where(eq(groupMembers.groupId, id));
+    const pendingRows = await getDb()
+      .select({ id: invitations.id })
+      .from(invitations)
+      .where(eq(invitations.groupId, id));
+    return {
+      id: g.id,
+      groupName: g.groupName,
+      description: g.description ?? null,
+      admin: g.adminId,
+      members: memberRows.map((r) => r.userId),
+      pendingInvite: pendingRows.map((r) => r.id),
+      walletBalance: Number(g.walletBalance),
+      walletCurrency: g.walletCurrency,
+      transactionHistoryIds: await groupTransactionIds(id),
+    };
   },
 
   async findGroupsByIds(ids) {
-    return Groups.find({ _id: { $in: ids } }).lean();
+    if (ids.length === 0) return [];
+    const rows = await getDb().select().from(groups).where(inArray(groups.id, ids));
+    return rows.map(withId);
   },
 
   async createGroup(input: CreateGroupInput) {
-    const doc = new Groups({
-      groupName: input.groupName,
-      description: input.description,
-      admin: new mongoose.Types.ObjectId(input.creatorId),
-      transactionHistory: [],
-      members: [new mongoose.Types.ObjectId(input.creatorId)],
-      pendingInvite: [],
-      walletCurrency: input.currency,
-    });
-    await doc.save();
-    return { id: doc._id.toString() };
+    const [g] = await getDb()
+      .insert(groups)
+      .values({
+        groupName: input.groupName,
+        description: input.description,
+        adminId: input.creatorId,
+        walletCurrency: input.currency,
+      })
+      .returning({ id: groups.id });
+    await getDb()
+      .insert(groupMembers)
+      .values({ groupId: g.id, userId: input.creatorId })
+      .onConflictDoNothing();
+    return { id: g.id };
   },
 
   async deleteGroupById(groupId) {
-    await Groups.findByIdAndDelete(groupId);
+    await getDb().delete(groups).where(eq(groups.id, groupId));
   },
 
   async setGroupMembersAndAdmin(groupId, members, admin) {
-    await Groups.updateOne(
-      { _id: groupId },
-      { $set: { members, ...(admin ? { admin } : {}) } }
-    );
+    await getDb().delete(groupMembers).where(eq(groupMembers.groupId, groupId));
+    if (members.length > 0) {
+      await getDb()
+        .insert(groupMembers)
+        .values(members.map((userId) => ({ groupId, userId })))
+        .onConflictDoNothing();
+    }
+    if (admin) {
+      await getDb().update(groups).set({ adminId: admin }).where(eq(groups.id, groupId));
+    }
   },
 
   async addGroupMember(groupId, userId) {
-    await Groups.updateOne({ _id: groupId }, { $push: { members: userId } });
+    await getDb()
+      .insert(groupMembers)
+      .values({ groupId, userId })
+      .onConflictDoNothing();
   },
 
   async removeGroupMember(groupId, userId) {
-    await Groups.updateOne({ _id: groupId }, { $pull: { members: userId } });
+    await getDb()
+      .delete(groupMembers)
+      .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
   },
 
-  async addGroupPendingInvite(groupId, invitationId) {
-    await Groups.updateOne(
-      { _id: groupId },
-      { $push: { pendingInvite: invitationId } }
-    );
-  },
-
-  async removeGroupPendingInvite(groupId, invitationId) {
-    await Groups.updateOne(
-      { _id: groupId },
-      { $pull: { pendingInvite: invitationId } }
-    );
-  },
+  // No-op: pending invites derive from invitations.groupId.
+  async addGroupPendingInvite() {},
+  async removeGroupPendingInvite() {},
 
   async findInvitationById(id) {
-    const doc = await Invitation.findById(id);
-    return doc
-      ? {
-          id: String(doc._id),
-          groupId: String(doc.groupId),
-          receiver: String(doc.receiver),
-        }
-      : null;
+    const [r] = await getDb()
+      .select({
+        id: invitations.id,
+        groupId: invitations.groupId,
+        receiver: invitations.receiver,
+      })
+      .from(invitations)
+      .where(eq(invitations.id, id));
+    return r ? { id: r.id, groupId: r.groupId, receiver: r.receiver } : null;
   },
 
   async findInvitationsByIds(ids) {
-    return Invitation.find({ _id: { $in: ids } }).lean();
+    if (ids.length === 0) return [];
+    const rows = await getDb()
+      .select()
+      .from(invitations)
+      .where(inArray(invitations.id, ids));
+    return rows.map(withId);
   },
 
   async createInvitation(input: CreateInvitationInput) {
-    const doc = new Invitation({
-      groupName: input.groupName,
-      groupId: new mongoose.Types.ObjectId(input.groupId),
-      sender: new mongoose.Types.ObjectId(input.senderId),
-      receiver: new mongoose.Types.ObjectId(input.receiverId),
-      senderName: input.senderName,
-      receiverName: input.receiverName,
-    });
-    await doc.save();
-    return { id: doc._id.toString() };
+    const [r] = await getDb()
+      .insert(invitations)
+      .values({
+        groupName: input.groupName,
+        groupId: input.groupId,
+        sender: input.senderId,
+        receiver: input.receiverId,
+        senderName: input.senderName,
+        receiverName: input.receiverName,
+      })
+      .returning({ id: invitations.id });
+    return { id: r.id };
   },
 
   async createNotification(input: CreateNotificationInput) {
-    const doc = new Notification({
-      type: input.type,
-      sender: new mongoose.Types.ObjectId(input.senderId),
-      receiver: new mongoose.Types.ObjectId(input.receiverId),
-      description: input.description,
-      createdAt: new Date(),
-    });
-    await doc.save();
-    return { id: doc._id.toString() };
+    const [r] = await getDb()
+      .insert(notifications)
+      .values({
+        type: input.type as (typeof notifications.type.enumValues)[number],
+        sender: input.senderId,
+        receiver: input.receiverId,
+        description: input.description,
+      })
+      .returning({ id: notifications.id });
+    return { id: r.id };
   },
 
   async deleteInvitationById(invitationId) {
-    await Invitation.findOneAndDelete({ _id: invitationId });
+    await getDb().delete(invitations).where(eq(invitations.id, invitationId));
   },
 };

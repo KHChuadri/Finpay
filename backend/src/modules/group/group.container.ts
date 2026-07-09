@@ -1,27 +1,15 @@
 // Composition root for the group slice: wires real dependencies once.
-import mongoose from "mongoose";
-import type { ClientSession } from "mongoose";
+import { getDb, type Tx } from "../../../lib/db";
 import { createGroupService } from "./group.service";
 import { groupRepository } from "./group.repository";
 import { exchangeService } from "../exchange/exchange.container";
 import { challengeService } from "../challenge/challenge.container";
 
-// Runs `fn` inside a Mongoose transaction, committing on success and rolling
-// back on throw. The only place the group slice touches Mongoose runtime
-// outside of the repository.
-const withTransaction = async <T>(
-  fn: (session: ClientSession) => Promise<T>
-): Promise<T> => {
-  const session = await mongoose.startSession();
-  try {
-    let result: T;
-    await session.withTransaction(async () => {
-      result = await fn(session);
-    });
-    return result!;
-  } finally {
-    await session.endSession();
-  }
+// Runs `fn` inside a Postgres transaction, committing on success and rolling
+// back on throw. The only place the group slice touches the DB runtime outside
+// of the repository.
+const withTransaction = async <T>(fn: (tx: Tx) => Promise<T>): Promise<T> => {
+  return getDb().transaction(async (tx) => fn(tx));
 };
 
 export const groupService = createGroupService({

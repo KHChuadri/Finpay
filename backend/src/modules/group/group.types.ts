@@ -1,4 +1,4 @@
-import type { ClientSession } from "mongoose";
+import type { DbOrTx, Tx } from "../../../lib/db";
 
 export interface UserRecord {
   id: string;
@@ -157,34 +157,34 @@ export interface MemberRecord {
 }
 
 export interface IGroupRepository {
-  findUserById(id: string, session?: ClientSession): Promise<UserRecord | null>;
+  findUserById(id: string, session?: DbOrTx): Promise<UserRecord | null>;
   findUserByEmail(
     email: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<UserRecord | null>;
   findUserByDepositId(
     depositId: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<UserRecord | null>;
   appendUserTransactionHistory(
     userId: string,
     transactionId: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<void>;
 
   findGroupById(
     id: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<GroupRecord | null>;
   adjustGroupBalance(
     groupId: string,
     delta: number,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<number>;
   appendGroupTransactionHistory(
     groupId: string,
     transactionId: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<void>;
   /** Raw (non-flattened) TransactionHistory docs — the frontend reads `_id` directly. */
   findTransactionHistoryByIds(
@@ -193,38 +193,38 @@ export interface IGroupRepository {
 
   findWalletById(
     id: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<WalletRecord | null>;
   findWalletByUserAndCurrency(
     userId: string,
     currency: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<WalletRecord | null>;
   /** Any wallet among `ids` matching `currency` (matches legacy withdraw lookup). */
   findWalletByIdsAndCurrency(
     ids: string[],
     currency: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<WalletRecord | null>;
   createWallet(
     userId: string,
     currency: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<WalletRecord>;
   adjustWalletBalance(
     walletId: string,
     delta: number,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<number>;
 
   /** Returns whether a matching TransactionItem existed and was deleted. */
   deleteTransactionItemByTransactionId(
     transactionId: string,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<boolean>;
   recordTransaction(
     input: RecordGroupTransactionInput,
-    session?: ClientSession
+    session?: DbOrTx
   ): Promise<string>;
 
   // --- Group management / invitations ---
@@ -283,5 +283,5 @@ export interface GroupServiceDeps {
   ) => Promise<unknown>;
   /** Runs `fn` inside a single Mongoose transaction, committing on success and
    *  rolling back on throw. Keeps the service free of runtime Mongoose imports. */
-  withTransaction: <T>(fn: (session: ClientSession) => Promise<T>) => Promise<T>;
+  withTransaction: <T>(fn: (session: Tx) => Promise<T>) => Promise<T>;
 }

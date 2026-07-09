@@ -1,5 +1,5 @@
 {
-  "id": "eeb6b976-8f9c-48f7-809d-0692257447c4",
+  "id": "c5276635-1325-4bb5-b13b-bd93dc1de5c9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1137,32 +1137,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "transactions_from_account_users_id_fk": {
-          "name": "transactions_from_account_users_id_fk",
-          "tableFrom": "transactions",
-          "tableTo": "users",
-          "columnsFrom": [
-            "from_account"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "transactions_to_account_users_id_fk": {
-          "name": "transactions_to_account_users_id_fk",
-          "tableFrom": "transactions",
-          "tableTo": "users",
-          "columnsFrom": [
-            "to_account"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "transactions_group_id_groups_id_fk": {
           "name": "transactions_group_id_groups_id_fk",
           "tableFrom": "transactions",

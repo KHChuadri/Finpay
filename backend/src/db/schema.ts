@@ -74,8 +74,10 @@ export const transactions = pgTable("transactions", {
   currencySource: text("currency_source").notNull(),
   amountDest: numeric("amount_dest", { precision: 19, scale: 4 }).notNull(),
   currencyDest: text("currency_dest").notNull(),
-  fromAccount: uuid("from_account").notNull().references(() => users.id),
-  toAccount: uuid("to_account").notNull().references(() => users.id),
+  // Polymorphic: holds a user id (p2p) or a group id (group topup/withdraw),
+  // so intentionally not FK-constrained to a single table.
+  fromAccount: uuid("from_account").notNull(),
+  toAccount: uuid("to_account").notNull(),
   fromAccountEmail: text("from_account_email").notNull(),
   toAccountEmail: text("to_account_email").notNull(),
   fromAccountId: text("from_account_id").notNull(),
