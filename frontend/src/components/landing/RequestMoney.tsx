@@ -17,7 +17,7 @@ const RequestMoneyCard = ({ transferCompleted, onTransfer }: RequestMoneyCardPro
 				{/* Account Type */}
 				<div>
 					<label className="block text-sm font-medium text-gray-800 mb-2">Account Type:</label>
-					<div className="flex justify-between mb-4 items-center border-2 border-[#fea293] rounded-xl p-3 bg-white">
+					<div className="flex justify-between mb-4 items-center border-2 border-primary rounded-xl p-3 bg-white">
 						<div className="flex items-center gap-2">
 							<p className="text-xl">🌐</p>
 							<p className="font-semibold text-sm text-gray-800">FinPay</p>
@@ -35,7 +35,7 @@ const RequestMoneyCard = ({ transferCompleted, onTransfer }: RequestMoneyCardPro
 				{/* FinPay Account */}
 				<div className="mb-2">
 					<label className="block text-sm font-medium text-gray-800 mb-2">FinPay Account:</label>
-					<div className="flex justify-between items-center border-2 border-[#fea293] rounded-xl p-3 bg-white">
+					<div className="flex justify-between items-center border-2 border-primary rounded-xl p-3 bg-white">
 						<div className="flex items-center gap-2">
 							<p className="text-xl">👨‍💼</p>
 							<p className="font-semibold text-sm text-gray-800">John Doe</p>
@@ -87,7 +87,7 @@ const RequestMoneyCard = ({ transferCompleted, onTransfer }: RequestMoneyCardPro
 			{!transferCompleted ? (
 				<button
 					onClick={onTransfer}
-					className="w-full mt-4 py-3 text-white rounded-xl bg-[#C6412A] hover:bg-[#A8321E] transition"
+					className="w-full mt-4 py-3 text-primary-foreground rounded-xl bg-primary hover:opacity-90 transition"
 				>
 					Send Request
 				</button>
