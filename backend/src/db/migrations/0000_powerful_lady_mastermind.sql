@@ -45,7 +45,9 @@ CREATE TABLE "challenges" (
 	"start_date" timestamp with time zone NOT NULL,
 	"end_date" timestamp with time zone NOT NULL,
 	"category" "challenge_category" NOT NULL,
-	"amount_to_goal" numeric(19, 4) NOT NULL
+	"amount_to_goal" numeric(19, 4) NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "group_members" (

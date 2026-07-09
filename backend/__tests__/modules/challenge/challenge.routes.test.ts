@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import request from "supertest";
 import express from "express";
+import { randomUUID } from "crypto";
 import { challengeRouter } from "../../../src/modules/challenge/challenge.routes";
 import { createTestUser, createTestWallet } from "../../helpers/testFactories";
-import { UserType } from "../../../model/User";
-import Challenge from "../../../model/Challenge";
-import User from "../../../model/User";
+import { getDb } from "../../../lib/db";
+import { challenges, users } from "../../../src/db/schema";
+import { eq } from "drizzle-orm";
 
 vi.mock("../../../src/modules/exchange/exchange.container", () => ({
   exchangeService: {
@@ -28,8 +29,10 @@ const activeWindow = () => {
   };
 };
 
+type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+
 describe("GET /view/challenges/:userId", () => {
-  let user: UserType;
+  let user: TestUser;
 
   beforeEach(async () => {
     user = await createTestUser();
@@ -37,18 +40,21 @@ describe("GET /view/challenges/:userId", () => {
 
   it("returns the paginated challenge list with the actual legacy shape", async () => {
     const { startDate, endDate } = activeWindow();
-    const challenge = await Challenge.create({
-      category: "pay",
-      title: "Pay Challenge",
-      description: "Pay someone",
-      startDate,
-      endDate,
-      exp: 50,
-      amountToGoal: 100,
-    });
+    const [challenge] = await getDb()
+      .insert(challenges)
+      .values({
+        category: "pay",
+        title: "Pay Challenge",
+        description: "Pay someone",
+        startDate,
+        endDate,
+        exp: 50,
+        amountToGoal: "100",
+      })
+      .returning();
 
     const res = await request(makeApp())
-      .get(`/view/challenges/${user._id.toString()}`)
+      .get(`/view/challenges/${user.id}`)
       .query({ page: 1, limit: 10 });
 
     expect(res.status).toBe(200);
@@ -59,7 +65,7 @@ describe("GET /view/challenges/:userId", () => {
     expect(res.body.challenge).toHaveLength(1);
 
     const item = res.body.challenge[0];
-    expect(item._id).toBe(challenge._id.toString());
+    expect(item._id).toBe(challenge.id);
     expect(item).toMatchObject({
       title: "Pay Challenge",
       description: "Pay someone",
@@ -75,7 +81,7 @@ describe("GET /view/challenges/:userId", () => {
 
   it("returns 404 when the user does not exist", async () => {
     const res = await request(makeApp())
-      .get("/view/challenges/000000000000000000000000")
+      .get(`/view/challenges/${randomUUID()}`)
       .query({ page: 1, limit: 10 });
 
     expect(res.status).toBe(404);
@@ -84,7 +90,7 @@ describe("GET /view/challenges/:userId", () => {
 });
 
 describe("POST /user/checkBalanceChallenges", () => {
-  let user: UserType;
+  let user: TestUser;
 
   beforeEach(async () => {
     user = await createTestUser({ rank: "bronze", exp: 0 });
@@ -93,33 +99,36 @@ describe("POST /user/checkBalanceChallenges", () => {
   it("completes a save challenge and bumps exp + rank", async () => {
     // Legacy checkBalanceChallenges only sums non-AUD wallets (a pre-existing
     // quirk being preserved), so seed a non-AUD wallet.
-    await createTestWallet(user._id.toString(), "USD", 1000);
+    await createTestWallet(user.id, "USD", 1000);
 
     const { startDate, endDate } = activeWindow();
-    const challenge = await Challenge.create({
-      category: "save",
-      title: "Save $500",
-      description: "Save at least $500",
-      startDate,
-      endDate,
-      exp: 250, // pushes exp from 0 -> 250, crossing the silver (200) threshold
-      amountToGoal: 500,
-    });
+    const [challenge] = await getDb()
+      .insert(challenges)
+      .values({
+        category: "save",
+        title: "Save $500",
+        description: "Save at least $500",
+        startDate,
+        endDate,
+        exp: 250, // pushes exp from 0 -> 250, crossing the silver (200) threshold
+        amountToGoal: "500",
+      })
+      .returning();
 
     const res = await request(makeApp())
       .post("/user/checkBalanceChallenges")
-      .send({ userId: user._id.toString() });
+      .send({ userId: user.id });
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
       success: true,
       updated: 1,
-      completedChallenges: [challenge._id.toString()],
+      completedChallenges: [challenge.id],
     });
 
-    const updatedUser = await User.findById(user._id);
-    expect(updatedUser?.exp).toBe(250);
-    expect(updatedUser?.rank).toBe("silver");
+    const [updatedUser] = await getDb().select().from(users).where(eq(users.id, user.id));
+    expect(updatedUser.exp).toBe(250);
+    expect(updatedUser.rank).toBe("silver");
   });
 
   it("returns 400 when userId is missing", async () => {

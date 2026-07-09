@@ -203,6 +203,7 @@ export const challenges = pgTable("challenges", {
   endDate: timestamp("end_date", { withTimezone: true }).notNull(),
   category: challengeCategoryEnum("category").notNull(),
   amountToGoal: numeric("amount_to_goal", { precision: 19, scale: 4 }).notNull(),
+  ...timestamps,
 });
 
 // --- user_challenge_progress ---
