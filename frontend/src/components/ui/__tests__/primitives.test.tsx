@@ -61,4 +61,9 @@ describe('ui primitives', () => {
     rerender(<PageContainer size="narrow">b</PageContainer>);
     expect(screen.getByText('b').className).toContain('max-w-md');
   });
+
+  it('Button destructive variant uses destructive bg', () => {
+    render(<Button variant="destructive">Delete</Button>);
+    expect(screen.getByText('Delete').className).toContain('bg-destructive');
+  });
 });

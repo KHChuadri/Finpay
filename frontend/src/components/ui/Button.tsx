@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'ghost';
+  variant?: 'primary' | 'ghost' | 'destructive';
 }
 
 export function Button({ variant = 'primary', className, ...props }: ButtonProps) {
@@ -12,6 +12,8 @@ export function Button({ variant = 'primary', className, ...props }: ButtonProps
         'active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed',
         variant === 'primary'
           ? 'bg-primary text-primary-foreground hover:opacity-90'
+          : variant === 'destructive'
+          ? 'bg-destructive text-destructive-foreground hover:opacity-90'
           : 'border border-border text-foreground hover:border-border-strong bg-transparent',
         className
       )}
