@@ -71,7 +71,7 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
 
   return (
     <div
-      className={`flex flex-col min-h-screen bg-gradient-to-b ${darkMode ? 'from-gray-950 to-gray-700' : 'from-[#FFA294] to-[#EECAB8]'} `}
+      className="flex flex-col min-h-screen bg-background text-foreground"
       onClick={updateActivity}
     >
       {/* Show Warning Popup */}
@@ -100,8 +100,8 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-gray-900 py-8">
-        <div className="text-center text-gray-400">
+      <footer className="w-full border-t border-border py-8">
+        <div className="text-center text-muted-foreground">
           <p>© 2025 FinPay. All rights reserved.</p>
         </div>
       </footer>

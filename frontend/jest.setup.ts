@@ -17,3 +17,18 @@ Object.defineProperty(global.URL, 'createObjectURL', {
   writable: true,
   value: jest.fn(() => 'blob:jest-mock'),
 });
+
+// Mock matchMedia for motion tests
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: query === '(prefers-reduced-motion: reduce)',
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
