@@ -1,5 +1,3 @@
-import type { WalletInfoType } from "../../../model/WalletInfo";
-
 export interface WalletRecord {
   id: string;
   userId: string;
@@ -7,20 +5,29 @@ export interface WalletRecord {
   walletCurrency: string;
 }
 
+/** Serialized wallet matching the legacy `.lean()` doc the frontend keys by `_id`. */
+export interface LeanWallet {
+  _id: string;
+  userId: string;
+  walletBalance: number;
+  walletCurrency: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface UserWithWallets {
   id: string;
-  /** Raw wallet docs (incl. `_id`, timestamps, `__v`) — matches legacy serialization. */
-  wallets: WalletInfoType[];
+  wallets: LeanWallet[];
 }
 
 export interface IWalletRepository {
   findUserById(userId: string): Promise<{ id: string } | null>;
-  /** Populates the user's `walletInfo` refs and returns the raw wallet docs. */
+  /** Returns the user's wallets as lean docs (keyed by `_id`). */
   findUserWithWallets(userId: string): Promise<UserWithWallets | null>;
-  /** Returns raw wallet docs (incl. `_id`, timestamps, `__v`) — matches legacy serialization. */
-  findWalletsByUserId(userId: string): Promise<WalletInfoType[]>;
+  /** Returns the user's wallets as lean docs (keyed by `_id`). */
+  findWalletsByUserId(userId: string): Promise<LeanWallet[]>;
   findWallet(userId: string, currency: string): Promise<WalletRecord | null>;
-  /** Creates the wallet and appends its id to the user's `walletInfo` array. */
+  /** Creates the wallet for the user (linked by FK). */
   createWallet(userId: string, currency: string): Promise<WalletRecord>;
   deleteWalletById(walletId: string): Promise<boolean>;
 }

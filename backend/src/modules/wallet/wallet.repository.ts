@@ -1,71 +1,77 @@
-import User from "../../../model/User";
-import WalletInfo, { WalletInfoType } from "../../../model/WalletInfo";
+import { getDb } from "../../../lib/db";
+import { wallets, users } from "../../db/schema";
+import { eq, and } from "drizzle-orm";
 import type {
   IWalletRepository,
+  LeanWallet,
   UserWithWallets,
   WalletRecord,
 } from "./wallet.types";
 
-const toWalletRecord = (doc: {
-  _id: unknown;
-  userId: unknown;
-  walletBalance: number;
-  walletCurrency: string;
-}): WalletRecord => ({
-  id: String(doc._id),
-  userId: String(doc.userId),
-  walletBalance: doc.walletBalance,
-  walletCurrency: doc.walletCurrency,
+type WalletRow = typeof wallets.$inferSelect;
+
+// Serialized wallet doc matching legacy `.lean()` output the frontend consumes.
+const toLeanWallet = (r: WalletRow): LeanWallet => ({
+  _id: r.id,
+  userId: r.userId,
+  walletBalance: Number(r.walletBalance),
+  walletCurrency: r.walletCurrency,
+  createdAt: r.createdAt,
+  updatedAt: r.updatedAt,
+});
+
+const toWalletRecord = (r: WalletRow): WalletRecord => ({
+  id: r.id,
+  userId: r.userId,
+  walletBalance: Number(r.walletBalance),
+  walletCurrency: r.walletCurrency,
 });
 
 export const walletRepository: IWalletRepository = {
   async findUserById(userId) {
-    const doc = await User.findById(userId);
-    return doc ? { id: String(doc._id) } : null;
+    const [u] = await getDb()
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.id, userId));
+    return u ? { id: u.id } : null;
   },
 
   async findUserWithWallets(userId): Promise<UserWithWallets | null> {
-    const doc = await User.findById(userId)
-      .populate<{ walletInfo: WalletInfoType[] }>("walletInfo")
-      .lean();
-
-    if (!doc) {
-      return null;
-    }
-
-    return {
-      id: String(doc._id),
-      wallets: doc.walletInfo,
-    };
+    const [u] = await getDb()
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.id, userId));
+    if (!u) return null;
+    const rows = await getDb().select().from(wallets).where(eq(wallets.userId, userId));
+    return { id: u.id, wallets: rows.map(toLeanWallet) };
   },
 
   async findWalletsByUserId(userId) {
-    return WalletInfo.find({ userId }).lean();
+    const rows = await getDb().select().from(wallets).where(eq(wallets.userId, userId));
+    return rows.map(toLeanWallet);
   },
 
   async findWallet(userId, currency) {
-    const doc = await WalletInfo.findOne({
-      userId,
-      walletCurrency: currency,
-    });
-    return doc ? toWalletRecord(doc) : null;
+    const [r] = await getDb()
+      .select()
+      .from(wallets)
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, currency)));
+    return r ? toWalletRecord(r) : null;
   },
 
   async createWallet(userId, currency) {
-    const doc = new WalletInfo({
-      userId,
-      walletBalance: 0,
-      walletCurrency: currency,
-    });
-    await doc.save();
-
-    await User.updateOne({ _id: userId }, { $push: { walletInfo: doc._id } });
-
-    return toWalletRecord(doc);
+    const [r] = await getDb()
+      .insert(wallets)
+      .values({ userId, walletBalance: "0", walletCurrency: currency })
+      .returning();
+    return toWalletRecord(r);
   },
 
   async deleteWalletById(walletId) {
-    const deleted = await WalletInfo.findByIdAndDelete(walletId);
-    return deleted != null;
+    const deleted = await getDb()
+      .delete(wallets)
+      .where(eq(wallets.id, walletId))
+      .returning({ id: wallets.id });
+    return deleted.length > 0;
   },
 };

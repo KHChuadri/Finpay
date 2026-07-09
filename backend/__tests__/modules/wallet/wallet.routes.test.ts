@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
 import express, { Request, Response } from "express";
-import mongoose from "mongoose";
+import { randomUUID } from "crypto";
 import { walletService } from "../../../src/modules/wallet/wallet.container";
 const getUserWallet = (userId: string) => walletService.getAllWallets(userId);
 const getUserWalletInfo = (userId: string, currency: string) =>
@@ -14,7 +14,8 @@ const deleteWallet = (currency: string, userId: string) =>
   walletService.deleteWallet(userId, currency);
 import { handleHTTPError } from "../../../src/helper/handleHTTPError";
 import { createTestUser, createTestWallet } from "../../helpers/testFactories";
-import { UserType } from "../../../model/User";
+
+type TestUser = Awaited<ReturnType<typeof createTestUser>>;
 
 // Mirrors the inline route wiring in src/app.ts exactly. The legacy handler
 // files are reshaped into thin delegates to the new wallet service during the
@@ -82,7 +83,7 @@ const makeApp = () => {
 };
 
 describe("Wallet routes", () => {
-  let user: UserType;
+  let user: TestUser;
 
   beforeEach(async () => {
     user = await createTestUser({ email: "wallet@test.com" });
@@ -91,18 +92,18 @@ describe("Wallet routes", () => {
   describe("GET /wallet/:userId (no currency)", () => {
     it("returns all of the user's wallets", async () => {
       const audWallet = await createTestWallet(
-        user._id.toString(),
+        user.id,
         "AUD",
         1000
       );
       const usdWallet = await createTestWallet(
-        user._id.toString(),
+        user.id,
         "USD",
         500
       );
 
       const res = await request(makeApp()).get(
-        `/wallet/${user._id.toString()}`
+        `/wallet/${user.id}`
       );
 
       expect(res.status).toBe(200);
@@ -113,13 +114,13 @@ describe("Wallet routes", () => {
             _id: audWallet._id.toString(),
             walletCurrency: "AUD",
             walletBalance: 1000,
-            userId: user._id.toString(),
+            userId: user.id,
           }),
           expect.objectContaining({
             _id: usdWallet._id.toString(),
             walletCurrency: "USD",
             walletBalance: 500,
-            userId: user._id.toString(),
+            userId: user.id,
           }),
         ])
       );
@@ -131,7 +132,7 @@ describe("Wallet routes", () => {
     });
 
     it("returns 404 when the user does not exist", async () => {
-      const missingId = new mongoose.Types.ObjectId().toString();
+      const missingId = randomUUID();
 
       const res = await request(makeApp()).get(`/wallet/${missingId}`);
 
@@ -142,10 +143,10 @@ describe("Wallet routes", () => {
 
   describe("GET /wallet/:userId?currency=", () => {
     it("returns the matching currency wallet", async () => {
-      const wallet = await createTestWallet(user._id.toString(), "AUD", 1000);
+      const wallet = await createTestWallet(user.id, "AUD", 1000);
 
       const res = await request(makeApp()).get(
-        `/wallet/${user._id.toString()}?currency=AUD`
+        `/wallet/${user.id}?currency=AUD`
       );
 
       expect(res.status).toBe(200);
@@ -153,7 +154,7 @@ describe("Wallet routes", () => {
         _id: wallet._id.toString(),
         walletCurrency: "AUD",
         walletBalance: 1000,
-        userId: user._id.toString(),
+        userId: user.id,
       });
       // Locks the raw-doc shape: `_id`, not a flattened `id`.
       expect(res.body.correspondingWallet._id).toBeDefined();
@@ -162,7 +163,7 @@ describe("Wallet routes", () => {
 
     it("returns 404 when the user has no wallet in that currency", async () => {
       const res = await request(makeApp()).get(
-        `/wallet/${user._id.toString()}?currency=EUR`
+        `/wallet/${user.id}?currency=EUR`
       );
 
       expect(res.status).toBe(404);
@@ -176,7 +177,7 @@ describe("Wallet routes", () => {
   describe("PUT /wallet/:userId", () => {
     it("creates a new currency wallet", async () => {
       const res = await request(makeApp())
-        .put(`/wallet/${user._id.toString()}`)
+        .put(`/wallet/${user.id}`)
         .send({ walletCurrency: "EUR" });
 
       expect(res.status).toBe(200);
@@ -184,10 +185,10 @@ describe("Wallet routes", () => {
     });
 
     it("returns 400 when the currency already exists on the wallet", async () => {
-      await createTestWallet(user._id.toString(), "AUD", 1000);
+      await createTestWallet(user.id, "AUD", 1000);
 
       const res = await request(makeApp())
-        .put(`/wallet/${user._id.toString()}`)
+        .put(`/wallet/${user.id}`)
         .send({ walletCurrency: "AUD" });
 
       expect(res.status).toBe(400);
@@ -199,10 +200,10 @@ describe("Wallet routes", () => {
 
   describe("GET /currencywallet/:currency/:userId", () => {
     it("returns the wallet id/balance/currency", async () => {
-      const wallet = await createTestWallet(user._id.toString(), "AUD", 1000);
+      const wallet = await createTestWallet(user.id, "AUD", 1000);
 
       const res = await request(makeApp()).get(
-        `/currencywallet/AUD/${user._id.toString()}`
+        `/currencywallet/AUD/${user.id}`
       );
 
       expect(res.status).toBe(200);
@@ -215,7 +216,7 @@ describe("Wallet routes", () => {
 
     it("returns 404 when the wallet does not exist", async () => {
       const res = await request(makeApp()).get(
-        `/currencywallet/EUR/${user._id.toString()}`
+        `/currencywallet/EUR/${user.id}`
       );
 
       expect(res.status).toBe(404);
@@ -225,24 +226,24 @@ describe("Wallet routes", () => {
 
   describe("DELETE /currencywallet/:currency/:userId", () => {
     it("deletes the wallet", async () => {
-      await createTestWallet(user._id.toString(), "AUD", 1000);
+      await createTestWallet(user.id, "AUD", 1000);
 
       const res = await request(makeApp()).delete(
-        `/currencywallet/AUD/${user._id.toString()}`
+        `/currencywallet/AUD/${user.id}`
       );
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ message: "Wallet deleted successfully" });
 
       const remaining = await request(makeApp()).get(
-        `/currencywallet/AUD/${user._id.toString()}`
+        `/currencywallet/AUD/${user.id}`
       );
       expect(remaining.status).toBe(404);
     });
 
     it("returns 404 when the wallet does not exist", async () => {
       const res = await request(makeApp()).delete(
-        `/currencywallet/EUR/${user._id.toString()}`
+        `/currencywallet/EUR/${user.id}`
       );
 
       expect(res.status).toBe(404);
