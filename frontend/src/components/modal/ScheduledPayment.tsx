@@ -4,6 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs from "dayjs";
 import { useState } from "react";
+import { Button } from '@/components/ui/Button';
 
 interface ScheduledPaymentModal {
   setSuccess: () => void;
@@ -32,14 +33,14 @@ const ScheduledPayment = ({setSuccess}: ScheduledPaymentModal) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 mx-4">
+      <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 mx-4">
         <div className="flex flex-col items-center gap-1">
           <div className="flex flex-col justify-between w-full">
             <h1 className="font-bold text-2xl">Schedule a payment</h1>
-            {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+            {errorMsg && <p className="text-destructive">{errorMsg}</p>}
           </div>
           <div className="flex flex-col w-full items-left gap-2">
-            <div className="w-full border-b border-black">
+            <div className="w-full border-b border-border">
               <h2 className="font-bold text-xl">Date</h2>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -49,24 +50,24 @@ const ScheduledPayment = ({setSuccess}: ScheduledPaymentModal) => {
               </div>
             </LocalizationProvider>
             <div className="flex flex-col w-full items-left">
-              <div className="w-full border-b border-black mb-4">
+              <div className="w-full border-b border-border mb-4">
                 <h2 className="font-bold text-xl">Type of Transaction</h2>
               </div>
             </div>
 
             <div className="flex flex-row gap-5">
               <button
-                className="w-full mt-3 border border-[#C6412A] hover:bg-[#A8321E] hover:text-white text-[#C6412A] font-semibold py-3 rounded-md cursor-pointer"
+                className="w-full mt-3 border border-primary hover:bg-primary hover:text-primary-foreground text-primary font-semibold py-3 rounded-md cursor-pointer"
                 onClick={() => resetScheduledPayment()}
               >
                 Reset
               </button>
-              <button
-                className="w-full mt-3 bg-[#C6412A] hover:bg-[#A8321E] text-white font-semibold py-3 rounded-md cursor-pointer"
+              <Button
+                className="w-full mt-3 py-3"
                 onClick={() => handleUpdateScheduledPayment()}
               >
                 Apply
-              </button>
+              </Button>
             </div>
           </div>
         </div>

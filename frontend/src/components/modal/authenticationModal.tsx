@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { LiaTimesSolid } from 'react-icons/lia';
 import useOtpStore from '../../stores/otpStore';
+import { Button } from '@/components/ui/Button';
 
 type AuthenticationProp = {
   onClose: () => void;
@@ -65,7 +66,7 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
       setErrorMsg('Verification code needs to contain 6 digits');
       return;
     }
-    
+
    setIsSubmitting(true);
     try {
       verifyOtp(userId, email, code);
@@ -98,18 +99,18 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').slice(0, 6);
-    
+
     if (!/^\d+$/.test(pastedData)) return;
-    
+
     const newOtp = [...otp];
     pastedData.split('').forEach((digit, i) => {
       if (i < 6) newOtp[i] = digit;
     });
     setOtp(newOtp);
-    
+
     const lastFilledIndex = Math.min(pastedData.length - 1, 5);
     inputsRef.current[lastFilledIndex]?.focus();
-    
+
     if (pastedData.length === 6) {
       handleSubmit(pastedData);
     }
@@ -135,40 +136,40 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
       onClick={() => onClose()}
     >
       <div
-        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all animate-in zoom-in-95 duration-200"
+        className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md transform transition-all animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           data-testid="close-authentication-button"
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted transition-colors duration-200"
           onClick={() => onClose()}
           type="button"
           aria-label="Close modal"
         >
-          <LiaTimesSolid className="w-5 h-5 text-gray-500" />
+          <LiaTimesSolid className="w-5 h-5 text-muted-foreground" />
         </button>
 
         <div className="p-8">
-          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 mx-auto mb-6 bg-primary rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+            <svg className="w-10 h-10 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+          <h2 className="text-2xl font-bold text-foreground text-center mb-2">
             Two-Factor Authentication
           </h2>
 
-          <p className="text-gray-600 text-center mb-6">
+          <p className="text-muted-foreground text-center mb-6">
             Enter the 6-digit code we sent to your email (check spam folder as well)
           </p>
 
           {errorMsg && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 animate-in slide-in-from-top duration-200">
-              <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive rounded-lg flex items-center gap-2 animate-in slide-in-from-top duration-200">
+              <svg className="w-5 h-5 text-destructive flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              <p className="text-red-700 text-sm">{errorMsg}</p>
+              <p className="text-destructive text-sm">{errorMsg}</p>
             </div>
           )}
 
@@ -183,10 +184,10 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
                   inputMode="numeric"
                   pattern="[0-9]"
                   className={`
-                    w-12 h-14 text-center text-2xl font-semibold text-gray-900
+                    w-12 h-14 text-center text-2xl font-semibold text-foreground
                     border-2 rounded-lg transition-all duration-200
-                    ${otp[i] ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
-                    focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200
+                    ${otp[i] ? 'border-primary bg-primary/10' : 'border-input hover:border-border-strong'}
+                    focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40
                     disabled:opacity-50 disabled:cursor-not-allowed
                   `}
                   ref={(el) => {
@@ -207,18 +208,11 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
               ))}
             </div>
 
-            <button
+            <Button
               data-testid="submit-authentication-button"
               onClick={(e) => onFormSubmit(e)}
               disabled={otp.join('').length !== 6 || isSubmitting}
-              className={`
-                w-full py-3 px-4 rounded-lg font-semibold text-white
-                transition-all duration-200 transform
-                ${otp.join('').length === 6 && !isSubmitting
-                  ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0'
-                  : 'bg-gray-300 cursor-not-allowed'
-                }
-              `}
+              className="w-full py-3 px-4 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
             >
               {isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -231,19 +225,19 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
               ) : (
                 'Verify Code'
               )}
-            </button>
+            </Button>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Didn&apos;t receive the code?{' '}
                 <button
                   disabled={disableSendOtp}
                   onClick={(e) => handleResendOTP(e)}
                   className={`
                     font-semibold transition-colors duration-200
-                    ${disableSendOtp 
-                      ? 'text-gray-400 cursor-not-allowed' 
-                      : 'text-blue-600 hover:text-blue-700 hover:underline'
+                    ${disableSendOtp
+                      ? 'text-subtle cursor-not-allowed'
+                      : 'text-primary hover:opacity-80 hover:underline'
                     }
                   `}
                 >
