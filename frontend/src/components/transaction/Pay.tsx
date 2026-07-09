@@ -14,6 +14,7 @@ import axios from "axios";
 import useOtpStore from "@/stores/otpStore";
 import CircularProgress from "@mui/material/CircularProgress";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
 const Pay = () => {
   const {
@@ -215,7 +216,7 @@ const Pay = () => {
     <div className="flex flex-col w-full min-h-screen">
       <Layout>
         <div className="flex flex-col flex-grow items-center justify-center w-full h-full mb-5">
-          <div className="w-7/8 md:w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl">
+          <div className="w-7/8 md:w-1/2 lg:w-1/3 bg-card flex flex-col rounded-xl">
             <Header />
 
             <div className="flex flex-col w-full gap-6 p-6">
@@ -265,7 +266,7 @@ const Pay = () => {
               </div>
 
               <button
-                className="flex flex-row justify-between p-5 items-center gap-5 border hover:bg-[#A8321E]/20 font-semibold py-3 rounded-md cursor-pointer"
+                className="flex flex-row justify-between p-5 items-center gap-5 border hover:bg-primary/20 font-semibold py-3 rounded-md cursor-pointer"
                 onClick={() => setShowScheduledPaymentModal(true)}
               >
                 <div className="flex justify-center items-center gap-5">
@@ -277,21 +278,21 @@ const Pay = () => {
                 </div>
                 {scheduleSuccess ? (
                   <>
-                    <p className="bg-green-200 p-2 text-green-950 rounded-full">
+                    <p className="bg-positive/10 p-2 text-positive rounded-full">
                       Scheduled
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="bg-[#A8321E]/10 p-2 text-[#C6412A] rounded-full">
+                    <p className="bg-primary/10 p-2 text-primary rounded-full">
                       Schedule
                     </p>
                   </>
                 )}
               </button>
 
-              <button
-                className="w-full bg-[#C6412A] hover:bg-[#A8321E] text-white font-semibold py-3 rounded-md cursor-pointer"
+              <Button
+                className="w-full py-3 rounded-md"
                 onClick={() => authenticateTransaction()}
                 disabled={isLoading}
                 data-testid="button-pay"
@@ -301,7 +302,7 @@ const Pay = () => {
                 ) : (
                   "Pay"
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 

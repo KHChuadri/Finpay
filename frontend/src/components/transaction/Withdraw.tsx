@@ -54,24 +54,24 @@ const Withdraw = () => {
       <Layout>
         {/* Error Message */}
         {errorMessage && (
-          <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-200 border-2 border-red-400 text-red-700 rounded z-50">
+          <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
             <p className="break-words w-full pr-8">{errorMessage}</p>
             <button
               onClick={() => setErrorMessage(null)}
-              className="absolute top-4 right-4 text-red-700 hover:text-red-900 cursor-pointer"
+              className="absolute top-4 right-4 text-destructive hover:text-destructive/80 cursor-pointer"
             >
               <FaTimes />
             </button>
           </div>
         )}
         <div className="flex flex-grow justify-center items-center w-full h-full">
-          <div className="relative w-2/3 md:w-2/5 lg:w-1/3 bg-white rounded-xl p-4 h-2/3">
+          <div className="relative w-2/3 md:w-2/5 lg:w-1/3 bg-card rounded-xl p-4 h-2/3">
             <button
               className="absolute top-5 left-5 w-5 h-5 cursor-pointer"
               data-testid="withdraw-dashboard-return"
               onClick={() => navigate("/dashboard")}
             >
-              <FaTimes className="w-7 h-7 fill-gray-500" size={20}/>
+              <FaTimes className="w-7 h-7 fill-muted-foreground" size={20}/>
             </button>
             <div className='flex px-4 py-6 flex-col gap-3'>
               <Notice />
@@ -100,10 +100,10 @@ const Withdraw = () => {
               <button
                 disabled={!isVerified || isLocked}
                 onClick={handleWithdraw}
-                className={`mt-4 p-2 w-full py-3 text-white font-bold rounded-xl transition ${
+                className={`mt-4 p-2 w-full py-3 font-bold rounded-xl transition ${
                   valid && isVerified && !isLocked
-                    ? "bg-[#C6412A] hover:bg-[#A8321E] cursor-pointer"
-                    : "bg-gray-400 cursor-not-allowed"
+                    ? "bg-primary text-primary-foreground hover:opacity-90 cursor-pointer"
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
                 }`}
               >
                 Initiate payment

@@ -27,7 +27,7 @@ const Currencies = ({ currCurrency, isOpen, setIsOpen, handleSelectCurrency }: C
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center bg-gray-100 rounded-full px-3 py-1 mr-3 text-sm font-medium cursor-pointer">
+        <button className="flex items-center bg-muted rounded-full px-3 py-1 mr-3 text-sm font-medium cursor-pointer">
           {currCurrency?.flag ?? '🇦🇺'} <span className="ml-1">{currCurrency?.code ?? 'AUD'}</span> <span className="ml-1">▼</span>
         </button>
       </DropdownMenuTrigger>
