@@ -20,13 +20,13 @@ function ManageMembers({ list }: MemberList) {
       {list.map((item, index) => (
         <div
           key={index}
-          className="relative rounded-lg bg-white p-4 shadow-2xl"
+          className="relative rounded-lg bg-card p-4 shadow-2xl"
         >
           <div className="flex flex-col text-left space-y-2">
             <div className="justify-between flex flex-row">
               <h2 className="text-lg font-bold">Member Name: {item.name}</h2>
             </div>
-            <h2 className="text-sm text-gray-600">
+            <h2 className="text-sm text-muted-foreground">
               {item.role}
             </h2>
             <h2 className="text-sm">{item.email}</h2>

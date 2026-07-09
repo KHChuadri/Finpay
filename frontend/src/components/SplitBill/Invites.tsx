@@ -2,6 +2,7 @@ import { API_URL } from "@/constants/API_URL";
 import axios from "axios";
 import { TriangleAlert, X } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 
 export interface InvitationProps {
   _id: string;
@@ -39,21 +40,21 @@ function Invites({ list, onProcessed }: InvitationList) {
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl p-4 w-full justify-end gap-4 shadow-2xl transition ease-in-out">
+    <div className="flex flex-col bg-card rounded-2xl p-4 w-full justify-end gap-4 shadow-2xl transition ease-in-out">
       {/* Error message */}
       {errorMsg && (
-        <div className="flex items-center justify-between px-4 py-3 mb-4 bg-red-100 border-l-4 border-red-500 rounded-r">
+        <div className="flex items-center justify-between px-4 py-3 mb-4 bg-destructive/10 border-l-4 border-destructive rounded-r">
           <div className="flex items-center gap-2">
             <div className="flex-shrink-0">
-              <TriangleAlert className="h-5 w-5 text-red-500" />
+              <TriangleAlert className="h-5 w-5 text-destructive" />
             </div>
 
-            <p className="text-sm text-red-700">{errorMsg}</p>
+            <p className="text-sm text-destructive">{errorMsg}</p>
           </div>
 
           <button
             onClick={() => setErrorMsg("")}
-            className="text-red-500 hover:text-red-700 ml-4"
+            className="text-destructive hover:text-destructive/80 ml-4"
           >
             <X className="h-5 w-5" />
           </button>
@@ -67,7 +68,7 @@ function Invites({ list, onProcessed }: InvitationList) {
         {list.map((item, index) => (
           <div
             key={index}
-            className="relative rounded-lg bg-white p-4 shadow-2xl"
+            className="relative rounded-lg bg-card p-4 shadow-2xl"
           >
             <div className="flex flex-col text-left space-y-2">
               <div className="justify-between flex flex-row">
@@ -79,15 +80,17 @@ function Invites({ list, onProcessed }: InvitationList) {
                 {item.senderName} has sent you a group invitation
               </h2>
               <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-2 sm:gap-4 mt-4">
-                <button
-                  className="w-fit px-6 py-2 bg-green-800 text-white text-sm rounded-lg hover:bg-green-700 transition shadow-md"
+                <Button
+                  className="w-fit px-6 py-2 text-sm rounded-lg shadow-md"
                   onClick={() => handleInvitation(index, "accept")}>
                   Accept
-                </button>
-                <button className="w-fit px-6 py-2 bg-[#C6412A] text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="w-fit px-6 py-2 text-sm rounded-lg shadow-md"
                   onClick={() => handleInvitation(index, "reject")}>
                   Reject
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -95,12 +98,12 @@ function Invites({ list, onProcessed }: InvitationList) {
       </div>
 
       <div className="w-full px-2 sm:px-4 pb-4 flex justify-start">
-        <button
-          className="w-full sm:w-fit px-6 py-2 bg-[#C6412A] text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+        <Button
+          className="w-full sm:w-fit px-6 py-2 text-sm rounded-lg shadow-md"
           onClick={() => onProcessed}
         >
           Refresh
-        </button>
+        </Button>
       </div>
     </div>
   );

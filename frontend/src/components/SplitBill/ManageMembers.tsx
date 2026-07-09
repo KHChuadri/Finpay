@@ -45,18 +45,18 @@ function ManageMembers({ list, groupId, onMemberUpdate }: MemberList) {
       className="h-[600px] w-full flex flex-col gap-4 px-4 py-6 rounded-2xl overflow-y-scroll"
     >
       {errorMsg && (
-        <div className="flex items-center justify-between px-4 py-3 mb-4 bg-red-100 border-l-4 border-red-500 rounded-r">
+        <div className="flex items-center justify-between px-4 py-3 mb-4 bg-destructive/10 border-l-4 border-destructive rounded-r">
           <div className="flex items-center gap-2">
             <div className="flex-shrink-0">
-              <TriangleAlert className="h-5 w-5 text-red-500" />
+              <TriangleAlert className="h-5 w-5 text-destructive" />
             </div>
 
-            <p className="text-sm text-red-700">{errorMsg}</p>
+            <p className="text-sm text-destructive">{errorMsg}</p>
           </div>
 
           <button
             onClick={() => setErrorMsg("")}
-            className="text-red-500 hover:text-red-700 ml-4"
+            className="text-destructive hover:text-destructive/80 ml-4"
           >
             <X className="h-5 w-5" />
           </button>
@@ -65,7 +65,7 @@ function ManageMembers({ list, groupId, onMemberUpdate }: MemberList) {
       {list.map((item, index) => (
         <div
           key={index}
-          className="relative rounded-lg bg-white p-4 shadow-2xl"
+          className="relative rounded-lg bg-card p-4 shadow-2xl"
         >
 
           {/* Error message */}
@@ -74,7 +74,7 @@ function ManageMembers({ list, groupId, onMemberUpdate }: MemberList) {
             <div className="justify-between flex flex-row">
               <h2 className="text-lg font-bold">Member Name: {item.name}</h2>
             </div>
-            <h2 className="text-sm text-gray-600">{item.role}</h2>
+            <h2 className="text-sm text-muted-foreground">{item.role}</h2>
             <h2 className="text-sm">{item.email}</h2>
           </div>
           <button

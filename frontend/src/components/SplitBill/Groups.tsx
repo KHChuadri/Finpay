@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LeaveGroupModal from "./LeaveGroupModal";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
 export interface Props {
   _id: string;
@@ -59,8 +60,8 @@ function Groups({ list, onProcessed }: GroupList) {
     list = [];
   }
   return (
-    <div className="flex flex-col bg-white rounded-2xl p-4 w-full justify-end  gap-4 shadow-2xl transition ease-in-out">
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+    <div className="flex flex-col bg-card rounded-2xl p-4 w-full justify-end  gap-4 shadow-2xl transition ease-in-out">
+      {errorMessage && <p className="text-destructive">{errorMessage}</p>}
       {showLeaveModal && (
         <LeaveGroupModal
           onClose={() => handleCloseLeaveModal()}
@@ -74,7 +75,7 @@ function Groups({ list, onProcessed }: GroupList) {
         {list.map((item, index) => (
           <div
             key={index}
-            className="rounded-lg bg-white p-4 cursor-pointer hover:scale-99 ease-in-out duration-300 shadow-2xl justify-between"
+            className="rounded-lg bg-card p-4 cursor-pointer hover:scale-99 ease-in-out duration-300 shadow-2xl justify-between"
           >
             <div className="flex flex-row justify-between">
               <div className="flex flex-col text-left space-y-2">
@@ -86,33 +87,34 @@ function Groups({ list, onProcessed }: GroupList) {
                 <h2 className="text-sm">{item.description}</h2>
               </div>
               <div className="flex flex-row text-left space-y-2 gap-2">
-                <button
-                  className="w-fit h-fit px-8 py-3 bg-green-800 text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+                <Button
+                  className="w-fit h-fit px-8 py-3 text-sm rounded-lg shadow-md"
                   onClick={() => navigate(`/groups/${item._id}`)}
                 >
                   Open
-                </button>
-                <button
-                  className="w-fit h-fit px-8 py-3 bg-[#C6412A] text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="w-fit h-fit px-8 py-3 text-sm rounded-lg shadow-md"
                   onClick={() => {
                     setShowLeaveModal(true);
                     setSelectedGroupId(item._id.toString());
                   }}
                 >
                   Leave
-                </button>
+                </Button>
               </div>
             </div>
           </div>
         ))}
       </div>
       <div className="w-full px-4 pb-6 flex justify-start">
-        <button
-          className="w-fit px-8 py-3 bg-[#C6412A] text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+        <Button
+          className="w-fit px-8 py-3 text-sm rounded-lg shadow-md"
           onClick={() => navigate("/groups/list/create")}
         >
           Create New Group
-        </button>
+        </Button>
       </div>
     </div>
   );

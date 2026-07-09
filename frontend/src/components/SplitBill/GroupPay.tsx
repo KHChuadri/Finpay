@@ -11,6 +11,7 @@ import useOtpStore from "@/stores/otpStore";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useGroupTransactionStore } from "@/stores/groupTransactionStore";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
 interface Wallet {
   _id: string;
@@ -228,7 +229,7 @@ const GroupPay = () => {
     <div className="flex flex-col w-full h-screen">
       <Layout>
         <div className="flex flex-col flex-grow items-center justify-center w-full h-full">
-          <div className="w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl">
+          <div className="w-1/2 lg:w-1/3 bg-card border border-border flex flex-col rounded-xl">
             <Header />
 
             <div className="flex flex-col w-full gap-6 p-6">
@@ -283,8 +284,8 @@ const GroupPay = () => {
                 </span>
               </div>
 
-              <button
-                className="w-full bg-[#C6412A] hover:bg-[#A8321E] text-white font-semibold py-3 rounded-md cursor-pointer"
+              <Button
+                className="w-full py-3 font-semibold rounded-md"
                 onClick={() => authenticateTransaction()}
               >
                 {isLoading ? (
@@ -292,7 +293,7 @@ const GroupPay = () => {
                 ) : (
                   "Pay"
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 

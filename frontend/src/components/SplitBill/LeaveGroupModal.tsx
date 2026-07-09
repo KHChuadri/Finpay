@@ -1,5 +1,6 @@
 import { LiaTimesSolid } from 'react-icons/lia';
 import { FaDoorOpen } from "react-icons/fa";
+import { Button } from '@/components/ui/Button';
 
 
 type AuthenticationProp = {
@@ -14,7 +15,7 @@ const LeaveGroupModal = ({ onClose, onConfirm }: AuthenticationProp) => {
       onClick={() => onClose()}
     >
       <div
-        className="relative bg-white p-6 shadow-lg w-11/12 sm:w-1/2 max-w-md rounded"
+        className="relative bg-card border border-border p-6 shadow-lg w-11/12 sm:w-1/2 max-w-md rounded"
         onClick={(e) => e.stopPropagation()}
       >
         
@@ -36,16 +37,18 @@ const LeaveGroupModal = ({ onClose, onConfirm }: AuthenticationProp) => {
           This action cannot be reversed!
         </p>
         <div className="flex flex-row justify-between">
-            <button 
-            className="w-fit h-fit px-8 py-3 bg-green-800 text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+            <Button
+            variant="destructive"
+            className="w-fit h-fit px-8 py-3 text-sm rounded-lg shadow-md"
             onClick={() => onConfirm()}>
                 Confirm
-            </button>
-            <button 
-            className="w-fit h-fit px-8 py-3 bg-[#C6412A] text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+            </Button>
+            <Button
+            variant="ghost"
+            className="w-fit h-fit px-8 py-3 text-sm rounded-lg shadow-md"
             onClick={() => onClose()}>
                 Cancel
-            </button>
+            </Button>
         </div>
       </div>
     </div>
