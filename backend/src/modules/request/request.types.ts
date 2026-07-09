@@ -1,5 +1,3 @@
-import type { Types } from "mongoose";
-
 export interface UserBasic {
   id: string;
   email: string;
@@ -32,7 +30,7 @@ export interface SavedRecipient {
 
 export interface RecipientInfo {
   email: string;
-  walletInfo: Types.ObjectId[];
+  walletInfo: string[];
 }
 
 export interface CreateRequestInput {

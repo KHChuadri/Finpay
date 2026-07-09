@@ -1,8 +1,7 @@
 import HTTPError from "http-errors";
-import User, { UserType } from "../../../model/User";
-import RequestModel from "../../../model/Request";
-import WalletInfo from "../../../model/WalletInfo";
-import TransactionHistory from "../../../model/TransactionHistory";
+import { getDb } from "../../../lib/db";
+import { users, requests, wallets, transactions } from "../../db/schema";
+import { eq, and, inArray } from "drizzle-orm";
 import type {
   CreateRequestInput,
   IRequestRepository,
@@ -12,148 +11,155 @@ import type {
   UserBasic,
 } from "./request.types";
 
-const toUserBasic = (doc: { _id: unknown; email: string }): UserBasic => ({
-  id: String(doc._id),
-  email: doc.email,
+const toUserBasic = (r: { id: string; email: string }): UserBasic => ({
+  id: r.id,
+  email: r.email,
 });
 
-const toRequestRecord = (doc: {
-  _id: unknown;
-  userId: unknown;
-  senderEmail: string;
-  currency: string;
-  amount: number;
-  notes: string;
-  date: Date;
-}): RequestRecord => ({
-  id: String(doc._id),
-  userId: String(doc.userId),
-  senderEmail: doc.senderEmail,
-  currency: doc.currency,
-  amount: doc.amount,
-  notes: doc.notes,
-  date: doc.date,
+type RequestRow = typeof requests.$inferSelect;
+
+const toRequestRecord = (r: RequestRow): RequestRecord => ({
+  id: r.id,
+  userId: r.userId,
+  senderEmail: r.senderEmail,
+  currency: r.currency,
+  amount: Number(r.amount),
+  notes: r.notes ?? "",
+  date: r.date!,
 });
 
-const toRequestListItem = (doc: {
-  _id: unknown;
-  senderEmail: string;
-  date: Date;
-  amount: number;
-  currency: string;
-  notes: string;
-}): RequestListItem => ({
-  requestId: String(doc._id),
-  senderEmail: doc.senderEmail,
-  requestDate: doc.date,
-  amount: doc.amount,
-  currency: doc.currency,
-  notes: doc.notes,
+const toRequestListItem = (r: RequestRow): RequestListItem => ({
+  requestId: r.id,
+  senderEmail: r.senderEmail,
+  requestDate: r.date!,
+  amount: Number(r.amount),
+  currency: r.currency,
+  notes: r.notes ?? "",
 });
 
 export const requestRepository: IRequestRepository = {
   async findUserById(id) {
-    const doc = await User.findById(id);
-    return doc ? toUserBasic(doc) : null;
+    const [r] = await getDb()
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.id, id));
+    return r ? toUserBasic(r) : null;
   },
 
   async findUserByEmail(email) {
-    const doc = await User.findOne({ email });
-    return doc ? toUserBasic(doc) : null;
+    const [r] = await getDb()
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.email, email));
+    return r ? toUserBasic(r) : null;
   },
 
   async createRequestForRecipient(input: CreateRequestInput) {
-    const newRequest = await RequestModel.create({
-      userId: input.recipientUserId,
-      senderEmail: input.senderEmail,
-      currency: input.currency,
-      amount: input.amount,
-      notes: input.notes,
-      date: new Date(),
-    });
-
-    const recipient = await User.findOne({ email: input.recipientEmail });
+    const [recipient] = await getDb()
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, input.recipientEmail));
     if (!recipient) {
       throw HTTPError(404, "Recipient not found.");
     }
-    recipient.request.push(newRequest._id);
-    await recipient.save();
-
-    return newRequest._id.toString();
+    // requests.user_id FK records ownership; no user-side array to append.
+    const [r] = await getDb()
+      .insert(requests)
+      .values({
+        userId: input.recipientUserId,
+        senderEmail: input.senderEmail,
+        currency: input.currency,
+        amount: String(input.amount),
+        notes: input.notes,
+        date: new Date(),
+      })
+      .returning({ id: requests.id });
+    return r.id;
   },
 
   async findUserWithRequestIds(userId) {
-    const doc = await User.findById(userId);
-    if (!doc) {
-      return null;
-    }
-    return {
-      id: String(doc._id),
-      requestIds: doc.request.map((id) => String(id)),
-    };
+    const [u] = await getDb()
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.id, userId));
+    if (!u) return null;
+    const rows = await getDb()
+      .select({ id: requests.id })
+      .from(requests)
+      .where(eq(requests.userId, userId));
+    return { id: u.id, requestIds: rows.map((r) => r.id) };
   },
 
   async findRequestsByIds(ids) {
-    const docs = await RequestModel.find({ _id: { $in: ids } });
-    return docs.map(toRequestListItem);
+    if (ids.length === 0) return [];
+    const rows = await getDb().select().from(requests).where(inArray(requests.id, ids));
+    return rows.map(toRequestListItem);
   },
 
   async findRequestById(requestId) {
-    const doc = await RequestModel.findById(requestId);
-    return doc ? toRequestRecord(doc) : null;
+    const [r] = await getDb().select().from(requests).where(eq(requests.id, requestId));
+    return r ? toRequestRecord(r) : null;
   },
 
   async findWalletByUserId(userId) {
-    const doc = await WalletInfo.findOne({ userId });
-    return doc ? { id: String(doc._id) } : null;
+    const [r] = await getDb()
+      .select({ id: wallets.id })
+      .from(wallets)
+      .where(eq(wallets.userId, userId));
+    return r ? { id: r.id } : null;
   },
 
   async findWalletsByUserAndCurrency(userId, currency) {
-    const docs = await WalletInfo.find({ userId, walletCurrency: currency });
-    return docs.map((doc) => ({ id: String(doc._id) }));
+    const rows = await getDb()
+      .select({ id: wallets.id })
+      .from(wallets)
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, currency)));
+    return rows.map((r) => ({ id: r.id }));
   },
 
-  async deleteRequestAndUnlink(requestId, userId) {
-    await RequestModel.findByIdAndDelete(requestId);
-    await User.findByIdAndUpdate(userId, { $pull: { request: requestId } });
+  async deleteRequestAndUnlink(requestId) {
+    // requests.user_id FK is the sole link; deleting the row is enough.
+    await getDb().delete(requests).where(eq(requests.id, requestId));
   },
 
   async findSavedRecipients(userId) {
-    const transactionSent = await TransactionHistory.find({
-      fromAccount: userId,
-    }).populate<{ toAccount: UserType }>("toAccount");
-
-    const savedRecipient: SavedRecipient[] = transactionSent.map(
-      (transaction) => ({
-        email: transaction.toAccountEmail,
-        firstName: transaction.toAccount.firstName,
-        lastName: transaction.toAccount.lastName,
+    const rows = await getDb()
+      .select({
+        email: transactions.toAccountEmail,
+        firstName: users.firstName,
+        lastName: users.lastName,
       })
-    );
+      .from(transactions)
+      .leftJoin(users, eq(transactions.toAccount, users.id))
+      .where(eq(transactions.fromAccount, userId));
 
-    // Only return unique recipients (by email), matching legacy dedupe.
-    const savedRecipientSet = new Set(savedRecipient.map((r) => r.email));
-    const uniqueRecipientList: SavedRecipient[] = [];
-    savedRecipientSet.forEach((email) => {
-      const recipient = savedRecipient.find((r) => r.email === email);
-      if (recipient) {
-        uniqueRecipientList.push(recipient);
-      }
-    });
-
-    return uniqueRecipientList;
+    // Dedupe by email, matching legacy behavior.
+    const seen = new Set<string>();
+    const unique: SavedRecipient[] = [];
+    for (const r of rows) {
+      if (seen.has(r.email)) continue;
+      seen.add(r.email);
+      unique.push({
+        email: r.email,
+        firstName: r.firstName ?? "",
+        lastName: r.lastName ?? "",
+      });
+    }
+    return unique;
   },
 
   async findRecipientInfo(email, userId) {
-    const doc =
+    const [doc] =
       email !== "SELF"
-        ? await User.findOne({ email })
-        : await User.findById(userId);
+        ? await getDb().select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email))
+        : await getDb().select({ id: users.id, email: users.email }).from(users).where(eq(users.id, userId));
 
-    if (!doc) {
-      return null;
-    }
+    if (!doc) return null;
 
-    return { email: doc.email, walletInfo: doc.walletInfo };
+    const walletRows = await getDb()
+      .select({ id: wallets.id })
+      .from(wallets)
+      .where(eq(wallets.userId, doc.id));
+    return { email: doc.email, walletInfo: walletRows.map((w) => w.id) };
   },
 };
