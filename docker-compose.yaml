@@ -27,6 +27,10 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      # Override any localhost values from .env: inside the compose network the
+      # datastores are reachable by service name, not localhost.
+      - DATABASE_URL=postgresql://finpay:finpay@postgres:5432/finpay
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./backend:/app
       - /app/node_modules
