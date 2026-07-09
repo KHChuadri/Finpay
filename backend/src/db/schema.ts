@@ -177,8 +177,10 @@ export const requests = pgTable("requests", {
 // --- scheduled_payments ---
 export const scheduledPayments = pgTable("scheduled_payments", {
   id: uuid("id").primaryKey().defaultRandom(),
-  debtorId: uuid("debtor_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  creditorId: uuid("creditor_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  // Nominal user refs (not FK-constrained): a creditor/debtor may be deleted
+  // while the scheduled payment lingers ("Locked or deleted user" fallback).
+  debtorId: uuid("debtor_id").notNull(),
+  creditorId: uuid("creditor_id").notNull(),
   amountSrc: numeric("amount_src", { precision: 19, scale: 4 }).notNull(),
   amountDest: numeric("amount_dest", { precision: 19, scale: 4 }).notNull(),
   currencySrc: text("currency_src").notNull(),

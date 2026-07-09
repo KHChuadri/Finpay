@@ -1,7 +1,8 @@
 import { Worker, Job } from 'bullmq';
 import connection from '../config/redis';
-import ScheduledPayment from '../model/ScheduledPayment';
-import User from '../model/User';
+import { getDb } from '../lib/db';
+import { users, scheduledPayments } from '../src/db/schema';
+import { eq } from 'drizzle-orm';
 import { PaymentJobData, PaymentResult } from '../types/payment.types';
 import { processPaymentTransaction } from '../src/transactions/paymentProcessor';
 
@@ -10,15 +11,14 @@ const processScheduledPayment = async (job: Job<PaymentJobData>): Promise<Paymen
     
   try {
     // Update payment status to processing
-    await ScheduledPayment.findByIdAndUpdate(paymentId, {
-      status: 'processing',
-    });
+    await getDb()
+      .update(scheduledPayments)
+      .set({ status: 'processing' })
+      .where(eq(scheduledPayments.id, paymentId));
 
     // Fetch users
-    const [debtor, creditor] = await Promise.all([
-      User.findById(debtorId),
-      User.findById(creditorId),
-    ]);
+    const [debtor] = await getDb().select().from(users).where(eq(users.id, debtorId));
+    const [creditor] = await getDb().select().from(users).where(eq(users.id, creditorId));
 
     if (!debtor || !creditor) {
       throw new Error('User not found');
@@ -36,11 +36,14 @@ const processScheduledPayment = async (job: Job<PaymentJobData>): Promise<Paymen
 
     if (paymentResult.success) {
       // Update payment status to completed
-      await ScheduledPayment.findByIdAndUpdate(paymentId, {
-        status: 'completed',
-        processedAt: new Date(),
-        transactionId: paymentResult.transactionId,
-      });
+      await getDb()
+        .update(scheduledPayments)
+        .set({
+          status: 'completed',
+          processedAt: new Date(),
+          transactionId: paymentResult.transactionId,
+        })
+        .where(eq(scheduledPayments.id, paymentId));
 
       return {
         success: true,
@@ -54,11 +57,14 @@ const processScheduledPayment = async (job: Job<PaymentJobData>): Promise<Paymen
     console.error(`Payment ${paymentId} failed:`, error);
     
     // Update payment status to failed
-    await ScheduledPayment.findByIdAndUpdate(paymentId, {
-      status: 'failed',
-      failureReason: error instanceof Error ? error.message : 'Unknown error',
-      lastAttempt: new Date(),
-    });
+    await getDb()
+      .update(scheduledPayments)
+      .set({
+        status: 'failed',
+        failureReason: error instanceof Error ? error.message : 'Unknown error',
+        lastAttempt: new Date(),
+      })
+      .where(eq(scheduledPayments.id, paymentId));
     
     throw error; // This will trigger retry based on job options
   }

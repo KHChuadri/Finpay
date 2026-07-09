@@ -1,5 +1,5 @@
 {
-  "id": "056117e5-31ee-4cd2-aff2-31f54d3f2584",
+  "id": "3b3e7276-072b-461f-8aa8-6ac54ce104eb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -904,34 +904,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "scheduled_payments_debtor_id_users_id_fk": {
-          "name": "scheduled_payments_debtor_id_users_id_fk",
-          "tableFrom": "scheduled_payments",
-          "tableTo": "users",
-          "columnsFrom": [
-            "debtor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "scheduled_payments_creditor_id_users_id_fk": {
-          "name": "scheduled_payments_creditor_id_users_id_fk",
-          "tableFrom": "scheduled_payments",
-          "tableTo": "users",
-          "columnsFrom": [
-            "creditor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

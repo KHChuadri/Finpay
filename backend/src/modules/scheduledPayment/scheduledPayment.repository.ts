@@ -1,125 +1,129 @@
-import mongoose from "mongoose";
-import ScheduledPayment, {
-  ScheduledPaymentType,
-} from "../../../model/ScheduledPayment";
-import User from "../../../model/User";
-import WalletInfo from "../../../model/WalletInfo";
+import { getDb } from "../../../lib/db";
+import { users, wallets, scheduledPayments } from "../../db/schema";
+import { eq, and, desc, count, sql } from "drizzle-orm";
 import type {
   IScheduledPaymentRepository,
   UserBasic,
 } from "./scheduledPayment.types";
 
-const toUserBasic = (doc: { _id: unknown; email: string }): UserBasic => ({
-  id: String(doc._id),
-  email: doc.email,
+const toUserBasic = (r: { id: string; email: string }): UserBasic => ({
+  id: r.id,
+  email: r.email,
 });
 
 export const scheduledPaymentRepository: IScheduledPaymentRepository = {
   async findUserById(id) {
-    const doc = await User.findById(id);
-    return doc ? toUserBasic(doc) : null;
+    const [r] = await getDb()
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.id, id));
+    return r ? toUserBasic(r) : null;
   },
 
   async findUserByEmail(email) {
-    const doc = await User.findOne({ email });
-    return doc ? toUserBasic(doc) : null;
+    const [r] = await getDb()
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(eq(users.email, email));
+    return r ? toUserBasic(r) : null;
   },
 
   async createPayment(input) {
-    const doc = await ScheduledPayment.create({
-      debtorId: input.debtorId,
-      creditorId: input.creditorId,
-      amountSrc: input.amountSrc,
-      amountDest: input.amountDest,
-      currencySrc: input.currencySrc,
-      currencyDest: input.currencyDest,
-      scheduledDate: input.scheduledDate,
-    });
-
-    return {
-      id: doc._id.toString(),
-      debtorId: String(doc.debtorId),
-      creditorId: String(doc.creditorId),
-    };
+    const [r] = await getDb()
+      .insert(scheduledPayments)
+      .values({
+        debtorId: input.debtorId,
+        creditorId: input.creditorId,
+        amountSrc: String(input.amountSrc),
+        amountDest: String(input.amountDest),
+        currencySrc: input.currencySrc,
+        currencyDest: input.currencyDest,
+        scheduledDate: new Date(input.scheduledDate),
+      })
+      .returning();
+    return { id: r.id, debtorId: r.debtorId, creditorId: r.creditorId };
   },
 
   async updateJobId(paymentId, jobId) {
-    await ScheduledPayment.findByIdAndUpdate(
-      paymentId,
-      { jobId },
-      { new: true }
-    );
+    await getDb()
+      .update(scheduledPayments)
+      .set({ jobId })
+      .where(eq(scheduledPayments.id, paymentId));
   },
 
   async findWalletByUserAndCurrency(userId, currency) {
-    const doc = await WalletInfo.findOne({
-      userId,
-      walletCurrency: currency,
-    });
-    return doc
-      ? { id: String(doc._id), walletBalance: doc.walletBalance }
-      : null;
+    const [r] = await getDb()
+      .select({ id: wallets.id, walletBalance: wallets.walletBalance })
+      .from(wallets)
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, currency)));
+    return r ? { id: r.id, walletBalance: Number(r.walletBalance) } : null;
   },
 
   async debitWalletById(walletId, amount) {
-    const doc = await WalletInfo.findById(walletId);
-    if (!doc) {
-      return;
-    }
-    doc.walletBalance -= amount;
-    await doc.save();
+    await getDb()
+      .update(wallets)
+      .set({ walletBalance: sql`${wallets.walletBalance} - ${String(amount)}` })
+      .where(eq(wallets.id, walletId));
   },
 
   async findPaymentById(paymentId) {
-    const doc = await ScheduledPayment.findById(paymentId);
-    if (!doc) {
-      return null;
-    }
+    const [r] = await getDb()
+      .select()
+      .from(scheduledPayments)
+      .where(eq(scheduledPayments.id, paymentId));
+    if (!r) return null;
     return {
-      id: String(doc._id),
-      debtorId: String(doc.debtorId),
-      status: doc.status ?? "pending",
-      jobId: doc.jobId ?? undefined,
-      amountSrc: doc.amountSrc,
-      currencySrc: doc.currencySrc,
+      id: r.id,
+      debtorId: r.debtorId,
+      status: r.status ?? "pending",
+      jobId: r.jobId ?? undefined,
+      amountSrc: Number(r.amountSrc),
+      currencySrc: r.currencySrc,
     };
   },
 
   async deletePaymentById(paymentId) {
-    await ScheduledPayment.findByIdAndDelete(paymentId);
+    await getDb().delete(scheduledPayments).where(eq(scheduledPayments.id, paymentId));
   },
 
   async creditWallet(userId, currency, amount) {
-    await WalletInfo.findOneAndUpdate(
-      { userId, walletCurrency: currency },
-      { $inc: { walletBalance: amount } }
-    );
+    await getDb()
+      .update(wallets)
+      .set({ walletBalance: sql`${wallets.walletBalance} + ${String(amount)}` })
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, currency)));
   },
 
   async countPaymentsByDebtor(userId) {
-    return ScheduledPayment.countDocuments({
-      debtorId: new mongoose.Types.ObjectId(userId),
-    });
+    const [r] = await getDb()
+      .select({ n: count() })
+      .from(scheduledPayments)
+      .where(eq(scheduledPayments.debtorId, userId));
+    return r.n;
   },
 
   async findPendingPaymentsByDebtor(userId, skip, limit) {
-    const docs = await ScheduledPayment.find({
-      debtorId: new mongoose.Types.ObjectId(userId),
-      status: "pending",
-    })
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+    const rows = await getDb()
+      .select()
+      .from(scheduledPayments)
+      .where(
+        and(
+          eq(scheduledPayments.debtorId, userId),
+          eq(scheduledPayments.status, "pending")
+        )
+      )
+      .orderBy(desc(scheduledPayments.createdAt))
+      .offset(skip)
+      .limit(limit);
 
-    return docs.map((doc: ScheduledPaymentType) => ({
-      id: String(doc._id),
-      debtorId: String(doc.debtorId),
-      creditorId: String(doc.creditorId),
-      amountSrc: doc.amountSrc,
-      amountDest: doc.amountDest,
-      currencySrc: doc.currencySrc,
-      currencyDest: doc.currencyDest,
-      scheduledDate: doc.scheduledDate,
+    return rows.map((r) => ({
+      id: r.id,
+      debtorId: r.debtorId,
+      creditorId: r.creditorId,
+      amountSrc: Number(r.amountSrc),
+      amountDest: Number(r.amountDest),
+      currencySrc: r.currencySrc,
+      currencyDest: r.currencyDest,
+      scheduledDate: r.scheduledDate,
     }));
   },
 };
