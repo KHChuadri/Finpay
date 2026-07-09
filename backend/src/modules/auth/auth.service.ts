@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import HTTPError from "http-errors";
-import { UUID } from "mongodb";
+import { randomUUID } from "crypto";
 import type {
   AdminLoginResult,
   AuthServiceDeps,
@@ -25,9 +25,9 @@ export const createAuthService = (deps: AuthServiceDeps) => {
       throw HTTPError(400, "Corresponding email has been used.");
     }
 
-    let depositId: string = new UUID().toString();
+    let depositId: string = randomUUID();
     while (await repo.depositIdExists(depositId)) {
-      depositId = new UUID().toString();
+      depositId = randomUUID();
     }
 
     const secret = process.env.JWT_SECRET!;

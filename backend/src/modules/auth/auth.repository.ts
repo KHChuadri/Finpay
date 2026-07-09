@@ -1,5 +1,6 @@
-import User from "../../../model/User";
-import WalletInfo from "../../../model/WalletInfo";
+import { getDb } from "../../../lib/db";
+import { users, wallets } from "../../db/schema";
+import { eq, sql } from "drizzle-orm";
 import type {
   AdminLoginCandidate,
   AuthUserRecord,
@@ -8,99 +9,85 @@ import type {
   RegisterResult,
 } from "./auth.types";
 
-const toAuthUserRecord = (doc: {
-  _id: unknown;
+const toAuthUserRecord = (r: {
+  id: string;
   email: string;
   password: string;
   isAdmin: boolean;
 }): AuthUserRecord => ({
-  id: String(doc._id),
-  email: doc.email,
-  password: doc.password,
-  isAdmin: doc.isAdmin,
+  id: r.id,
+  email: r.email,
+  password: r.password,
+  isAdmin: r.isAdmin,
 });
 
 export const authRepository: IAuthRepository = {
   async findUserByEmail(email) {
-    const doc = await User.findOne({ email });
-    return doc ? toAuthUserRecord(doc) : null;
+    const [r] = await getDb()
+      .select({ id: users.id, email: users.email, password: users.password, isAdmin: users.isAdmin })
+      .from(users)
+      .where(eq(users.email, email));
+    return r ? toAuthUserRecord(r) : null;
   },
 
   async depositIdExists(depositId) {
-    const doc = await User.findOne({ depositId });
-    return doc != null;
+    const [r] = await getDb().select({ id: users.id }).from(users).where(eq(users.depositId, depositId));
+    return r != null;
   },
 
   async createUserWithWallet(
     input: RegisterInput,
     signToken: (userId: unknown, email: string) => string
   ): Promise<RegisterResult> {
-    const newUser = new User({
-      firstName: input.firstName,
-      lastName: input.lastName,
-      email: input.email,
-      password: input.hashedPassword,
-      passwordLength: input.passwordLength,
-      walletInfo: [],
-      tokens: [],
-      depositId: input.depositId,
-    });
-    await newUser.save();
+    const [newUser] = await getDb()
+      .insert(users)
+      .values({
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        password: input.hashedPassword,
+        passwordLength: input.passwordLength,
+        depositId: input.depositId,
+      })
+      .returning({ id: users.id, email: users.email });
 
-    const newWalletInfo = new WalletInfo({
-      walletCurrency: "AUD",
-      walletBalance: 100,
-      userId: newUser._id,
-    });
-    await newWalletInfo.save();
+    await getDb()
+      .insert(wallets)
+      .values({ walletCurrency: "AUD", walletBalance: "100", userId: newUser.id });
 
-    newUser.walletInfo.push(newWalletInfo._id);
-    await newUser.save();
+    const token = signToken(newUser.id, newUser.email);
 
-    const token = signToken(newUser._id, newUser.email);
+    await getDb()
+      .update(users)
+      .set({ tokens: sql`array_append(${users.tokens}, ${token})` })
+      .where(eq(users.id, newUser.id));
 
-    newUser.tokens.push(token);
-    await newUser.save();
-
-    return {
-      token,
-      userId: newUser._id.toString(),
-    };
+    return { token, userId: newUser.id };
   },
 
   async removeToken(userId, token) {
-    const doc = await User.findById(userId);
-    if (!doc) {
-      return false;
-    }
-
-    const index = doc.tokens.findIndex((t) => t === token);
-    if (index !== -1) {
-      doc.tokens.splice(index, 1);
-    }
-    await doc.save();
-
+    const [u] = await getDb().select({ id: users.id }).from(users).where(eq(users.id, userId));
+    if (!u) return false;
+    await getDb()
+      .update(users)
+      .set({ tokens: sql`array_remove(${users.tokens}, ${token})` })
+      .where(eq(users.id, userId));
     return true;
   },
 
   async findAdminCandidate(email): Promise<AdminLoginCandidate | null> {
-    const doc = await User.findOne({ email });
-    if (!doc) {
-      return null;
-    }
-
-    return {
-      id: String(doc._id),
-      email: doc.email,
-      password: doc.password,
-      isAdmin: doc.isAdmin,
-      ref: doc,
-    };
+    const [r] = await getDb()
+      .select({ id: users.id, email: users.email, password: users.password, isAdmin: users.isAdmin })
+      .from(users)
+      .where(eq(users.email, email));
+    if (!r) return null;
+    return { id: r.id, email: r.email, password: r.password, isAdmin: r.isAdmin, ref: r.id };
   },
 
   async appendToken(candidate, token) {
-    const doc = candidate.ref as { tokens: string[]; save: () => Promise<unknown> };
-    doc.tokens.push(token);
-    await doc.save();
+    await getDb()
+      .update(users)
+      .set({ tokens: sql`array_append(${users.tokens}, ${token})` })
+      .where(eq(users.id, candidate.ref as string));
   },
 };

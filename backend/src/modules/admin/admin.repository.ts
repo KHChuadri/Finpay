@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
-import User from "../../../model/User";
-import TransactionItem from "../../../model/TransactionItem";
-import Challenge from "../../../model/Challenge";
+import { getDb } from "../../../lib/db";
+import { users, transactionItems, challenges } from "../../db/schema";
+import { eq, count } from "drizzle-orm";
 import type {
   AdminRequestDocLike,
   AdminUserDoc,
@@ -12,43 +11,79 @@ import type {
 
 export const adminRepository: IAdminRepository = {
   async findUsersPage(skip, limit) {
-    const docs = await User.find()
-      .populate("bioData", "firstName lastName")
-      .skip(skip)
-      .limit(limit);
-    return docs as unknown as AdminUserDocLike[];
+    const rows = await getDb().select().from(users).offset(skip).limit(limit);
+    return rows.map((u) => ({
+      _id: u.id,
+      firstName: u.firstName,
+      lastName: u.lastName,
+      isLocked: u.isLocked,
+      isVerified: u.isVerified,
+      email: u.email,
+      updatedAt: u.updatedAt,
+      KYCimg: u.kycImg,
+    })) as unknown as AdminUserDocLike[];
   },
 
   async countUsers() {
-    return User.countDocuments();
+    const [r] = await getDb().select({ n: count() }).from(users);
+    return r.n;
   },
 
   async findWithdrawRequestsPage(skip, limit) {
-    const docs = await TransactionItem.find({ transactionType: "Withdraw" })
-      .limit(limit)
-      .skip(skip);
-    return docs as unknown as AdminRequestDocLike[];
+    const rows = await getDb()
+      .select()
+      .from(transactionItems)
+      .where(eq(transactionItems.transactionType, "Withdraw"))
+      .offset(skip)
+      .limit(limit);
+    return rows.map((r) => ({
+      _id: r.id,
+      name: r.name,
+      transactionId: r.transactionId,
+      currency: r.currency,
+      amount: Number(r.amount),
+      userId: r.userId,
+    })) as unknown as AdminRequestDocLike[];
   },
 
   async findUserById(userId) {
-    const doc = await User.findById(new mongoose.Types.ObjectId(userId));
-    return doc as unknown as AdminUserDoc | null;
+    const [row] = await getDb().select().from(users).where(eq(users.id, userId));
+    if (!row) return null;
+    // Live-doc shim: the service mutates isVerified/isLocked then calls save().
+    const doc = {
+      ...row,
+      _id: row.id,
+      isVerified: row.isVerified,
+      isLocked: row.isLocked,
+      save: async () => {
+        await getDb()
+          .update(users)
+          .set({ isVerified: doc.isVerified, isLocked: doc.isLocked })
+          .where(eq(users.id, userId));
+      },
+    };
+    return doc as unknown as AdminUserDoc;
   },
 
   async createChallenge(input: CreateChallengeInput) {
-    return Challenge.create({
-      category: input.category,
-      title: input.title,
-      description: input.description,
-      startDate: input.startDate,
-      endDate: input.endDate,
-      exp: input.exp,
-      amountToGoal: input.amountToGoal,
-    });
+    const [row] = await getDb()
+      .insert(challenges)
+      .values({
+        category: input.category as (typeof challenges.category.enumValues)[number],
+        title: input.title,
+        description: input.description,
+        startDate: new Date(input.startDate),
+        endDate: new Date(input.endDate),
+        exp: input.exp,
+        amountToGoal: String(input.amountToGoal),
+      })
+      .returning();
+    return row;
   },
 
   async findActiveUserIds() {
-    const docs = await User.find({ isActive: true });
-    return docs.map((doc) => String(doc._id));
+    // Legacy queried `User.find({ isActive: true })`, a field that never
+    // existed on the schema, so this always resolved to an empty set.
+    return [];
   },
 };

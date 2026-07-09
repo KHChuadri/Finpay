@@ -1,14 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import request from "supertest";
 import express from "express";
-import mongoose from "mongoose";
+import { randomUUID } from "crypto";
 import { Writable } from "stream";
 import { profileRouter } from "../../../src/modules/profile/profile.routes";
 import { createTestUser } from "../../helpers/testFactories";
-import { UserType } from "../../../model/User";
-import User from "../../../model/User";
-import BioData from "../../../model/BioData";
-import Address from "../../../model/Address";
+import { getDb } from "../../../lib/db";
+import { users, bioData, addresses } from "../../../src/db/schema";
+import { eq } from "drizzle-orm";
 
 const MOCK_SECURE_URL = "https://cloudinary.test/mock-kyc-image.jpg";
 
@@ -33,6 +32,8 @@ vi.mock("../../../lib/cloudinaryClient", () => ({
   },
 }));
 
+type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+
 const makeApp = () => {
   const app = express();
   app.use(express.json());
@@ -41,7 +42,7 @@ const makeApp = () => {
 };
 
 describe("Profile routes", () => {
-  let user: UserType;
+  let user: TestUser;
 
   beforeEach(async () => {
     user = await createTestUser({ email: "profile-routes@test.com" });
@@ -49,25 +50,29 @@ describe("Profile routes", () => {
 
   describe("GET /user/profile/:userId", () => {
     it("returns the hand-flattened profile shape", async () => {
-      const address = await Address.create({
-        userId: user._id,
-        addressLine1: "1 Main St",
-        addressLine2: "Unit 2",
-        country: "Australia",
-      });
+      const [address] = await getDb()
+        .insert(addresses)
+        .values({
+          userId: user.id,
+          addressLine1: "1 Main St",
+          addressLine2: "Unit 2",
+          country: "Australia",
+        })
+        .returning();
       const dob = new Date("1990-01-01");
-      const bioData = await BioData.create({
-        userId: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        dateOfBirth: dob,
-        address: address._id,
-      });
-      await User.findByIdAndUpdate(user._id, { bioData: bioData._id });
+      const [bio] = await getDb()
+        .insert(bioData)
+        .values({
+          userId: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          dateOfBirth: dob,
+          addressId: address.id,
+        })
+        .returning();
+      await getDb().update(users).set({ bioDataId: bio.id }).where(eq(users.id, user.id));
 
-      const res = await request(makeApp()).get(
-        `/user/profile/${user._id.toString()}`
-      );
+      const res = await request(makeApp()).get(`/user/profile/${user.id}`);
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({
@@ -94,7 +99,7 @@ describe("Profile routes", () => {
     });
 
     it("returns 404 when the user does not exist", async () => {
-      const missingId = new mongoose.Types.ObjectId().toString();
+      const missingId = randomUUID();
 
       const res = await request(makeApp()).get(`/user/profile/${missingId}`);
 
@@ -105,22 +110,19 @@ describe("Profile routes", () => {
 
   describe("PUT /user/profile/:userId", () => {
     it("updates a string field with no file", async () => {
-      // BioData requires firstName/lastName; the test user's default `bioData`
-      // ref doesn't point at a real doc, so a new one gets created on save
-      // (mirrors legacy behavior) - send both fields to satisfy that.
       const res = await request(makeApp())
-        .put(`/user/profile/${user._id.toString()}`)
+        .put(`/user/profile/${user.id}`)
         .send({ firstName: "Updated", lastName: "Name" });
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ message: "Profile updated" });
 
-      const updated = await User.findById(user._id);
-      expect(updated?.firstName).toBe("Updated");
+      const [updated] = await getDb().select().from(users).where(eq(users.id, user.id));
+      expect(updated.firstName).toBe("Updated");
     });
 
     it("returns 404 when the user does not exist", async () => {
-      const missingId = new mongoose.Types.ObjectId().toString();
+      const missingId = randomUUID();
 
       const res = await request(makeApp())
         .put(`/user/profile/${missingId}`)
@@ -135,7 +137,7 @@ describe("Profile routes", () => {
     it("uploads the KYC image and stores its URL", async () => {
       const res = await request(makeApp())
         .put("/user/profile/upload-kyc")
-        .field("userId", user._id.toString())
+        .field("userId", user.id)
         .attach("kycImage", Buffer.from("fake-image-bytes"), "kyc.jpg");
 
       expect(res.status).toBe(200);
@@ -144,8 +146,8 @@ describe("Profile routes", () => {
         imageUrl: MOCK_SECURE_URL,
       });
 
-      const updated = await User.findById(user._id);
-      expect(updated?.KYCimg).toBe(MOCK_SECURE_URL);
+      const [updated] = await getDb().select().from(users).where(eq(users.id, user.id));
+      expect(updated.kycImg).toBe(MOCK_SECURE_URL);
     });
   });
 });

@@ -1,67 +1,73 @@
-import mongoose from "mongoose";
-import { UUID } from "mongodb";
-import User from "../../../model/User";
-import WalletInfo from "../../../model/WalletInfo";
-import TransactionItem from "../../../model/TransactionItem";
+import { randomUUID } from "crypto";
+import { getDb } from "../../../lib/db";
+import { users, wallets, transactionItems } from "../../db/schema";
+import { eq, and, sql } from "drizzle-orm";
 import type { IBankRepository } from "./bank.types";
 
 export const bankRepository: IBankRepository = {
   async findUserById(userId) {
-    const doc = await User.findById(userId);
-    return doc
-      ? {
-          id: String(doc._id),
-          firstName: doc.firstName,
-          lastName: doc.lastName,
-          depositId: doc.depositId,
-        }
+    const [u] = await getDb()
+      .select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        depositId: users.depositId,
+      })
+      .from(users)
+      .where(eq(users.id, userId));
+    return u
+      ? { id: u.id, firstName: u.firstName, lastName: u.lastName, depositId: u.depositId }
       : null;
   },
 
   async findMainWallet(userId) {
-    const doc = await WalletInfo.findOne({
-      userId,
-      walletCurrency: "AUD",
-    });
-    return doc ? { id: String(doc._id), walletBalance: doc.walletBalance } : null;
+    const [w] = await getDb()
+      .select({ id: wallets.id, walletBalance: wallets.walletBalance })
+      .from(wallets)
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, "AUD")));
+    return w ? { id: w.id, walletBalance: Number(w.walletBalance) } : null;
   },
 
   async generateUniqueTransactionId() {
-    let transactionId = new UUID();
-    while ((await TransactionItem.findOne({ transactionId })) != null) {
-      transactionId = new UUID();
+    let transactionId = randomUUID();
+    while (
+      (
+        await getDb()
+          .select({ id: transactionItems.id })
+          .from(transactionItems)
+          .where(eq(transactionItems.transactionId, transactionId))
+      ).length > 0
+    ) {
+      transactionId = randomUUID();
     }
-    return transactionId as unknown as string;
+    return transactionId;
   },
 
   async createTransactionItem(input) {
-    const item = new TransactionItem({
+    await getDb().insert(transactionItems).values({
       transactionType: input.transactionType,
-      userId: new mongoose.Types.ObjectId(input.userId),
+      userId: input.userId,
       transactionId: input.transactionId,
-      amount: input.amount,
+      amount: String(input.amount),
       depositId: input.depositId,
       date: new Date(),
       currency: "AUD",
       name: input.name,
     });
-    await item.save();
   },
 
   async debitMainWallet(userId, amount) {
-    const wallet = await WalletInfo.findOne({
-      userId,
-      walletCurrency: "AUD",
-    });
-    if (!wallet) {
-      return;
-    }
-    wallet.walletBalance = wallet.walletBalance - amount;
-    await wallet.save();
+    await getDb()
+      .update(wallets)
+      .set({ walletBalance: sql`${wallets.walletBalance} - ${String(amount)}` })
+      .where(and(eq(wallets.userId, userId), eq(wallets.walletCurrency, "AUD")));
   },
 
   deleteTransactionItemByTransactionId(transactionId) {
-    // NOTE: intentionally not awaited — see IBankRepository jsdoc.
-    return TransactionItem.findOneAndDelete({ transactionId });
+    // Mirrors a legacy bug: the delete is never awaited/executed, so the
+    // underlying item is never actually removed. Preserved for parity.
+    return getDb()
+      .delete(transactionItems)
+      .where(eq(transactionItems.transactionId, transactionId));
   },
 };
