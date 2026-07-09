@@ -30,7 +30,9 @@
   | `text-red-500` / `text-red-600` on **error messages** | `text-destructive` (stays red — semantic) |
   | `bg-red-200 border-red-400 text-red-700` error banners | `bg-destructive/10 border-destructive text-destructive` |
   | `outline-blue-300` / `border-blue-*` focus styles | remove; use `Input` focus ring |
-  | positive money amounts (green literals) | `text-positive` |
+  | `text-green-*` / `bg-green-*` success, and transaction-DELTA incoming amounts (`+$…`, "received", credits) | `text-positive` / `bg-positive` — NOTE: static wallet balances / totals are NOT signal amounts; leave them `text-foreground` (neutral). Green is reserved for actions + incoming deltas, not every figure. Negative/outgoing deltas → `text-destructive`. |
+  | peach/brand gradient page bg `bg-gradient-to-* from-[#…] to-[#…]` | `bg-background` (flat token surface) |
+  | amber/yellow warning: `bg-yellow-*` / `bg-amber-*` / `text-amber-*` / `border-amber-*` | warning token — `bg-warning`/`text-warning`/`border-warning`/`text-warning-foreground`; subtle banner = `bg-warning/10 border-warning text-warning` |
 - **Preserve semantics:** error text stays `destructive` (red), positive amounts stay `positive` (green), country flags / chart colors / brand SVGs are NOT changed.
 - **Raw `<input>` → `<Input>`; raw label markup → `<Label>`** wherever a straightforward swap keeps behavior (value, onChange, onBlur, placeholder, data-testid, type). Password fields with an eye-toggle wrapper keep their wrapper but the inner `<input>` adopts token classes (they cannot use `Input` directly because of the absolute-positioned icon — swap the gray/blue literals only).
 - **Every migration task ends with:** `npx tsc --noEmit` passes, target `grep` is clean for those files, and a dark-mode screenshot of one representative page in the batch shows no white-on-black.
