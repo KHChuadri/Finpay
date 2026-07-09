@@ -13,6 +13,8 @@ import { useTransactionStore } from "@/stores/transactionStore";
 import FlagGetter from "@/components/FlagGetter";
 import { useGroupTransactionStore } from "@/stores/groupTransactionStore";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
+import { PageContainer } from "@/components/ui/PageContainer";
 
 interface GroupInfo {
   _id: string;
@@ -176,29 +178,29 @@ const GroupPage = () => {
   return (
     <Layout headerRight={<HeaderButtons />}>
       {errorMessage && (
-        <p className="text-red-500 text-center">{errorMessage}</p>
+        <p className="text-destructive text-center">{errorMessage}</p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-6 max-w-7xl mx-auto">
+      <PageContainer className="grid grid-cols-1 md:grid-cols-2 gap-10 p-6 max-w-7xl">
         {/* Left Section: Group Info */}
         <div className="space-y-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-foreground">
               {group?.groupName}
             </h2>
-            <p className="text-gray-700">{group?.description}</p>
+            <p className="text-muted-foreground">{group?.description}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-md space-y-4">
+          <div className="bg-card p-6 rounded-xl shadow-md space-y-4">
             <div className="flex items-center gap-3">
               {currency && (
                 <FlagGetter countryCodes={currency.countryCode.toLowerCase()} />
               )}
-              <h3 className="text-xl font-semibold text-gray-800">
+              <h3 className="text-xl font-semibold text-foreground">
                 {currency?.code} Balance
               </h3>
             </div>
-            <h1 className="text-5xl sm:text-6xl font-extrabold text-black">
+            <h1 className="text-5xl sm:text-6xl font-extrabold text-foreground">
               {group?.walletBalance?.toLocaleString("en-AU", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -206,34 +208,37 @@ const GroupPage = () => {
             </h1>
 
             <div className="flex flex-wrap gap-4 pt-2">
-              <button
+              <Button
+                variant="primary"
                 onClick={() => handleTopUp()}
-                className="bg-[#C6412A] hover:bg-[#A8321E] text-white py-2 px-6 rounded-lg shadow-md"
+                className="py-2 px-6 shadow-md"
               >
                 Top Up Wallet
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="primary"
                 onClick={() => handlePayment()}
-                className="bg-[#C6412A] hover:bg-[#A8321E] text-white py-2 px-6 rounded-lg shadow-md"
+                className="py-2 px-6 shadow-md"
               >
                 Make Payment
-              </button>
+              </Button>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow space-y-2">
+          <div className="bg-card p-6 rounded-xl shadow space-y-2">
             <h3 className="text-xl font-semibold">
               Shared wallet transactions history
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               View your transactions transfer and request history here
             </p>
-            <button
+            <Button
+              variant="primary"
               onClick={() => navigate(`/groups/${groupId}/history`)}
-              className="bg-[#C6412A] hover:bg-[#A8321E] text-white py-2 px-5 rounded-md shadow"
+              className="py-2 px-5 shadow"
             >
               View Transactions
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -241,9 +246,9 @@ const GroupPage = () => {
         <div className="space-y-6">
           {/* Tabs */}
           <div className="flex justify-center">
-            <div className="relative flex w-72 rounded-full bg-gray-100 shadow overflow-hidden">
+            <div className="relative flex w-72 rounded-full bg-muted shadow overflow-hidden">
               <div
-                className={`absolute top-0 bottom-0 w-1/2 bg-white rounded-full transition-all duration-300 ease-in-out ${
+                className={`absolute top-0 bottom-0 w-1/2 bg-card rounded-full transition-all duration-300 ease-in-out ${
                   activeTab === "member" ? "left-0" : "left-1/2"
                 }`}
               />
@@ -254,8 +259,8 @@ const GroupPage = () => {
                 }}
                 className={`flex-1 z-10 py-2 font-semibold transition ${
                   activeTab === "member"
-                    ? "text-[#C6412A]"
-                    : "text-gray-600 hover:bg-gray-200"
+                    ? "text-primary"
+                    : "text-muted-foreground hover:bg-muted"
                 }`}
               >
                 Members
@@ -267,8 +272,8 @@ const GroupPage = () => {
                 }}
                 className={`flex-1 z-10 py-2 font-semibold transition ${
                   activeTab === "invites"
-                    ? "text-[#C6412A]"
-                    : "text-gray-600 hover:bg-gray-200"
+                    ? "text-primary"
+                    : "text-muted-foreground hover:bg-muted"
                 }`}
               >
                 Invites
@@ -277,7 +282,7 @@ const GroupPage = () => {
           </div>
 
           {/* Content */}
-          <div className="bg-white rounded-2xl p-6 shadow-md space-y-6 min-h-[300px]">
+          <div className="bg-card rounded-2xl p-6 shadow-md space-y-6 min-h-[300px]">
             {activeTab === "member" &&
               (managingMember ? (
                 member && groupId ? (
@@ -308,22 +313,24 @@ const GroupPage = () => {
 
             {/* Actions */}
             <div className="flex justify-between pt-4">
-              <button
+              <Button
+                variant="primary"
                 onClick={() => navigate(`/groups/${groupId}/invite`)}
-                className="bg-[#C6412A] hover:bg-[#A8321E] text-white py-2 px-6 rounded-lg shadow"
+                className="py-2 px-6 shadow"
               >
                 Invite People
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="primary"
                 onClick={() => setManagingMember((prev) => !prev)}
-                className="bg-[#C6412A] hover:bg-[#A8321E] text-white py-2 px-6 rounded-lg shadow"
+                className="py-2 px-6 shadow"
               >
                 {managingMember ? "Done" : "Remove Member"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </Layout>
   );
 };

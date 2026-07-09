@@ -1,6 +1,6 @@
-import useDarkModeStore from '@/stores/darkModeStore';
 import { useState } from "react";
 import { ClipboardCopy, Check } from "lucide-react";
+import { Input } from "@/components/ui/Input";
 
 interface BankDetailsProps {
   bankDetails: {
@@ -19,8 +19,6 @@ const BankDetails = ({
   onBankDetailChange,
   onChangeBankDetails,
 }: BankDetailsProps) => {
-  const { darkMode } = useDarkModeStore();
-
   const [copiedDeposit, setCopiedDeposit] = useState(false);
   const [copiedUserID, setCopiedUserID] = useState(false);
 
@@ -40,22 +38,22 @@ const BankDetails = ({
   };
 
   return (
-    <div className={`space-y-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+    <div className="space-y-4 text-foreground">
       <h2 className="text-xl font-bold mb-1">Bank Details</h2>
-      <hr className={`h-1 ${darkMode ? 'bg-gray-700' : 'bg-gray-300'} border-0 rounded-lg mt-0 mb-2`} />
+      <hr className="h-1 bg-border border-0 rounded-lg mt-0 mb-2" />
 
       {/* Bank Name */}
       <div className="space-y-3">
         <div className="flex items-start">
-          <p className={`w-40 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Bank API</p>
+          <p className="w-40 font-medium text-muted-foreground">Bank API</p>
           <p className="mx-2">:</p>
           <div className="flex-1">
             {isEditing ? (
-              <input
+              <Input
                 type="text"
                 value={bankDetails.bankName}
                 onChange={(e) => onBankDetailChange("bankName", e.target.value)}
-                className={`w-full px-3 py-1.5 border rounded-md text-sm ${darkMode ? 'bg-gray-700 text-white' : 'text-gray-700'} focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                className="px-3 py-1.5 text-sm"
               />
             ) : (
               <p>{bankDetails.bankName}</p>
@@ -65,19 +63,16 @@ const BankDetails = ({
 
         {/* Deposit ID */}
         <div className="flex items-start">
-          <p className={`w-40 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Deposit ID</p>
+          <p className="w-40 font-medium text-muted-foreground">Deposit ID</p>
           <p className="mx-2">:</p>
           <div className="flex-1">
             <div className="flex justify-between items-center w-full">
-              <p className={`text-md break-all ${darkMode ? 'text-white' : 'text-black'}`}>
+              <p className="text-md break-all text-foreground">
                 {bankDetails.depositId}
               </p>
               <button
                 onClick={() => handleCopy(bankDetails.depositId, 'deposit')}
-                className={`ml-4 inline-flex items-center gap-2 px-3 py-1.5 border rounded-md text-sm ${darkMode
-                    ? 'bg-white text-black border-white hover:bg-gray-200'
-                    : 'bg-black text-white border-black hover:bg-gray-900'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                className="ml-4 inline-flex items-center gap-2 px-3 py-1.5 border border-foreground rounded-md text-sm bg-foreground text-background hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring/40"
               >
                 {copiedDeposit ? <Check className="w-4 h-4" /> : <ClipboardCopy className="w-4 h-4" />}
                 {copiedDeposit ? 'Copied' : 'Copy'}
@@ -88,19 +83,16 @@ const BankDetails = ({
 
         {/* Zai User ID */}
         <div className="flex items-start">
-          <p className={`w-40 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Zai User ID</p>
+          <p className="w-40 font-medium text-muted-foreground">Zai User ID</p>
           <p className="mx-2">:</p>
           <div className="flex-1">
             <div className="flex justify-between items-center w-full">
-              <p className={`text-md break-all ${darkMode ? 'text-white' : 'text-black'}`}>
+              <p className="text-md break-all text-foreground">
                 {bankDetails.userId}
               </p>
               <button
                 onClick={() => handleCopy(bankDetails.userId, 'user')}
-                className={`ml-4 inline-flex items-center gap-2 px-3 py-1.5 border rounded-md text-sm ${darkMode
-                    ? 'bg-white text-black border-white hover:bg-gray-200'
-                    : 'bg-black text-white border-black hover:bg-gray-900'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                className="ml-4 inline-flex items-center gap-2 px-3 py-1.5 border border-foreground rounded-md text-sm bg-foreground text-background hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring/40"
               >
                 {copiedUserID ? <Check className="w-4 h-4" /> : <ClipboardCopy className="w-4 h-4" />}
                 {copiedUserID ? 'Copied' : 'Copy'}
@@ -113,7 +105,7 @@ const BankDetails = ({
       {!isEditing && (
         <button
           onClick={onChangeBankDetails}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium cursor-pointer"
+          className="text-primary hover:text-primary/80 text-sm font-medium cursor-pointer"
         >
           Change Bank Details
         </button>

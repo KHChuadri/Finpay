@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAuthStore from '@/stores/authStore';
 import Layout from '../components/Layout';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 const GroupInvite = () => {
   const navigate = useNavigate();
@@ -56,11 +57,11 @@ const GroupInvite = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl'>
+          <div className='w-1/2 lg:w-1/3 bg-card flex flex-col rounded-xl'>
             <div className='flex flex-col gap-12 rounded-lg p-10'>
               <div className='flex flex-col gap-5 h-1/2'>
-                {errorMsg && <p className='text-red-500'>{errorMsg}</p>}
-                <h2 className='text-black text-xl font-semibold'>
+                {errorMsg && <p className='text-destructive'>{errorMsg}</p>}
+                <h2 className='text-foreground text-xl font-semibold'>
                   Who are you inviting to the group?
                 </h2>
                 <input
@@ -70,23 +71,23 @@ const GroupInvite = () => {
                     setRecipientEmail(e.target.value);
                     validateEmail();
                   }}
-                  className='border-b-2 border-gray-700 p-2 w-full focus:outline-none'
+                  className='border-b-2 border-border p-2 w-full focus:outline-none'
                   placeholder='Email'
                 />
               </div>
 
-              <button
+              <Button
+                variant="primary"
                 disabled={!valid}
                 onClick={inviteMember}
-                className={`w-full py-3 text-white font-bold rounded-xl transition ${valid ? 'bg-[#C6412A] hover:bg-[#A8321E] cursor-pointer' : 'bg-gray-400 cursor-not-allowed'
-                  }`}
+                className="w-full py-3 rounded-xl"
               >
                 Invite
-              </button>
+              </Button>
 
 
               <button
-                className='text-lg font-bold text-blue-500 hover:underline cursor-pointer text-left'
+                className='text-lg font-bold text-primary hover:underline cursor-pointer text-left'
                 onClick={() => navigate('search')}
               >
                 Search saved recipients

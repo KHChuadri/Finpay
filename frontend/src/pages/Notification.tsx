@@ -38,20 +38,20 @@ const GroupPage = () => {
   return (
     <Layout headerRight={<HeaderButtons />}>
       <div className="w-full flex flex-col justify-start items-center min-h-screen">
-        <div className="relative flex flex-col bg-white rounded-2xl p-6 w-2/3 h-1/2 gap-6 shadow-2xl transition ease-in-out">
+        <div className="relative flex flex-col bg-card rounded-2xl p-6 w-2/3 h-1/2 gap-6 shadow-2xl transition ease-in-out">
 
           <div className="flex w-full flex-row items-center min-h-max">
             <h2 className='font-semibold text-xl md:text-3xl w-max-content'>Notification List</h2>
-            <IoMdRefresh 
-              size={40} 
-              onClick={() => fetchNotification()} 
-              className="absolute right-5 border-2 border-gray-300 rounded-full hover:bg-gray-200 p-1 fill-[#C6412A] "
+            <IoMdRefresh
+              size={40}
+              onClick={() => fetchNotification()}
+              className="absolute right-5 border-2 border-border rounded-full hover:bg-muted p-1 fill-primary "
             />
           </div>
 
-          {notifications.length == 0 ? ( 
+          {notifications.length == 0 ? (
             <div className='flex-grow items-center justify-center'>
-              <p className='text-md text-gray-600 text-center'>There is no notification</p>
+              <p className='text-md text-muted-foreground text-center'>There is no notification</p>
             </div>
           ) : (
             <NotificationList list={notifications} />

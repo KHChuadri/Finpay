@@ -5,6 +5,7 @@ import useAuthStore from '@/stores/authStore';
 import { format } from 'date-fns';
 import CircularProgress from "@mui/material/CircularProgress";
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 interface Request {
   requestId: string;
@@ -87,52 +88,54 @@ const RequestListPage = () => {
     <div className='flex flex-col w-full min-h-screen'>
       <Layout>
         <div className='flex flex-grow justify-center items-start p-4 w-full'>
-          <div className='flex flex-col bg-white rounded-2xl p-6 gap-4 shadow-lg w-3/4 md:w-1/2'>
-            <h2 className='text-2xl font-semibold text-gray-800'>Request List</h2>
+          <div className='flex flex-col bg-card rounded-2xl p-6 gap-4 shadow-lg w-3/4 md:w-1/2'>
+            <h2 className='text-2xl font-semibold text-foreground'>Request List</h2>
 
             <div data-testid='request-list-header' className='flex flex-col w-full h-full gap-4 overflow-y-auto max-h-[70vh]'>
               {requestList.length === 0 ? (
                 <div data-testid='no-requests' className='flex justify-center items-center h-32'>
-                  <p className='text-gray-500 font-semibold'>No requests found</p>
+                  <p className='text-muted-foreground font-semibold'>No requests found</p>
                 </div>
               ) : (
                 requestList.map((r) => (
                   <div
                     key={r.requestId}
-                    className="flex flex-col bg-white border border-gray-200 rounded-xl p-4 gap-2 shadow-sm hover:shadow-md transition-shadow"
+                    className="flex flex-col bg-card border border-border rounded-xl p-4 gap-2 shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <p data-testid="requester-email" className="font-semibold text-gray-800">{r.senderEmail}</p>
-                        <p data-testid="requester-date" className="text-sm text-gray-500">
+                        <p data-testid="requester-email" className="font-semibold text-foreground">{r.senderEmail}</p>
+                        <p data-testid="requester-date" className="text-sm text-muted-foreground">
                           Requested on: {formatDate(r.requestDate)}
                         </p>
                       </div>
-                      <p data-testid="requester-amount" className="text-lg font-bold text-gray-800">
+                      <p data-testid="requester-amount" className="text-lg font-bold text-foreground">
                         {r.amount.toLocaleString()} {r.currency}
                       </p>
                     </div>
 
                     <div className="flex justify-between items-center">
                       {r.notes && (
-                        <div className="mt-2 p-3 bg-gray-100 rounded-lg">
-                          <p className="text-sm text-gray-600"><strong>Note:</strong> {r.notes}</p>
+                        <div className="mt-2 p-3 bg-muted rounded-lg">
+                          <p className="text-sm text-muted-foreground"><strong>Note:</strong> {r.notes}</p>
                         </div>
                       )}
 
                       <div className="flex justify-end gap-3 mt-3">
-                        <button
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                        <Button
+                          variant="primary"
+                          className="px-4 py-2"
                           onClick={() => handleAccept(r.requestId)}
                         >
                          { loadingStates[r.requestId] === "accept" ? <CircularProgress color="inherit" size={16}/> : "Accept"}
-                        </button>
-                        <button
-                          className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          className="px-4 py-2"
                           onClick={() => handleDelete(r.requestId)}
                         >
                          { loadingStates[r.requestId] === "decline" ? <CircularProgress color="inherit" size={16}/> : "Decline"}
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
