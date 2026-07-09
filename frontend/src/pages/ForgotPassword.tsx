@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "@/components/Layout";
 import { API_URL } from "@/constants/API_URL";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Button } from "@/components/ui/Button";
 
 const COOLDOWN = 60;
 
@@ -66,7 +69,7 @@ const ForgotPassword = () => {
   return (
     <Layout>
       <div className="bg-gradient-to-b from-[#FFA294] to-[#EECAB8] min-h-screen flex justify-center items-center w-full">
-        <div className='flex flex-col bg-white rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-2xl transition ease-in-out'>
+        <div className='flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-xl transition ease-in-out'>
           <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
 
           {success && (
@@ -76,46 +79,41 @@ const ForgotPassword = () => {
           )}
 
           {errorMessage && (
-            <div className="text-red-600 font-medium text-center">
+            <div className="text-destructive font-medium text-center">
               ❌ {errorMessage}
             </div>
           )}
 
-          <label className='flex flex-col'>
-            <p className="font-semibold text-gray-800">Email Address</p>
-            <div className='relative w-full border-2 border-gray-300 rounded-lg p-2'>
-              <input
-                type='text'
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (e.target.value === '') {
-                    setErrorMessage('');
-                  }
-                }}
-                placeholder='Enter your email'
-                className='border-none w-full focus:outline-none'
-              />
-            </div>
+          <label className='flex flex-col gap-1'>
+            <Label>Email Address</Label>
+            <Input
+              type='text'
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (e.target.value === '') {
+                  setErrorMessage('');
+                }
+              }}
+              placeholder='Enter your email'
+            />
           </label>
 
-          <button
+          <Button
             onClick={() => handleFindUserEmail(email)}
             disabled={cooldown > 0}
-            className={`w-full p-2 text-center rounded-xl font-bold hover:cursor-pointer transition ${cooldown > 0
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-[#C6412A] text-white hover:opacity-80'
-              }`}
+            className='w-full rounded-xl py-2'
           >
             {cooldown > 0 ? `Try again in ${cooldown}s` : 'Submit'}
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="ghost"
             onClick={() => navigate('/login')}
-            className='w-full border-2 border-[#C6412A] text-center p-2 text-[#C6412A] rounded-xl font-bold hover:opacity-80 hover:cursor-pointer'
+            className='w-full rounded-xl py-2'
           >
             Back
-          </button>
+          </Button>
         </div>
       </div>
     </Layout>

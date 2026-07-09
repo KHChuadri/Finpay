@@ -5,6 +5,8 @@ import { FaEyeSlash, FaTimes } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import axios from "axios";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -76,14 +78,14 @@ const ResetPassword = () => {
 
   return (
     <div className="bg-gradient-to-b from-[#FFA294] to-[#EECAB8] min-h-screen flex w-full justify-center items-center">
-      <div className='relative flex flex-col bg-white rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-2xl transition ease-in-out'>
+      <div className='relative flex flex-col bg-card border border-border rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-xl transition ease-in-out'>
         <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
-        <IoMdClose 
-          className="absolute right-5 top-5 fill-gray-400 hover:fill-gray-600 hover:cursor-pointer" 
+        <IoMdClose
+          className="absolute right-5 top-5 fill-subtle hover:fill-muted-foreground hover:cursor-pointer"
           size={20}
           onClick={() => navigate('/login')}
         />
-        { linkHasExpired ? <p className='text-black text-lg text-center font-semibold mt-2 p-3'>This link has expired or does not exists</p> : (
+        { linkHasExpired ? <p className='text-foreground text-lg text-center font-semibold mt-2 p-3'>This link has expired or does not exists</p> : (
           <div className='flex flex-col gap-4'>
             {success && (
               <div className="text-green-600 font-medium text-center">
@@ -93,27 +95,27 @@ const ResetPassword = () => {
 
             {/* Error Message */}
             {errorMessage && (
-              <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-200 border-2 border-red-400 text-red-700 rounded z-50">
+              <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
                 <p className="break-words w-full pr-8">{errorMessage}</p>
                 <button
                   onClick={() => setErrorMessage(null)}
-                  className="absolute top-4 right-4 text-red-700 hover:text-red-900 cursor-pointer"
+                  className="absolute top-4 right-4 text-destructive hover:opacity-80 cursor-pointer"
                 >
                   <FaTimes />
                 </button>
               </div>
             )}
 
-            <label className='flex flex-col'>
-              Password
-              <div className='relative w-full border-2 border-gray-300 rounded-lg p-2'>
+            <label className='flex flex-col gap-1'>
+              <Label>Password</Label>
+              <div className='relative w-full border-2 border-input rounded-lg p-2'>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onBlur={() => authenticatePassword()}
                   placeholder='Enter your new password'
-                  className='border-none w-full focus:outline-none'
+                  className='border-none w-full focus:outline-none bg-transparent text-foreground'
                 />
                 {showPassword == false ? (
                   <FaEyeSlash
@@ -127,19 +129,19 @@ const ResetPassword = () => {
                   />
                 )}
               </div>
-              {passwordError !== '' && <p className='text-red-600 text-sm'>{passwordError}</p>}
+              {passwordError !== '' && <p className='text-destructive text-sm'>{passwordError}</p>}
             </label>
 
-            <label className='flex flex-col'>
-              Confirm password
-              <div className='relative w-full border-2 border-gray-300 rounded-lg p-2'>
+            <label className='flex flex-col gap-1'>
+              <Label>Confirm password</Label>
+              <div className='relative w-full border-2 border-input rounded-lg p-2'>
                 <input
                   type={showConfirmationPassword ? 'text' : 'password'}
                   value={confirmationPassword}
                   onBlur={() => isPasswordSame()}
                   onChange={(e) => setConfirmationPassword(e.target.value)}
                   placeholder='Confirm your new password'
-                  className='border-none w-full focus:outline-none'
+                  className='border-none w-full focus:outline-none bg-transparent text-foreground'
                 />
                 {showConfirmationPassword == false ? (
                   <FaEyeSlash
@@ -153,20 +155,21 @@ const ResetPassword = () => {
                   />
                 )}
               </div>
-              {confirmationPasswordError !== '' && <p className='text-red-600 text-sm'>{confirmationPasswordError}</p>}
+              {confirmationPasswordError !== '' && <p className='text-destructive text-sm'>{confirmationPasswordError}</p>}
             </label>
-            <button
+            <Button
               onClick={() => handleResetPassword(token!, password)}
-              className='w-full bg-[#C6412A] text-white p-2 text-center rounded-xl font-bold hover:opacity-80 hover:cursor-pointer'
+              className='w-full rounded-xl py-2'
             >
               Submit
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => navigate('/login')}
-              className='w-full border-2 border-[#C6412A] text-center p-2 text-[#C6412A] rounded-xl font-bold hover:opacity-80 hover:cursor-pointer'
+              className='w-full rounded-xl py-2'
             >
               {success ? (<p>Back</p>) : (<p>Go to login page</p>)}
-            </button>
+            </Button>
           </div>
         )}
       </div>

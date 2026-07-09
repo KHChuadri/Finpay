@@ -6,6 +6,9 @@ import validator from 'validator';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
 import { API_URL } from '@/constants/API_URL';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Button } from '@/components/ui/Button';
 
 const RegisterForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -144,79 +147,67 @@ const RegisterForm = () => {
   }, [firstName, lastName, email, password, confirmationPassword, firstNameError, lastNameError, emailError, passwordError, confirmationPasswordError])
 
   return (
-    <div className='flex flex-col bg-white rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-2xl transition ease-in-out'>
-      <h3 className='text-black text-2xl font-bold pt-2 text-center mb-2'>Registration</h3>
+    <div className='flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-xl transition ease-in-out'>
+      <h3 className='text-foreground text-2xl font-bold pt-2 text-center mb-2'>Registration</h3>
 
-      {errorMsg && <p className='text-red-500 text-md'>{errorMsg}</p>}
+      {errorMsg && <p className='text-destructive text-md'>{errorMsg}</p>}
 
       <div className='flex flex-col gap-3 w-full'>
-        <label className='flex flex-col'>
-          <div className='flex'>
-            <p>First name</p>
-            <p className='text-red-500 text-lg'>*</p>
-          </div>
+        <label className='flex flex-col gap-1'>
+          <Label required>First name</Label>
 
-          <input
+          <Input
             data-testid="firstname-input"
             type="text"
             value={firstName}
             onBlur={() => isFirstNameValid()}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder='Enter your first name'
-            className='border-2 border-gray-300 p-2 rounded-lg focus:outline-2 focus:outline-blue-300 focus:border-none'
+            error={firstNameError.length !== 0}
           />
 
-          {firstNameError.length != 0 && <p className='text-red-500 text-sm'>{firstNameError}</p>}
+          {firstNameError.length != 0 && <p className='text-destructive text-sm'>{firstNameError}</p>}
         </label>
 
-        <label className='flex flex-col'>
-          <div className='flex'>
-            <p>Last name</p>
-            <p className='text-red-500 text-lg'>*</p>
-          </div>
+        <label className='flex flex-col gap-1'>
+          <Label required>Last name</Label>
 
-          <input
+          <Input
             data-testid="lastname-input"
             type="text"
             value={lastName}
             onBlur={() => isLastNameValid()}
             onChange={(e) => setLastName(e.target.value)}
             placeholder='Enter your last name'
-            className='border-2 border-gray-300 p-2 rounded-lg focus:outline-2 focus:outline-blue-300 focus:border-none'
+            error={lastNameError.length !== 0}
           />
 
-          {lastNameError.length != 0 && <p className='text-red-500 text-sm'>{lastNameError}</p>}
+          {lastNameError.length != 0 && <p className='text-destructive text-sm'>{lastNameError}</p>}
         </label>
 
-        <label className='flex flex-col'>
-          <div className='flex'>
-            <p>Email</p>
-            <p className='text-red-500 text-lg'>*</p>
-          </div>
+        <label className='flex flex-col gap-1'>
+          <Label required>Email</Label>
 
-          <input
+          <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => validateEmail()}
             placeholder='Enter your email'
-            className='border-2 border-gray-300 p-2 rounded-lg focus:outline-2 focus:outline-blue-300 focus:border-none'
+            error={emailError !== ''}
           />
 
-          {emailError !== '' && <p className='text-red-600 text-sm'>{emailError}</p>}
+          {emailError !== '' && <p className='text-destructive text-sm'>{emailError}</p>}
         </label>
 
-        <label className='flex flex-col'>
-          <div className='flex'>
-            <p>Password</p>
-            <p className='text-red-500 text-lg'>*</p>
-          </div>
+        <label className='flex flex-col gap-1'>
+          <Label required>Password</Label>
 
           <div
             tabIndex={0}
             onFocus={() => setPasswordOnFocus(true)}
             onBlur={() => setPasswordOnFocus(false)}
-            className={`relative w-full rounded-lg p-2 ${passwordOnFocus ? 'outline-2 outline-blue-300' : 'border-2 border-gray-300'}`}
+            className={`relative w-full rounded-lg p-2 border-2 ${passwordOnFocus ? 'border-ring ring-2 ring-ring/40' : 'border-input'}`}
           >
             <input
               data-testid="password-input"
@@ -225,7 +216,7 @@ const RegisterForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               onBlur={() => setPasswordVisited(true)}
               placeholder='Enter your password'
-              className='border-none w-full focus:outline-none'
+              className='border-none w-full focus:outline-none bg-transparent text-foreground'
             />
             {showPassword == false ? (
               <FaEyeSlash
@@ -241,20 +232,17 @@ const RegisterForm = () => {
             }
           </div>
 
-          {passwordError !== '' && <p className='text-red-600 text-sm'>{passwordError}</p>}
+          {passwordError !== '' && <p className='text-destructive text-sm'>{passwordError}</p>}
         </label>
 
-        <label className='flex flex-col'>
-          <div className='flex'>
-            <p>Confirm password</p>
-            <p className='text-red-500 text-lg'>*</p>
-          </div>
+        <label className='flex flex-col gap-1'>
+          <Label required>Confirm password</Label>
 
           <div
             tabIndex={0}
             onFocus={() => setConfirmationPasswordOnFocus(true)}
             onBlur={() => setConfirmationPasswordOnFocus(false)}
-            className={`relative w-full rounded-lg p-2 ${confirmationPasswordOnFocus ? 'outline-2 outline-blue-300' : 'border-2 border-gray-300'}`}
+            className={`relative w-full rounded-lg p-2 border-2 ${confirmationPasswordOnFocus ? 'border-ring ring-2 ring-ring/40' : 'border-input'}`}
           >
             <input
               data-testid="confirm-password-input"
@@ -263,7 +251,7 @@ const RegisterForm = () => {
               onChange={(e) => setConfirmationPassword(e.target.value)}
               onBlur={() => setConfirmationPasswordVisited(true)}
               placeholder='Enter your password'
-              className='border-none w-full focus:outline-none'
+              className='border-none w-full focus:outline-none bg-transparent text-foreground'
             />
             {showConfirmationPassword == false ? (
               <FaEyeSlash
@@ -279,24 +267,25 @@ const RegisterForm = () => {
             }
           </div>
 
-          {confirmationPasswordError !== '' && <p className='text-red-600 text-sm'>{confirmationPasswordError}</p>}
+          {confirmationPasswordError !== '' && <p className='text-destructive text-sm'>{confirmationPasswordError}</p>}
         </label>
       </div>
 
-      <button
+      <Button
         onClick={() => handleSubmit()}
         disabled={hasError}
-        className={`w-full text-white p-2 text-center rounded-xl font-bold ${hasError ? 'bg-gray-400 hover:cursor-not-allowed' : 'hover:opacity-80 hover:cursor-pointer bg-[#C6412A]'}`}
+        className='w-full rounded-xl py-2'
       >
         Submit
-      </button>
+      </Button>
 
-      <button
+      <Button
+        variant="ghost"
         onClick={() => navigate('/')}
-        className='w-full border-2 border-[#C6412A] text-center p-2 text-[#C6412A] rounded-xl font-bold hover:opacity-80 hover:cursor-pointer'
+        className='w-full rounded-xl py-2'
       >
         Back
-      </button>
+      </Button>
     </div>
   )
 }
