@@ -1,5 +1,6 @@
 import axios from "axios";
 import useAuthStore from "@/stores/authStore";
+import { API_URL } from "@/constants/API_URL";
 
 export const syncUserStatus = async () => {
   const userId = useAuthStore.getState().userId;
@@ -8,7 +9,7 @@ export const syncUserStatus = async () => {
   if (!userId || !token) return;
 
   try {
-    const response = await axios.get(`http://localhost:3000/user/profile/${userId}`, {
+    const response = await axios.get(`${API_URL}/user/profile/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

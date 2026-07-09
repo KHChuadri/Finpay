@@ -63,7 +63,7 @@ const AdminLoginForm = () => {
 
       // Logout if user change its password
       if (token && userId) {
-        await axios.post("http://localhost:3000/logout", { token, userId });
+        await axios.post(`${API_URL}/logout`, { token, userId });
       }
       resetAuth();
     }

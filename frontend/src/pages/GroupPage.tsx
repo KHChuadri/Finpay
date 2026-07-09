@@ -123,7 +123,7 @@ const GroupPage = () => {
 
   const fetchMember = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/groups/member`, {
+      const res = await axios.get(`${API_URL}/groups/member`, {
         params: { groupId },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -145,7 +145,7 @@ const GroupPage = () => {
   const fetchPendingInvite = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/groups/invitation/pending",
+        `${API_URL}/groups/invitation/pending`,
         {
           params: { groupId },
         }

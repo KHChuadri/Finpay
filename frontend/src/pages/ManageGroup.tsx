@@ -46,7 +46,7 @@ const ManageGroup = () => {
   const fetchInviteList = async (userId: string) => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/invitation/batch",
+        `${API_URL}/invitation/batch`,
         {
           params: { userId },
         }

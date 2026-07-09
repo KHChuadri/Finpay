@@ -45,7 +45,7 @@ const CurrencyWalletPage = () => {
       if (!currencyCode) { setErrorMsg("Missing currency code"); return; }
 
       try {
-        const response = await axios.get(`http://localhost:3000/currencywallet/${currencyCode}/${userId}`, {
+        const response = await axios.get(`${API_URL}/currencywallet/${currencyCode}/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
