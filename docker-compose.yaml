@@ -21,6 +21,7 @@ services:
       - "3000:3000"
     depends_on:
       - redis
+      - postgres
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -40,5 +41,19 @@ services:
       - redis_data:/data
     restart: unless-stopped
 
+  postgres:
+    image: postgres:16
+    container_name: postgres-payment
+    environment:
+      POSTGRES_USER: finpay
+      POSTGRES_PASSWORD: finpay
+      POSTGRES_DB: finpay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
 volumes:
   redis_data:
+  postgres_data:
