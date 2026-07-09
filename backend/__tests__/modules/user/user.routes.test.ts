@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import request from "supertest";
 import express from "express";
-import mongoose from "mongoose";
+import { randomUUID } from "crypto";
 import { userRouter } from "../../../src/modules/user/user.routes";
 import { createTestUser } from "../../helpers/testFactories";
-import { UserType } from "../../../model/User";
-import TransactionHistory from "../../../model/TransactionHistory";
-import User from "../../../model/User";
+import { getDb } from "../../../lib/db";
+import { transactions } from "../../../src/db/schema";
+
+type TestUser = Awaited<ReturnType<typeof createTestUser>>;
 
 const makeApp = () => {
   const app = express();
@@ -16,7 +17,7 @@ const makeApp = () => {
 };
 
 describe("User routes", () => {
-  let user: UserType;
+  let user: TestUser;
 
   beforeEach(async () => {
     user = await createTestUser({ email: "user-routes@test.com", rank: "gold" });
@@ -24,16 +25,14 @@ describe("User routes", () => {
 
   describe("GET /:userId/rank", () => {
     it("returns the user's rank", async () => {
-      const res = await request(makeApp()).get(
-        `/${user._id.toString()}/rank`
-      );
+      const res = await request(makeApp()).get(`/${user.id}/rank`);
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ rank: "gold" });
     });
 
     it("returns 404 when the user does not exist", async () => {
-      const missingId = new mongoose.Types.ObjectId().toString();
+      const missingId = randomUUID();
 
       const res = await request(makeApp()).get(`/${missingId}/rank`);
 
@@ -51,16 +50,14 @@ describe("User routes", () => {
         isAdmin: true,
       });
 
-      const res = await request(makeApp()).get(
-        `/isAdmin/${admin._id.toString()}`
-      );
+      const res = await request(makeApp()).get(`/isAdmin/${admin.id}`);
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ success: true, isAdmin: true });
     });
 
     it("returns 404 when the user does not exist", async () => {
-      const missingId = new mongoose.Types.ObjectId().toString();
+      const missingId = randomUUID();
 
       const res = await request(makeApp()).get(`/isAdmin/${missingId}`);
 
@@ -73,41 +70,40 @@ describe("User routes", () => {
 
   describe("GET /user/transaction/history", () => {
     it("returns the raw transaction history docs owned by the user", async () => {
-      const [tx1, tx2] = await TransactionHistory.create([
-        {
-          amountSrc: 100,
-          currencySource: "AUD",
-          amountDest: 100,
-          currencyDest: "AUD",
-          fromAccount: user._id,
-          toAccount: user._id,
-          fromAccountEmail: user.email,
-          toAccountEmail: user.email,
-          fromAccountId: user._id.toString(),
-          toAccountId: user._id.toString(),
-          description: "first",
-        },
-        {
-          amountSrc: 50,
-          currencySource: "USD",
-          amountDest: 50,
-          currencyDest: "USD",
-          fromAccount: user._id,
-          toAccount: user._id,
-          fromAccountEmail: user.email,
-          toAccountEmail: user.email,
-          fromAccountId: user._id.toString(),
-          toAccountId: user._id.toString(),
-          description: "second",
-        },
-      ]);
-
-      await User.findByIdAndUpdate(user._id, {
-        $push: { transactionHistory: { $each: [tx1._id, tx2._id] } },
-      });
+      const [tx1, tx2] = await getDb()
+        .insert(transactions)
+        .values([
+          {
+            amountSrc: "100",
+            currencySource: "AUD",
+            amountDest: "100",
+            currencyDest: "AUD",
+            fromAccount: user.id,
+            toAccount: user.id,
+            fromAccountEmail: user.email,
+            toAccountEmail: user.email,
+            fromAccountId: user.id,
+            toAccountId: user.id,
+            description: "first",
+          },
+          {
+            amountSrc: "50",
+            currencySource: "USD",
+            amountDest: "50",
+            currencyDest: "USD",
+            fromAccount: user.id,
+            toAccount: user.id,
+            fromAccountEmail: user.email,
+            toAccountEmail: user.email,
+            fromAccountId: user.id,
+            toAccountId: user.id,
+            description: "second",
+          },
+        ])
+        .returning();
 
       const res = await request(makeApp()).get(
-        `/user/transaction/history?userId=${user._id.toString()}`
+        `/user/transaction/history?userId=${user.id}`
       );
 
       expect(res.status).toBe(200);
@@ -115,13 +111,13 @@ describe("User routes", () => {
       expect(res.body).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            _id: tx1._id.toString(),
+            _id: tx1.id,
             description: "first",
             amountSrc: 100,
             currencySource: "AUD",
           }),
           expect.objectContaining({
-            _id: tx2._id.toString(),
+            _id: tx2.id,
             description: "second",
             amountSrc: 50,
             currencySource: "USD",
@@ -137,7 +133,7 @@ describe("User routes", () => {
     });
 
     it("returns 400 when the user does not exist", async () => {
-      const missingId = new mongoose.Types.ObjectId().toString();
+      const missingId = randomUUID();
 
       const res = await request(makeApp()).get(
         `/user/transaction/history?userId=${missingId}`

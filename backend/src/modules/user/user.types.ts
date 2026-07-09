@@ -1,4 +1,22 @@
-import type { TransactionHistoryType } from "../../../model/TransactionHistory";
+/** Serialized transaction matching the legacy `.lean()` doc the frontend keys by `_id`. */
+export interface LeanTransaction {
+  _id: string;
+  transactionType: string | null;
+  amountSrc: number;
+  currencySource: string;
+  amountDest: number;
+  currencyDest: string;
+  fromAccount: string;
+  toAccount: string;
+  fromAccountEmail: string;
+  toAccountEmail: string;
+  fromAccountId: string;
+  toAccountId: string;
+  transactionDate: Date | null;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface UserRankRecord {
   id: string;
@@ -21,10 +39,10 @@ export interface IUserRepository {
   findUserWithTransactionHistory(
     userId: string
   ): Promise<UserWithTransactionHistory | null>;
-  /** Returns raw transaction history docs (incl. `_id`, timestamps, `__v`) — matches legacy serialization. */
+  /** Returns transaction docs as lean objects keyed by `_id`. */
   findTransactionHistoryByIds(
     ids: string[]
-  ): Promise<TransactionHistoryType[]>;
+  ): Promise<LeanTransaction[]>;
 }
 
 export interface UserServiceDeps {
