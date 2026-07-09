@@ -25,7 +25,7 @@ function NotificationList({ list }: MemberList) {
 
           <div className='flex w-full justify-between'>
             {item.type === 'Invitation' && <h1 className='text-lg font-semibold'>Group invitation</h1>}
-            <h2 className="h-1/2 md:h-full inline-flex items-center md:px-3 px-1 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+            <h2 className="h-1/2 md:h-full inline-flex items-center md:px-3 px-1 py-1 rounded-full text-xs font-medium bg-secondary text-foreground">
               {item.type}
             </h2>
           </div>

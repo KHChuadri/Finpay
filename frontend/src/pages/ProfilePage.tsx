@@ -744,7 +744,7 @@ const ProfilePage = () => {
                   <h2 className="text-xl font-semibold mb-6">Change Account Type</h2>
                   <p className="mb-4 text-md text-foreground">
                     Are you sure you want to change your account type to
-                    <strong className="ml-1 text-primary">
+                    <strong className="ml-1 text-foreground font-semibold">
                       {personalDetails.accountType === 'personal' ? 'Business' : 'Personal'}?
                     </strong>
                   </p>

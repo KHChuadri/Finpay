@@ -321,7 +321,7 @@ const GroupPage = () => {
                 Invite People
               </Button>
               <Button
-                variant="primary"
+                variant="ghost"
                 onClick={() => setManagingMember((prev) => !prev)}
                 className="py-2 px-6 shadow"
               >
