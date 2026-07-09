@@ -5,6 +5,7 @@ import { Button } from '../Button';
 import { Pill } from '../Pill';
 import { Input } from '../Input';
 import { Label } from '../Label';
+import { PageContainer } from '../PageContainer';
 
 describe('ui primitives', () => {
   it('Card renders children and uses card bg', () => {
@@ -52,5 +53,12 @@ describe('ui primitives', () => {
     render(<Label required>Email</Label>);
     const star = screen.getByText('*');
     expect(star.className).toContain('text-destructive');
+  });
+
+  it('PageContainer defaults to max-w-6xl and narrow to max-w-md', () => {
+    const { rerender } = render(<PageContainer>a</PageContainer>);
+    expect(screen.getByText('a').className).toContain('max-w-6xl');
+    rerender(<PageContainer size="narrow">b</PageContainer>);
+    expect(screen.getByText('b').className).toContain('max-w-md');
   });
 });
