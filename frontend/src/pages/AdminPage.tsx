@@ -9,6 +9,7 @@ import AdminChallengePage from '@/components/admin/AdminChallengePage';
 import AdminWithdraw from '@/components/transaction/adminWithdraw';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
+import { Button } from '@/components/ui/Button';
 import { API_URL } from "../constants/API_URL"
 
 const AdminPage = () => {
@@ -53,12 +54,12 @@ const AdminPage = () => {
 
   const headerButtons = (
     <div className="gap-4 md:flex items-center">
-      <button
+      <Button
+        variant="primary"
         onClick={() => handleAdminLogout()}
-        className="bg-[#C6412A] text-white px-6 py-2 rounded-lg hover:bg-[#A8321E] transition"
       >
         Log out
-      </button>
+      </Button>
     </div>
   );
 
@@ -83,23 +84,23 @@ const AdminPage = () => {
   return (
     <Layout headerRight={headerButtons}>
       {errorMsg && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded z-50">
           {errorMsg}
         </div>
       )}
-      <div className="flex flex-col md:flex-row min-h-screen bg-gray-100 w-full">
-        <div className="w-full md:w-64 bg-white shadow-lg p-4">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-4">Administrator Page</h1>
+      <div className="flex flex-col md:flex-row min-h-screen bg-background w-full">
+        <div className="w-full md:w-64 bg-card shadow-lg p-4">
+          <h1 className="text-2xl font-semibold text-foreground mb-4">Administrator Page</h1>
 
           {/* User Management Dropdown Toggle */}
-          <button className="mb-4 rounded hover:bg-gray-100 w-full" onClick={() => setUserManagementDropdown(!userManagementDropdown)}>
+          <button className="mb-4 rounded hover:bg-muted w-full" onClick={() => setUserManagementDropdown(!userManagementDropdown)}>
             <div className="flex items-center justify-between cursor-pointer px-4 py-3">
-              <h2 className="text-lg font-semibold text-gray-800">User Management</h2>
+              <h2 className="text-lg font-semibold text-foreground">User Management</h2>
 
               {userManagementDropdown ? (
-                <ChevronUpIcon className="w-5 h-5 text-gray-600" />
+                <ChevronUpIcon className="w-5 h-5 text-muted-foreground" />
               ) : (
-                <ChevronDownIcon className="w-5 h-5 text-gray-600" />
+                <ChevronDownIcon className="w-5 h-5 text-muted-foreground" />
               )}
             </div>
           </button>
@@ -109,7 +110,7 @@ const AdminPage = () => {
             <nav className="space-y-2">
               <button
                 onClick={() => handleNavigateToUser('all')}
-                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'all' ? 'bg-[#C6412A] text-white' : 'text-gray-800 hover:bg-gray-100'}`}
+                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'all' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
                 <UserIcon className="w-5 h-5 mr-3" />
                 All Users
@@ -117,7 +118,7 @@ const AdminPage = () => {
 
               <button
                 onClick={() => handleNavigateToUser('verified')}
-                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'verified' ? 'bg-[#C6412A] text-white' : 'text-gray-800 hover:bg-gray-100'}`}
+                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'verified' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
                 <ShieldCheckIcon className="w-5 h-5 mr-3" />
                 Verified Users
@@ -125,7 +126,7 @@ const AdminPage = () => {
 
               <button
                 onClick={() => handleNavigateToUser('unverified')}
-                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'unverified' ? 'bg-[#C6412A] text-white' : 'text-gray-800 hover:bg-gray-100'}`}
+                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'unverified' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
                 <UserIcon className="w-5 h-5 mr-3" />
                 Unverified Users
@@ -133,7 +134,7 @@ const AdminPage = () => {
 
               <button
                 onClick={() => handleNavigateToUser('locked')}
-                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'locked' ? 'bg-[#C6412A] text-white' : 'text-gray-800 hover:bg-gray-100'}`}
+                className={`flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeUserTab === 'locked' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
                 <LockClosedIcon className="w-5 h-5 mr-3" />
                 Blocked Users
@@ -142,14 +143,14 @@ const AdminPage = () => {
           )}
 
           {/* Challenge Management Dropdown Toggle */}
-          <button className="mb-4 rounded hover:bg-gray-100 w-full" onClick={() => setChallengeManagementDropdown(!challengeManagementDropdown)}>
+          <button className="mb-4 rounded hover:bg-muted w-full" onClick={() => setChallengeManagementDropdown(!challengeManagementDropdown)}>
             <div className="flex items-center justify-between cursor-pointer px-4 py-3">
-              <h2 className="text-lg font-semibold text-gray-800">Challenge</h2>
+              <h2 className="text-lg font-semibold text-foreground">Challenge</h2>
 
               {challengeManagementDropdown ? (
-                <ChevronUpIcon className="w-5 h-5 text-gray-600" />
+                <ChevronUpIcon className="w-5 h-5 text-muted-foreground" />
               ) : (
-                <ChevronDownIcon className="w-5 h-5 text-gray-600" />
+                <ChevronDownIcon className="w-5 h-5 text-muted-foreground" />
               )}
             </div>
           </button>
@@ -159,7 +160,7 @@ const AdminPage = () => {
             <nav className="space-y-2">
               <button
                 onClick={() => handleNavigateToChallenge('create')}
-                className={`cursor-pointer flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeChallengeTab === 'create' ? 'bg-[#C6412A] text-white' : 'text-gray-800 hover:bg-gray-100'}`}
+                className={`cursor-pointer flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeChallengeTab === 'create' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
                 <MdAddTask className="w-5 h-5 mr-3" />
                 Create challenge
@@ -167,14 +168,14 @@ const AdminPage = () => {
             </nav>
           )}
         {/* Withdraw Request Dropdown Toggle */}
-          <button className="mb-4 rounded hover:bg-gray-100 w-full" onClick={() => setRequestManagementDropdown(!requestManagementDropdown)}>
+          <button className="mb-4 rounded hover:bg-muted w-full" onClick={() => setRequestManagementDropdown(!requestManagementDropdown)}>
             <div className="flex items-center justify-between cursor-pointer px-4 py-3">
-              <h2 className="text-lg font-semibold text-gray-800">Request</h2>
+              <h2 className="text-lg font-semibold text-foreground">Request</h2>
 
               {requestManagementDropdown ? (
-                <ChevronUpIcon className="w-5 h-5 text-gray-600" />
+                <ChevronUpIcon className="w-5 h-5 text-muted-foreground" />
               ) : (
-                <ChevronDownIcon className="w-5 h-5 text-gray-600" />
+                <ChevronDownIcon className="w-5 h-5 text-muted-foreground" />
               )}
             </div>
           </button>
@@ -184,7 +185,7 @@ const AdminPage = () => {
             <nav className="space-y-2">
               <button
                 onClick={() => handleNavigateToRequest('withdraw')}
-                className={`cursor-pointer flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeRequestTab === 'withdraw' ? 'bg-[#C6412A] text-white' : 'text-gray-800 hover:bg-gray-100'}`}
+                className={`cursor-pointer flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeRequestTab === 'withdraw' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
                 <PiHandWithdraw className="w-5 h-5 mr-3" />
                 Withdraw Request
