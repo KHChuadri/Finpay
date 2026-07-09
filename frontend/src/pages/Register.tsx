@@ -10,6 +10,7 @@ const Register = () => {
   const headerButtons = (
     <div className="gap-4 md:flex items-center">
       <Button
+        variant="ghost"
         onClick={() => navigate('/')}
         className="px-6 py-2 font-bold"
       >

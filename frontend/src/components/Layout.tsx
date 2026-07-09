@@ -76,7 +76,7 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
     >
       {/* Show Warning Popup */}
       {warning && token && (
-        <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-yellow-500 rounded-lg shadow-xl z-20">
+        <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-warning text-warning-foreground rounded-lg shadow-xl z-20">
           <p className="font-medium text-center">You&apos;ll be logged out due to inactivity in {countdown} seconds.</p>
         </div>
       )}

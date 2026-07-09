@@ -77,7 +77,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-[#FFA294] to-[#EECAB8] min-h-screen flex w-full justify-center items-center">
+    <div className="bg-background min-h-screen flex w-full justify-center items-center">
       <div className='relative flex flex-col bg-card border border-border rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-xl transition ease-in-out'>
         <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
         <IoMdClose
@@ -88,7 +88,7 @@ const ResetPassword = () => {
         { linkHasExpired ? <p className='text-foreground text-lg text-center font-semibold mt-2 p-3'>This link has expired or does not exists</p> : (
           <div className='flex flex-col gap-4'>
             {success && (
-              <div className="text-green-600 font-medium text-center">
+              <div className="text-positive font-medium text-center">
                 ✅ Password reset successful! Head back to login page to continue.
               </div>
             )}
