@@ -2,7 +2,7 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import HTTPError from "http-errors";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import type {
   CreateOtpResult,
   OtpServiceDeps,
@@ -79,20 +79,26 @@ export const createOtpService = (deps: OtpServiceDeps) => {
       throw HTTPError(404, "Email cannot be found");
     }
 
-    if (!process.env.RESEND_API_KEY) {
-      throw HTTPError(500, "RESEND_API_KEY environment variable is missing");
+    if (!process.env.APP_PASSWORD) {
+      throw HTTPError(500, "APP_PASSWORD environment variable is missing");
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    // Must be a Resend-verified domain; onboarding@resend.dev works for testing.
-    const from = process.env.OTP_FROM_EMAIL || "Finpay <onboarding@resend.dev>";
+    const senderEmail = process.env.OTP_FROM_EMAIL || "finpay.comp3900@gmail.com";
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: senderEmail,
+        pass: process.env.APP_PASSWORD,
+      },
+    });
 
-    const { data, error } = await resend.emails.send({
-      from,
-      to: userEmail,
-      subject: "Your Finpay Verification Code",
-      text: `Your verification code is: ${otp}. This code expires in 10 minutes.`,
-      html: `
+    try {
+      await transporter.sendMail({
+        from: senderEmail,
+        to: userEmail,
+        subject: "Your Finpay Verification Code",
+        text: `Your verification code is: ${otp}. This code expires in 10 minutes.`,
+        html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #2c3e50;">Finpay Verification Code</h2>
         <p>Your verification code is:</p>
@@ -103,15 +109,14 @@ export const createOtpService = (deps: OtpServiceDeps) => {
         <p style="color: #666; font-size: 12px;">If you didn't request this code, please ignore this email.</p>
       </div>
     `,
-    });
+      });
 
-    if (error) {
-      console.error("❌ Resend error:", error);
-      throw HTTPError(500, `Unable to send OTP email: ${error.message}`);
+      console.log("✅ OTP email sent successfully");
+      return { otpId };
+    } catch (error) {
+      console.error("❌ Nodemailer error:", error);
+      throw HTTPError(500, `Unable to send OTP email: ${(error as any).message}`);
     }
-
-    console.log("✅ Resend email sent successfully. Id:", data?.id);
-    return { otpId };
   };
 
   const verifyOtp = async (
