@@ -10,6 +10,7 @@ import { FiAlertCircle } from 'react-icons/fi';
 import { TriangleAlert } from 'lucide-react';
 import { useGroupTransactionStore } from '@/stores/groupTransactionStore';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 const GroupRecipient = () => {
   const navigate = useNavigate();
@@ -77,32 +78,32 @@ const GroupRecipient = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='w-2/3 lg:w-1/3 bg-white flex flex-col rounded-xl'>
+          <div className='w-2/3 lg:w-1/3 bg-card border border-border flex flex-col rounded-xl'>
             <Header />
 
             <div className='flex flex-col gap-10 rounded-lg px-10 py-6 mt-3'>
               {!loading ? (
                 <>
                   <div className='flex flex-col gap-5 h-full'>
-                    {errorMsg.length != 0 && <p className='text-red-500'>{errorMsg}</p>}
+                    {errorMsg.length != 0 && <p className='text-destructive'>{errorMsg}</p>}
 
                     {/* Unverified Notification */}
                     {!isVerified && !isLocked && (
-                      <div className="bg-yellow-50 border-l-4 border-amber-600 p-4">
+                      <div className="bg-warning/10 border-l-4 border-warning p-4">
                         <div className="flex md:flex-row flex-col items-center gap-2">
                           <div className="flex items-center">
                             <div className="flex-shrink-0">
-                              <FiAlertCircle className="h-5 w-5 text-amber-600" />
+                              <FiAlertCircle className="h-5 w-5 text-warning" />
                             </div>
                             <div className="ml-3">
-                              <p className="text-sm text-yellow-700">
+                              <p className="text-sm text-warning">
                                 Your account is not verified yet. Verify now to gain access to all features.
                               </p>
                             </div>
                           </div>
                           <button
                             onClick={() => navigate('/profile')}
-                            className="ml-3 bg-amber-600 hover:bg-amber-700 text-white px-4 py-1 rounded-md text-sm font-medium transition cursor-pointer"
+                            className="ml-3 bg-warning hover:opacity-90 text-warning-foreground px-4 py-1 rounded-md text-sm font-medium transition cursor-pointer"
                           >
                             Verify Now
                           </button>
@@ -111,15 +112,15 @@ const GroupRecipient = () => {
                     )}
                     {/* Locked Notification */}
                     {isLocked && (
-                      <div className="bg-red-100 border-l-4 border-red-400 p-4">
+                      <div className="bg-destructive/10 border-l-4 border-destructive p-4">
                         <div className="flex flex-row items-center">
                           <div className="flex items-center">
                             <div className="flex-shrink-0">
-                              <TriangleAlert className="h-5 w-5 text-red-500" />
+                              <TriangleAlert className="h-5 w-5 text-destructive" />
                             </div>
 
                             <div className="ml-4">
-                              <p className="text-sm text-red-600">
+                              <p className="text-sm text-destructive">
                                 Your account is locked. You won&apos;t be able to access this feature. Please contact support for assistance.
                               </p>
                             </div>
@@ -129,33 +130,30 @@ const GroupRecipient = () => {
                     )}
 
                     {transactionType == 'Withdraw' ? (
-                      <h2 className='text-black text-xl font-semibold'>Who are you paying to?</h2>
+                      <h2 className='text-foreground text-xl font-semibold'>Who are you paying to?</h2>
                     ) : ( <div className="flex flex-col justify-center items-center text-center gap-6 h-full">
-                      <h2 className='text-black text-xl font-semibold'>You Are Currently Making A Top Up To Group {groupName}</h2>
+                      <h2 className='text-foreground text-xl font-semibold'>You Are Currently Making A Top Up To Group {groupName}</h2>
                       </div>
                     )}
-                {transactionType == 'Withdraw' && 
+                {transactionType == 'Withdraw' &&
                     (<input
                       type="email"
                       value={recipientEmail}
                       onChange={(e) => setRecipientEmail(e.target.value)}
                       onKeyUp={() => validateEmail()}
                       onKeyDown={() => validateEmail()}
-                      className='border-b-2 border-gray-700 p-2 w-full focus:outline-none'
+                      className='border-b-2 border-input p-2 w-full focus:outline-none'
                       placeholder='Email'
                     />)}
                   </div>
 
-                  <button
+                  <Button
                     disabled={!goNextPage || !isVerified || isLocked}
                     onClick={() => handleNextPage()}
-                    className={`w-full py-3 text-white font-bold rounded-xl transition ${goNextPage && isVerified && !isLocked
-                        ? 'bg-[#C6412A] hover:bg-[#A8321E] cursor-pointer'
-                        : 'bg-gray-400 cursor-not-allowed'
-                      }`}
+                    className="w-full py-3 font-bold rounded-xl"
                   >
                     Continue
-                  </button>
+                  </Button>
 
                  
                 </>

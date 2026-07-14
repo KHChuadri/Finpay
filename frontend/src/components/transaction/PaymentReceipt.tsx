@@ -9,15 +9,15 @@ const PaymentReceipt = () => {
   const rate = convertedAmount > 0 ? destCurrencyAmount / convertedAmount : 0;
 
   return (
-    <div className="bg-gray-50 rounded-lg border p-6 w-full max-w-sm text-sm space-y-4">
-      <h3 className="text-gray-700 font-semibold">Transfer details</h3>
+    <div className="bg-muted rounded-lg border p-6 w-full max-w-sm text-sm space-y-4">
+      <h3 className="text-muted-foreground font-semibold">Transfer details</h3>
       <div className="flex justify-between">
         <span>You send exactly</span>
         <span className="font-bold">
           {rawSourceCurrencyAmount.toFixed(2)} {currencyFrom?.code}
         </span>
       </div>
-      <div className="flex justify-between text-gray-500">
+      <div className="flex justify-between text-muted-foreground">
         <span>Total fees (included)</span>
         <span>{serviceFee} {currencyFrom?.code}</span>
       </div>
@@ -37,12 +37,12 @@ const PaymentReceipt = () => {
           {destCurrencyAmount.toLocaleString('id-ID')} {currencyTo?.code}
         </span>
       </div>
-      <div className="flex justify-between text-gray-500">
+      <div className="flex justify-between text-muted-foreground">
         <span>Should arrive</span>
         {scheduleStatus === 'Sends Now' ? <span>in seconds</span> : <span>{scheduleStatus}</span>}
       </div>
 
-      <h3 className="pt-4 text-gray-700 font-semibold">Recipient details</h3>
+      <h3 className="pt-4 text-muted-foreground font-semibold">Recipient details</h3>
       <div className="flex justify-between">
         <span>Account holder name</span>
         <span>{recipient.email}</span>

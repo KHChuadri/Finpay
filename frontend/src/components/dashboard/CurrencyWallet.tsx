@@ -7,7 +7,6 @@ import axios from "axios";
 import type { UserWalletInfo } from "@/pages/Dashboard";
 import useAuthStore from "@/stores/authStore";
 import { FaTimes } from "react-icons/fa";
-import useDarkModeStore from "@/stores/darkModeStore";
 import { API_URL } from "@/constants/API_URL";
 
 interface WalletList {
@@ -20,7 +19,6 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
   const userId = useAuthStore.getState().userId;
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const { darkMode } = useDarkModeStore();
 
   function slideLeft() {
     const slider = document.getElementById("slider");
@@ -66,18 +64,18 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
     <div className="flex relative items-center">
       {/* Error Message */}
       {errorMsg && (
-        <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-200 border-2 border-red-400 text-red-700 rounded z-50">
+        <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
           <p className="break-words w-full pr-8">{errorMsg}</p>
           <button
             onClick={() => setErrorMsg(null)}
-            className="absolute top-4 right-4 text-red-700 hover:text-red-900"
+            className="absolute top-4 right-4 text-destructive hover:text-destructive/80"
           >
             <FaTimes />
           </button>
         </div>
       )}
 
-      <MdChevronLeft onClick={slideLeft} className={`cursor-pointer ${darkMode ? "text-white" : "text-black"}`} size={40} />
+      <MdChevronLeft onClick={slideLeft} className="cursor-pointer text-foreground" size={40} />
       <div
         id="slider"
         className="scrollbar-hide w-full flex gap-4 px-4 py-6 overflow-x-scroll scroll scroll-smooth whitespace-nowrap"
@@ -86,14 +84,14 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
           <button
             key={index}
             onClick={() => navigate(`/currencywallet/${item.walletCurrency}`)}
-            className={`shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 ${darkMode ? "bg-gray-700" : "bg-white"}`}
+            className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card"
           >
             <div className="py-2 h-full flex flex-col justify-start">
               <div className="text-lg font-bold flex flex-row items-center gap-4 w-full overflow-hidden">
                 <FlagGetter countryCodes={item.countryCode} />
-                <div className={`break-words whitespace-normal leading-snug mt-1 ${darkMode ? "text-white" : "text-black"}`}>{item.walletCurrency}</div>
+                <div className="break-words whitespace-normal leading-snug mt-1 text-foreground">{item.walletCurrency}</div>
               </div>
-              <div className={`ml-2 mt-auto text-lg font-bold flex items-end ${darkMode ? "text-white" : "text-black"}`}>
+              <div className="ml-2 mt-auto text-lg font-bold flex items-end text-foreground">
                 {item.walletBalance.toLocaleString()}
               </div>
             </div>
@@ -101,8 +99,7 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
         ))}
 
         <button
-          className={`shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300
-            ${darkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+          className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card text-foreground"
           onClick={toggleCurrencyModal}
           data-testid="wallet-addition"
         >
@@ -114,7 +111,7 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
       </div>
       <MdChevronRight
         onClick={slideRight}
-        className={`cursor-pointer ${darkMode ? "text-white" : "text-black"}`}
+        className="cursor-pointer text-foreground"
         size={40}
       />
     </div>

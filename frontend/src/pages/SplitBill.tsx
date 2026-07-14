@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import Layout from "../components/Layout";
 import HeaderButtons from "@/components/dashboard/HeaderButtons";
+import { Button } from "@/components/ui/Button";
 // import history from "../assets/mock_history.jpg";
 
 const SplitBill = () => {
@@ -22,22 +23,23 @@ const SplitBill = () => {
               transaction history.
             </p>
           </div>
-          <button
+          <Button
+            variant="primary"
             onClick={() => navigate("/groups/list")}
             data-testid="create-group-button"
-            className="w-fit px-8 py-3 bg-[#C6412A] text-white text-sm rounded-lg hover:bg-[#A8321E] transition shadow-md"
+            className="w-fit px-8 py-3 text-sm shadow-md"
           >
             Create/Manage Group
-          </button>
+          </Button>
         </div>
         <img
           src={'/request.jpg'}
-          className="rounded-full bg-white w-[250px] h-[250px] object-contain"
+          className="rounded-full bg-card w-[250px] h-[250px] object-contain"
         />
       </div>
 
       {/* History Preview */}
-      <div className="flex flex-col w-full items-center py-10 bg-white">
+      <div className="flex flex-col w-full items-center py-10 bg-card">
         <h2 className="text-2xl font-bold mb-6 text-center">
           What does a shared transaction look like?
         </h2>

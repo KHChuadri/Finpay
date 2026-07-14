@@ -8,5 +8,15 @@ export default defineConfig([
   { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], plugins: { js }, extends: ["js/recommended"] },
   { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], languageOptions: { globals: globals.browser } },
   tseslint.configs.recommended,
+  {
+    rules: {
+      // Honor the `_`-prefix convention for intentionally unused args/vars
+      // (e.g. the `_next` param required by Express's RequestHandler shape).
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
+    },
+  },
   { ignores: ["node_modules/", "dist/"]}
 ]);

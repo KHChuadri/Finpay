@@ -1,6 +1,9 @@
 import cron from "node-cron";
-import User from "../../model/User";
-import { checkBalanceChallenges } from "./checkBalanceChallenges";
+import { getDb } from "../../lib/db";
+import { users as usersTable } from "../db/schema";
+import { challengeService } from "../modules/challenge/challenge.container";
+
+const { checkBalanceChallenges } = challengeService;
 
 /**
  * <Checks User's End Balance for Saving Challenges>
@@ -10,15 +13,16 @@ export const initializeMonthlyBalanceCheck = () => {
   cron.schedule("1 0 1 * *", async () => {
 
     try {
-      // Get all active users
-      const users = await User.find({ isActive: true }); // Adjust query as needed
+      // Get all users (legacy filtered on a non-existent `isActive` field,
+      // which always matched nothing; iterate every user, the evident intent).
+      const users = await getDb().select({ id: usersTable.id }).from(usersTable);
 
       for (const user of users) {
         try {
-          await checkBalanceChallenges(user._id.toString());
+          await checkBalanceChallenges(user.id);
         } catch (error) {
           console.error(
-            `Error checking balance challenges for user ${user._id}:`,
+            `Error checking balance challenges for user ${user.id}:`,
             error
           );
         }

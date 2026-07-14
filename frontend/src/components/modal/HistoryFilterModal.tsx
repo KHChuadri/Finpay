@@ -1,6 +1,8 @@
 import useHistoryStore from "@/stores/historyStore";
 import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 const HistoryFilterModal = () => {
   // Get current filter values from store
@@ -105,13 +107,13 @@ const HistoryFilterModal = () => {
       className='fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/30 z-50'
       data-testid="history-filter-modal"
     >
-      <div className='bg-white rounded-xl shadow-2xl w-11/12 sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl p-6 mx-4'>
+      <div className='bg-card border border-border rounded-xl shadow-2xl w-11/12 sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl p-6 mx-4'>
         {/* Header */}
         <div className='flex justify-between items-center mb-4'>
-          <h1 className='font-bold text-2xl text-gray-800'>Filters</h1>
+          <h1 className='font-bold text-2xl text-foreground'>Filters</h1>
           <button
             onClick={() => setShowModal(false)}
-            className='text-gray-500 hover:text-gray-700 transition-colors cursor-pointer'
+            className='text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
             aria-label="Close modal"
           >
             <FaTimes className="w-5 h-5" />
@@ -119,22 +121,22 @@ const HistoryFilterModal = () => {
         </div>
 
         {dateValidityError && (
-          <div className='mb-4 p-2 bg-red-100 text-red-600 rounded-lg text-sm'>
+          <div className='mb-4 p-2 bg-destructive/10 text-destructive rounded-lg text-sm'>
             {dateValidityError}
           </div>
         )}
 
         {/* Date Filter Section */}
         <div className='mb-6'>
-          <h2 className='font-semibold text-lg text-gray-800 mb-3 pb-2 border-b border-gray-200'>
+          <h2 className='font-semibold text-lg text-foreground mb-3 pb-2 border-b border-border'>
             Date Range
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label htmlFor="start-date" className='block text-sm font-medium text-gray-700 mb-1'>
+              <label htmlFor="start-date" className='block text-sm font-medium text-muted-foreground mb-1'>
                 From:
               </label>
-              <input
+              <Input
                 id="start-date"
                 type='date'
                 value={tempFilters.startingDate ? tempFilters.startingDate.toISOString().split('T')[0] : ''}
@@ -142,14 +144,14 @@ const HistoryFilterModal = () => {
                   ...prev,
                   startingDate: e.target.value ? new Date(e.target.value) : null
                 }))}
-                className='w-full p-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFA294] focus:border-[#FFA294] outline-none cursor-pointer'
+                className='cursor-pointer'
               />
             </div>
             <div>
-              <label htmlFor="end-date" className='block text-sm font-medium text-gray-700 mb-1'>
+              <label htmlFor="end-date" className='block text-sm font-medium text-muted-foreground mb-1'>
                 To:
               </label>
-              <input
+              <Input
                 id="end-date"
                 type='date'
                 value={tempFilters.endingDate ? tempFilters.endingDate.toISOString().split('T')[0] : ''}
@@ -157,7 +159,7 @@ const HistoryFilterModal = () => {
                   ...prev,
                   endingDate: e.target.value ? new Date(e.target.value) : null
                 }))}
-                className='w-full p-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FFA294] focus:border-[#FFA294] outline-none cursor-pointer'
+                className='cursor-pointer'
               />
             </div>
           </div>
@@ -165,7 +167,7 @@ const HistoryFilterModal = () => {
 
         {/* Transaction Type Section */}
         <div className='mb-6'>
-          <h2 className='font-semibold text-lg text-gray-800 mb-3 pb-2 border-b border-gray-200'>
+          <h2 className='font-semibold text-lg text-foreground mb-3 pb-2 border-b border-border'>
             Transaction Types
           </h2>
           <div className='grid grid-cols-2 sm:grid-cols-3 gap-3'>
@@ -182,8 +184,8 @@ const HistoryFilterModal = () => {
                 onClick={() => toggleFilter(key as keyof typeof tempFilters)}
                 className={`p-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer
                   ${state
-                    ? 'bg-[#C5412A] hover:bg-[#A8321E] text-white shadow-md'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
+                    ? 'bg-primary hover:opacity-90 text-primary-foreground shadow-md'
+                    : 'bg-secondary text-muted-foreground hover:bg-secondary/80'}
                 `}
               >
                 {label}
@@ -196,22 +198,18 @@ const HistoryFilterModal = () => {
         <div className='flex gap-3 mt-6'>
           <button
             onClick={handleResetAll}
-            className='flex-1 w-full border-2 border-[#C6412A] text-center p-2 text-[#C6412A] rounded-xl font-bold hover:opacity-80 cursor-pointer'
+            className='flex-1 w-full border-2 border-primary text-center p-2 text-primary rounded-xl font-bold hover:opacity-80 cursor-pointer'
           >
             Reset All
           </button>
-          <button
+          <Button
             onClick={handleApplyFilters}
             disabled={!!dateValidityError}
-            className={`flex-1 py-2 rounded-lg font-medium transition-colors cursor-pointer
-              ${dateValidityError
-                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                : 'bg-[#C5412A] hover:bg-[#A8321E] text-white'}
-            `}
+            className="flex-1 w-full py-2"
             data-testid="apply-filters-button"
           >
             Apply Filters
-          </button>
+          </Button>
         </div>
       </div>
     </div>

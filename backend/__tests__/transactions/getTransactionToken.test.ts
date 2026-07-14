@@ -1,6 +1,7 @@
 import { describe as describeToken, it as itToken, expect as expectToken, beforeEach as beforeEachToken, vi, afterEach as afterEachToken } from 'vitest';
 import axios from 'axios';
-import { getTransactionToken } from '../../src/bankIntegration/getTransactionToken';
+import { fetchTransactionToken } from "../../src/modules/bank/bank.container";
+const getTransactionToken = () => fetchTransactionToken();
 
 vi.mock('axios');
 

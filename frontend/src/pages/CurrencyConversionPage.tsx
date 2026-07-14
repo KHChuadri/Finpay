@@ -9,6 +9,7 @@ import type { Currency } from '@/stores/transactionStore';
 import { LiaTimesSolid } from 'react-icons/lia';
 import { useConversionStore } from '@/stores/conversionStore';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 const CurrencyConversionPage = () => {
   const navigate = useNavigate();
@@ -43,8 +44,6 @@ const CurrencyConversionPage = () => {
     setOpenCurrencyTo(false);
   }
 
-  const isValid = sourceCurrencyAmount > 0 && destCurrencyAmount > 0;
-
   const {
     data: exchangeRateData,
     isLoading: isRateLoading,
@@ -74,17 +73,17 @@ const CurrencyConversionPage = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='relative w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl px-6 py-6 gap-2'>
+          <div className='relative w-1/2 lg:w-1/3 bg-card flex flex-col rounded-xl px-6 py-6 gap-2'>
             <h1 className='font-bold text-2xl font-sans py-2'>Convert Currency</h1>
 
-            <LiaTimesSolid 
-              size={20} 
-              onClick={() => navigate('/dashboard')} 
-              className='absolute top-6 right-8 hover:fill-gray-400 cursor-pointer'
+            <LiaTimesSolid
+              size={20}
+              onClick={() => navigate('/dashboard')}
+              className='absolute top-6 right-8 hover:fill-subtle cursor-pointer'
             />
 
             <div className="flex flex-col font-sans gap-5">
-              <div className="text-sm text-right bg-gray-100 rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
+              <div className="text-sm text-right bg-muted rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
                 <p>1 {srcCurrency?.code ?? 'AUD'} = {hasExchanged ? (
                   `${Number(exchangeRate).toLocaleString(destCurrency?.localeString, 
                     { minimumFractionDigits: 8,
@@ -102,7 +101,7 @@ const CurrencyConversionPage = () => {
 
               <div>
                 <label className="text-sm font-medium mb-2 block">From</label>
-                <div className="flex items-center border-b border-gray-300 pb-2">
+                <div className="flex items-center border-b border-input pb-2">
                   <Currencies currCurrency={srcCurrency} isOpen={openCurrencyFrom} setIsOpen={setOpenCurrencyFrom} handleSelectCurrency={selectCurrencyFrom} />
                   <input
                     type="number"
@@ -111,16 +110,16 @@ const CurrencyConversionPage = () => {
                     value={sourceCurrencyAmount}
                     onChange={handleSourceCurrencyChange}
                     placeholder="0.00"
-                    className="w-full text-3xl font-bold text-gray-700 bg-transparent outline-none"
+                    className="w-full text-3xl font-bold text-foreground bg-transparent outline-none"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="text-sm font-medium mb-2 block">To</label>
-                <div className="flex items-center border-b border-gray-300 pb-2">
+                <div className="flex items-center border-b border-input pb-2">
                   <Currencies currCurrency={destCurrency} isOpen={openCurrencyTo} setIsOpen={setOpenCurrencyTo} handleSelectCurrency={selectCurrencyTo} />
-                  <div className="text-3xl font-bold text-gray-700">
+                  <div className="text-3xl font-bold text-foreground">
                     {isRateLoading && (
                       <ClipLoader color='black' size={10} aria-label="Loading Spinner" />
                     )}
@@ -128,19 +127,19 @@ const CurrencyConversionPage = () => {
                       <p>{destCurrencyAmount.toLocaleString(destCurrency?.localeString)}</p>
                     )}
                     {exchangeRateError && (
-                      <p className='text-red-500 text-sm'>Failed to fetch exchange rate.</p>
+                      <p className='text-destructive text-sm'>Failed to fetch exchange rate.</p>
                     )}
                   </div>
                 </div>
               </div>
 
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => navigate('/dashboard')}
-                className={`w-full py-3 text-white font-bold rounded-xl transition cursor-pointer ${isValid ? 'bg-[#C6412A] hover:bg-[#A8321E]' : 'bg-gray-300 cursor-not-allowed'
-                }`}
+                className="w-full"
               >
                 Back
-              </button>
+              </Button>
 
             </div>
           </div>

@@ -11,6 +11,7 @@ import PersonalDetails from "../components/profile/PersonalDetails";
 import BankDetails from "../components/profile/BankDetails";
 import useDarkModeStore from "@/stores/darkModeStore";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
 const rankColour: Record<string, string> = {
   bronze: "from-yellow-800 to-yellow-600",
@@ -438,13 +439,14 @@ const ProfilePage = () => {
 
   const headerButtons = (
     <div className="gap-4 flex items-center">
-      <button
+      <Button
+        variant="ghost"
         onClick={() => navigate('/dashboard')}
         data-testid="back-to-dashboard"
-        className={`${darkMode ? "bg-gray-400 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-black"}  px-6 py-2 rounded-lg transition duration-300 shadow-md cursor-pointer`}
+        className="px-6 py-2 shadow-md"
       >
         Back to Dashboard
-      </button>
+      </Button>
       <LogoutButton />
     </div>
   );
@@ -452,14 +454,14 @@ const ProfilePage = () => {
   return (
     <Layout headerRight={headerButtons}>
       <div className={`flex justify-center items-center py-8 px-4`}>
-        <div className={`w-full max-w-2xl rounded-xl shadow-lg overflow-hidden ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+        <div className="w-full max-w-2xl rounded-xl shadow-lg overflow-hidden bg-card text-foreground">
           {/* Profile Header */}
-          <div className={`bg-${darkMode ? 'gray-800' : 'gray-100'} px-6 py-4 border-b`}>
+          <div className="bg-muted px-6 py-4 border-b border-border">
             <div className="flex flex-row items-center gap-6">
               <div>
                 {/* Profile Image Group */}
                 <div className="relative group">
-                  <div className={`w-24 h-24 ${darkMode ? 'bg-gray-400' : 'bg-gray-200'} rounded-full border-3 border-white shadow-lg overflow-hidden`}>
+                  <div className="w-24 h-24 bg-secondary rounded-full border-3 border-card shadow-lg overflow-hidden">
                     <img
                       src={profileImage}
                       alt="Profile"
@@ -467,7 +469,7 @@ const ProfilePage = () => {
                     />
                   </div>
 
-                  <label className="absolute bottom-0 right-0 p-2 text-white rounded-full shadow-md bg-blue-500 hover:bg-blue-600 transition-transform transform group-hover:scale-110 cursor-pointer">
+                  <label className="absolute bottom-0 right-0 p-2 text-primary-foreground rounded-full shadow-md bg-primary hover:opacity-90 transition-transform transform group-hover:scale-110 cursor-pointer">
                     <FiEdit2 className="w-4 h-4" />
                     <input
                       type="file"
@@ -478,7 +480,7 @@ const ProfilePage = () => {
                   </label>
 
                   {isImageUploading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                     </div>
                   )}
@@ -488,7 +490,7 @@ const ProfilePage = () => {
                 {profileImage !== '/profile icon.png' && (
                   <button
                     onClick={handleClearImage}
-                    className="mt-2 text-xs text-red-600 hover:text-red-800 hover:underline transition-colors cursor-pointer"
+                    className="mt-2 text-xs text-destructive hover:text-destructive/80 hover:underline transition-colors cursor-pointer"
                   >
                     Revert to Default
                   </button>
@@ -499,41 +501,38 @@ const ProfilePage = () => {
               <div className="flex-1 w-full">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-start">
                   <div className="flex-1 min-w-0">
-                    <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} truncate`}>
+                    <h1 className="text-2xl font-bold text-foreground truncate">
                       {displayDetails.givenName} {displayDetails.familyName}
                     </h1>
-                    <p className={`break-all ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>ID: {userId}</p>
+                    <p className="break-all text-muted-foreground">ID: {userId}</p>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between gap-2">
                       <button
                         onClick={toggleDarkMode}
-                        className={`p-2 rounded-full transition duration-300 cursor-pointer ${darkMode
-                          ? 'bg-gray-600 hover:bg-gray-700'
-                          : 'bg-gray-200 hover:bg-gray-300'
-                          }`}
+                        className="p-2 rounded-full transition duration-300 cursor-pointer bg-secondary hover:bg-secondary/80"
                       >
                         {darkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
                       </button>
 
                       {isLocked ? (
-                        <p className="text-sm font-medium px-4 p-1.5 rounded-full bg-red-200 text-red-800">
+                        <p className="text-sm font-medium px-4 p-1.5 rounded-full bg-destructive/10 text-destructive">
                           Locked
                         </p>
                       ) : (isVerified ? (
-                        <p className="text-sm font-medium px-4 p-1.5 rounded-full bg-green-200 text-green-800">
+                        <p className="text-sm font-medium px-4 p-1.5 rounded-full bg-positive/10 text-positive">
                           Verified
                         </p>
                       ) : (
-                        <p className="text-sm font-medium px-4 p-1.5 rounded-full bg-yellow-200 text-yellow-800">
+                        <p className="text-sm font-medium px-4 p-1.5 rounded-full bg-warning/10 text-warning">
                           Unverified
                         </p>
                       ))}
                     </div>
                     <button
                       onClick={toggleAccountModal}
-                      className="text-sm font-medium px-2 py-0.5 rounded-full bg-blue-200 text-blue-600 self-end cursor-pointer"
+                      className="text-sm font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary self-end cursor-pointer"
                       title={`Change to ${personalDetails.accountType === 'personal' ? 'Business' : 'Personal'} Account`}
                     >
                       {personalDetails.accountType.charAt(0).toUpperCase() + personalDetails.accountType.slice(1).toLowerCase()} Account
@@ -544,11 +543,11 @@ const ProfilePage = () => {
                 {/* User Progress Bar */}
                 <div className="mt-2 w-full">
                   <div className="flex justify-between items-center mb-2">
-                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-700'}`}>{userRank.toUpperCase()} User</p>
-                    <p className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>EXP: {currentExp}/{requiredExp}</p>
+                    <p className="text-sm font-bold text-foreground">{userRank.toUpperCase()} User</p>
+                    <p className="text-sm font-medium text-muted-foreground">EXP: {currentExp}/{requiredExp}</p>
                   </div>
 
-                  <div className={`w-full bg-gray-300 rounded-full h-3 ${darkMode ? 'bg-gray-600' : ''}`}>
+                  <div className="w-full bg-secondary rounded-full h-3">
                     <div
                       className={`bg-gradient-to-r ${rankColour[userRank] || "from-gray-400 to-gray-600"} rounded-full h-3`}
                       style={{ width: `${progressPercent}%` }}
@@ -560,21 +559,21 @@ const ProfilePage = () => {
           </div>
 
           {/* Profile Content */}
-          <div className={`p-6 space-y-4 ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+          <div className="p-6 space-y-4 text-foreground">
             {/* Error message */}
             {errorMessage && (
-              <div className={`flex items-center justify-between px-4 py-3 mb-4 ${darkMode ? 'bg-gray-800 border-l-4 border-red-500' : 'bg-red-100 border-l-4 border-red-500'} rounded-r`}>
+              <div className="flex items-center justify-between px-4 py-3 mb-4 bg-destructive/10 border-l-4 border-destructive rounded-r">
                 <div className="flex items-center gap-2">
                   <div className="flex-shrink-0">
-                    <TriangleAlert className="h-5 w-5 text-red-500" />
+                    <TriangleAlert className="h-5 w-5 text-destructive" />
                   </div>
 
-                  <p className={`text-sm ${darkMode ? 'text-red-400' : 'text-red-700'}`}>{errorMessage}</p>
+                  <p className="text-sm text-destructive">{errorMessage}</p>
                 </div>
 
                 <button
                   onClick={() => setErrorMessage("")}
-                  className="text-red-500 hover:text-red-700 ml-4 transition duration-300"
+                  className="text-destructive hover:text-destructive/80 ml-4 transition duration-300"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -583,15 +582,15 @@ const ProfilePage = () => {
 
             {/* Locked Notification */}
             {isLocked && (
-              <div className="bg-red-100 border-l-4 border-red-400 p-4 mb-2">
+              <div className="bg-destructive/10 border-l-4 border-destructive p-4 mb-2">
                 <div className="flex flex-row items-center">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <TriangleAlert className="h-5 w-5 text-red-500" />
+                      <TriangleAlert className="h-5 w-5 text-destructive" />
                     </div>
 
                     <div className="ml-4">
-                      <p className="text-sm text-red-600">
+                      <p className="text-sm text-destructive">
                         Your account is locked. You won&apos;t be able to access certain features.
                       </p>
                     </div>
@@ -602,22 +601,22 @@ const ProfilePage = () => {
 
             {/* Unverified Notification */}
             {!isVerified && !isEditing && !isEditingBank && !isLocked && (
-              <div className="bg-yellow-50 border-l-4 border-amber-600 p-4 mb-2">
+              <div className="bg-warning/10 border-l-4 border-warning p-4 mb-2">
                 <div className="flex flex-row items-center">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <FiAlertCircle className="h-5 w-5 text-amber-600" />
+                      <FiAlertCircle className="h-5 w-5 text-warning" />
                     </div>
 
                     {checkMissingFields ?
                       <div className="ml-3">
-                        <p className="text-sm text-amber-700">
+                        <p className="text-sm text-warning">
                           Your account is not verified yet. Verify now to gain access to all features.
                         </p>
                       </div>
                       :
                       <div className="ml-3">
-                        <p className="text-sm text-amber-700">
+                        <p className="text-sm text-warning">
                           Please wait for admin verification. You can still edit your details.
                         </p>
                       </div>
@@ -627,7 +626,7 @@ const ProfilePage = () => {
                   {checkMissingFields &&
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="ml-3 bg-amber-600 hover:bg-amber-700 text-white px-4 py-1 rounded-md text-sm font-medium transition duration-300 shadow-md cursor-pointer"
+                      className="ml-3 bg-warning hover:opacity-90 text-warning-foreground px-4 py-1 rounded-md text-sm font-medium transition duration-300 shadow-md cursor-pointer"
                     >
                       Verify Now
                     </button>
@@ -677,60 +676,63 @@ const ProfilePage = () => {
             <div className="flex justify-between pt-4">
               {isEditing ? (
                 <div className="flex gap-4">
-                  <button
+                  <Button
+                    variant="primary"
                     onClick={handleSaveProfile}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-300 shadow-md cursor-pointer"
+                    className="px-6 py-2 shadow-md"
                     data-testid="button-save-changes"
                   >
                     Save Changes
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
                     onClick={() => {
                       fetchProfile();
                       setIsEditing(false);
                     }}
-                    className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg transition duration-300 shadow-md cursor-pointer"
+                    className="px-6 py-2 shadow-md"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               ) : isEditingBank ? (
                 <div className="flex gap-4">
-                  <button
+                  <Button
+                    variant="primary"
                     onClick={handleChangeBankDetails}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-300 shadow-md cursor-pointer"
+                    className="px-6 py-2 shadow-md"
                     data-testid="button-save-bank-details"
                   >
                     Save Bank Details
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
                     onClick={() => {
                       fetchProfile();
                       setisEditingBank(false);
                     }}
-                    className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg transition duration-300 shadow-md cursor-pointer"
+                    className="px-6 py-2 shadow-md"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <>
-                  <button
+                  <Button
+                    variant="primary"
                     onClick={() => setIsEditing(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-lg transition duration-300 shadow-md cursor-pointer"
+                    className="px-4 md:px-6 py-2 shadow-md"
                   >
                     Edit Profile
-                  </button>
-                  <button
-                    className={`px-4 md:px-6 py-2 rounded-lg transition duration-300 shadow-md text-white ${isLocked
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-red-600 hover:bg-red-700 cursor-pointer"
-                      }`}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    className="px-4 md:px-6 py-2 shadow-md"
                     onClick={handleUserBlock}
                     disabled={isLocked}
                   >
                     {isLocked ? "Account Disabled" : "Disable Account"}
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -738,27 +740,29 @@ const ProfilePage = () => {
             {/* Change Account Modal */}
             {changeAccountModal && (
               <div className="flex items-center justify-center fixed inset-0 backdrop-blur-xs z-50">
-                <div className="bg-gray-100 p-6 rounded-lg shadow-xl w-100">
+                <div className="bg-card p-6 rounded-lg shadow-xl w-100">
                   <h2 className="text-xl font-semibold mb-6">Change Account Type</h2>
-                  <p className="mb-4 text-md text-gray-800">
+                  <p className="mb-4 text-md text-foreground">
                     Are you sure you want to change your account type to
-                    <strong className="ml-1 text-blue-600">
+                    <strong className="ml-1 text-foreground font-semibold">
                       {personalDetails.accountType === 'personal' ? 'Business' : 'Personal'}?
                     </strong>
                   </p>
                   <div className="flex justify-end gap-3">
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => setChangeAccountModal(false)}
-                      className="px-4 py-2 text-sm bg-gray-300 hover:bg-gray-400 rounded-md cursor-pointer"
+                      className="px-4 py-2 text-sm"
                     >
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="primary"
                       onClick={handleChangeAccountType}
-                      className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md cursor-pointer"
+                      className="px-4 py-2 text-sm"
                     >
                       Confirm
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

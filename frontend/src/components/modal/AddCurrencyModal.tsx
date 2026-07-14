@@ -4,6 +4,8 @@ import ReactCountryFlag from 'react-country-flag';
 import { useTransactionStore } from '@/stores/transactionStore';
 import useAuthStore from '@/stores/authStore';
 import type { UserWalletInfo } from "@/pages/Dashboard";
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 interface AddCurrencyModalProps {
   onClose: () => void;
@@ -40,16 +42,16 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
 
   return (
     <div data-testid="add-currency-dialog" className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-xs z-50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
         {/* Header */}
-        <div className="relative flex items-center justify-center p-4 border-b border-gray-200 shadow-xs">
-          <h2 className="text-2xl font-bold text-gray-900 text-center w-full">
+        <div className="relative flex items-center justify-center p-4 border-b border-border shadow-xs">
+          <h2 className="text-2xl font-bold text-foreground text-center w-full">
             Add a balance
           </h2>
           <button
             onClick={onClose}
             aria-label="add-currency-close"
-            className="absolute right-6 text-gray-500 hover:text-gray-700 transition-colors duration-300 cursor-pointer"
+            className="absolute right-6 text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
           >
             <FiX size={26} />
           </button>
@@ -59,13 +61,13 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
         <div className="p-6">
           <div className="relative">
             <div className="absolute flex items-center inset-y-0 left-0 pl-3 pointer-events-none">
-              <FiSearch className="text-gray-500" />
+              <FiSearch className="text-muted-foreground" />
             </div>
-            <input
+            <Input
               type="text"
               placeholder="Search currencies..."
               data-testid="currency-filter"
-              className="w-full pl-10 pr-4 py-3 border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#C6412A] focus:border-[#C6412A] outline-none transition-all"
+              className="pl-10 pr-4 py-3"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -75,17 +77,17 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
         {/* Currency List */}
         <div className="max-h-[400px] overflow-y-auto">
           {filteredCurrencies.length === 0 ? (
-            <div className="p-6 text-center text-gray-600">
+            <div className="p-6 text-center text-muted-foreground">
               No currencies found
             </div>
           ) : (
-            <ul className="divide-y divide-gray-200">
+            <ul className="divide-y divide-border">
               {filteredCurrencies.map((currency) => (
                 <li key={currency.code}>
                   <button
                     onClick={() => setSelectedCurrency(currency.code)}
                     aria-label="select-specific-currency"
-                    className={`flex items-center w-full px-6 py-4 hover:bg-red-200 transition-colors cursor-pointer ${selectedCurrency === currency.code ? 'bg-red-100' : ''
+                    className={`flex items-center w-full px-6 py-4 hover:bg-primary/10 transition-colors cursor-pointer ${selectedCurrency === currency.code ? 'bg-primary/10' : ''
                       }`}
                   >
                     <ReactCountryFlag
@@ -100,12 +102,12 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
                       }}
                     />
                     <div className="text-left">
-                      <p className="font-medium text-gray-900">{currency.label}</p>
-                      <p className="text-sm text-gray-500">{currency.code}</p>
+                      <p className="font-medium text-foreground">{currency.label}</p>
+                      <p className="text-sm text-muted-foreground">{currency.code}</p>
                     </div>
                     {selectedCurrency === currency.code && (
-                      <div className="ml-auto w-5 h-5 rounded-full bg-[#C6412A] flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      <div className="ml-auto w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-primary-foreground"></div>
                       </div>
                     )}
                   </button>
@@ -116,19 +118,16 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 shadow-xs">
+        <div className="p-6 border-t border-border shadow-xs">
           {/* Add balance button */}
-          <button
+          <Button
             onClick={handleAddCurrency}
             disabled={!selectedCurrency}
             aria-label="add-specific-currency"
-            className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${selectedCurrency
-              ? 'bg-[#C6412A] hover:bg-[#A8321E] text-white'
-              : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-              }`}
+            className="w-full py-3"
           >
             Add balance
-          </button>
+          </Button>
         </div>
       </div>
     </div>

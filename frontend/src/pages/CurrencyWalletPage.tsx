@@ -10,6 +10,7 @@ import useAuthStore from '@/stores/authStore';
 import ConfirmationModal from '@/components/modal/ConfirmationModal';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 interface UserWalletData {
   walletId: string,
@@ -45,7 +46,7 @@ const CurrencyWalletPage = () => {
       if (!currencyCode) { setErrorMsg("Missing currency code"); return; }
 
       try {
-        const response = await axios.get(`http://localhost:3000/currencywallet/${currencyCode}/${userId}`, {
+        const response = await axios.get(`${API_URL}/currencywallet/${currencyCode}/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -131,16 +132,16 @@ const CurrencyWalletPage = () => {
     <Layout headerRight={<HeaderButtons />}>
       {/* Loading section */}
       {!userWallet &&
-        <div className="p-10 text-gray-600 text-xl">Loading wallet data...</div>
+        <div className="p-10 text-muted-foreground text-xl">Loading wallet data...</div>
       }
 
       {/* Error Message */}
       {errorMsg && (
-        <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-200 border-2 border-red-400 text-red-700 rounded z-50">
+        <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
           <p className="break-words w-full pr-8">{errorMsg}</p>
           <button
             onClick={() => setErrorMsg(null)}
-            className="absolute top-4 right-4 text-red-700 hover:text-red-900"
+            className="absolute top-4 right-4 text-destructive hover:text-destructive/80"
           >
             <FaTimes />
           </button>
@@ -153,23 +154,24 @@ const CurrencyWalletPage = () => {
           <div className="flex flex-col items-center md:items-start gap-3 sm:gap-5 flex-1 w-full">
             {/* Mobile Close Balance Button */}
             <div className="flex justify-end w-full md:hidden">
-              <button
+              <Button
+                variant="destructive"
                 onClick={() => setShowCloseModal(true)}
-                className="flex items-center gap-2 text-red-600 hover:text-red-800 font-medium text-base sm:text-lg px-4 py-2 rounded-lg border border-red-200 hover:border-red-300 bg-white/60 hover:bg-red-400 transition-colors duration-300"
+                className="flex items-center gap-2 text-base sm:text-lg"
               >
                 <FaTimes size={16} />
                 <span className="sr-only">Close balance</span>
-              </button>
+              </Button>
             </div>
 
             <div className="flex items-center gap-3 sm:gap-4">
               {currency && <FlagGetter countryCodes={currency.countryCode.toLowerCase()} />}
-              <h1 className="text-black font-bold text-2xl sm:text-4xl md:text-5xl">
+              <h1 className="text-foreground font-bold text-2xl sm:text-4xl md:text-5xl">
                 {currency?.code} Balance
               </h1>
             </div>
 
-            <h2 className="text-black font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
+            <h2 className="text-foreground font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
               {userWallet?.walletBalance?.toLocaleString('en-AU', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -178,13 +180,14 @@ const CurrencyWalletPage = () => {
           </div>
 
           {/* Close Balance Button */}
-          <button
+          <Button
+            variant="destructive"
             onClick={() => setShowCloseModal(true)}
-            className="hidden md:flex items-center gap-2 text-red-600 hover:text-red-800 font-medium text-lg px-4 py-2 rounded-lg border border-red-200 hover:border-red-300 bg-white/60 hover:bg-white/80 transition-colors duration-300 absolute top-6 md:top-10 right-6 md:right-10"
+            className="hidden md:flex items-center gap-2 text-lg absolute top-6 md:top-10 right-6 md:right-10"
           >
             <FaTimes />
             Close balance
-          </button>
+          </Button>
         </div>
 
         {/* Action Buttons */}
@@ -199,7 +202,7 @@ const CurrencyWalletPage = () => {
               <div key={index} className="flex flex-col items-center gap-2 w-[calc(50%-4rem)] sm:w-auto">
                 <button
                   onClick={button.action}
-                  className="bg-white/60 rounded-full w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 font-bold text-lg sm:text-xl md:text-2xl flex justify-center items-center hover:scale-105 sm:hover:scale-110 transform transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="bg-card rounded-full w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 font-bold text-lg sm:text-xl md:text-2xl flex justify-center items-center hover:scale-105 sm:hover:scale-110 transform transition-all duration-300 shadow-sm hover:shadow-md"
                 >
                   {button.icon}
                 </button>

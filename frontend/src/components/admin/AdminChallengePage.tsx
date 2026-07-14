@@ -9,6 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { API_URL } from "@/constants/API_URL";
 
 // Previously was passed into AdminChallengePage as a prop
@@ -56,7 +58,7 @@ const AdminChallengePage = () => {
 
   return (
     <div className="z-0 flex w-full items-start justify-center mt-6 px-4 mb-6">
-      <form className="rounded-xl bg-white flex flex-col shadow-xl border p-10 w-full sm:w-[90%] md:w-[70%] gap-4" onSubmit={(e) => handleSubmit(e)}>
+      <form className="rounded-xl bg-card flex flex-col shadow-xl border p-10 w-full sm:w-[90%] md:w-[70%] gap-4" onSubmit={(e) => handleSubmit(e)}>
         <h1 className="text-2xl font-bold mb-5 ">Create challenge</h1>
         {/* Category */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
@@ -67,23 +69,23 @@ const AdminChallengePage = () => {
                 <button
                   id="category"
                   type="button"
-                  className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-left text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-left text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
                 >
                   {category || "Select Category"}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-full mt-1 rounded-md border border-gray-300 bg-white shadow-md"
+                className="w-full mt-1 rounded-md border border-border bg-card shadow-md"
                 align="start"
               >
-                <DropdownMenuLabel className="px-3 py-2 text-sm text-gray-500">
+                <DropdownMenuLabel className="px-3 py-2 text-sm text-muted-foreground">
                   Choose a category
                 </DropdownMenuLabel>
                 {categories.map((category) => (
                   <DropdownMenuItem
                     key={category}
                     onClick={() => setCategory(category.toLowerCase())}
-                    className="px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 cursor-pointer"
+                    className="px-3 py-2 text-sm text-foreground hover:bg-muted cursor-pointer"
                   >
                     {category}
                   </DropdownMenuItem>
@@ -95,10 +97,10 @@ const AdminChallengePage = () => {
         {/* Title */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
           <label htmlFor="Title" className="md:w-1/3 font-medium">Title:*</label>
-          <input
+          <Input
             type="text"
             id="Title"
-            className="border bg-white border-gray-400 w-full md:w-2/3 p-2 rounded"
+            className="md:w-2/3"
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
@@ -106,10 +108,10 @@ const AdminChallengePage = () => {
         {/* Description */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
           <label htmlFor="Description" className="md:w-1/3 font-medium">Description:*</label>
-          <input
+          <Input
             type="text"
             id="Description"
-            className="border bg-white border-gray-400 w-full md:w-2/3 p-2 rounded"
+            className="md:w-2/3"
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
@@ -117,10 +119,10 @@ const AdminChallengePage = () => {
         {/* Start Date */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
           <label htmlFor="start-date" className="md:w-1/3 font-medium">Challenge start date:*</label>
-          <input
+          <Input
             type="date"
             id="start-date"
-            className="border bg-white border-gray-400 w-full md:w-2/3 p-2 rounded"
+            className="md:w-2/3"
             onChange={(e) => setStartDate(e.target.value)}
           />
         </div>
@@ -128,10 +130,10 @@ const AdminChallengePage = () => {
         {/* End Date */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
           <label htmlFor="end-date" className="md:w-1/3 font-medium">Challenge end date:*</label>
-          <input
+          <Input
             type="date"
             id="end-date"
-            className="border bg-white border-gray-400 w-full md:w-2/3 p-2 rounded"
+            className="md:w-2/3"
             onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
@@ -139,10 +141,10 @@ const AdminChallengePage = () => {
         {/* Exp */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
           <label htmlFor="end-date" className="md:w-1/3 font-medium">Exp:*</label>
-          <input
+          <Input
             type="number"
             id="end-date"
-            className="border bg-white border-gray-400 w-full md:w-2/3 p-2 rounded"
+            className="md:w-2/3"
             onChange={(e) => setExp(e.target.value)}
           />
         </div>
@@ -150,23 +152,24 @@ const AdminChallengePage = () => {
         {/* Amount */}
         <div className="flex flex-col md:flex-row w-full items-start md:items-center gap-2">
           <label htmlFor="end-date" className="md:w-1/3 font-medium">Amount to goal:*</label>
-          <input
+          <Input
             type="number"
             id="end-date"
-            className="border bg-white border-gray-400 w-full md:w-2/3 p-2 rounded"
+            className="md:w-2/3"
             onChange={(e) => setAmountToGoal(e.target.value)}
           />
         </div>
 
-        <p className="self-start mt-2 text-gray-500">*: required field</p>
+        <p className="self-start mt-2 text-muted-foreground">*: required field</p>
 
         {/* Submit */}
-        <button
-          className="bg-[#C6412A] text-white w-full p-2 rounded hover:bg-[#A8321E] mt-4 cursor-pointer"
+        <Button
+          variant="primary"
+          className="w-full mt-4"
           onClick={(e) => handleSubmit(e)}
         >
           Create
-        </button>
+        </Button>
       </form>
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}
       {success && <SuccessModal message={success} onClose={() => setSuccess(null)} />}

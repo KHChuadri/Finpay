@@ -46,7 +46,7 @@ const ManageGroup = () => {
   const fetchInviteList = async (userId: string) => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/invitation/batch",
+        `${API_URL}/invitation/batch`,
         {
           params: { userId },
         }
@@ -73,10 +73,10 @@ const ManageGroup = () => {
     <Layout headerRight={<HeaderButtons />}>
       <div className="flex flex-col w-full items-center pt-10 mb-5">
         <div className="md:w-1/2 w-4/5">
-          <div className="relative flex mb-4 rounded-full bg-gray-100 shadow-md border border-gray-200 overflow-hidden">
+          <div className="relative flex mb-4 rounded-full bg-muted shadow-md border border-border overflow-hidden">
             {/* Slider */}
             <div
-              className={`absolute top-0 bottom-0 w-1/2 bg-white rounded-full transition-all duration-300 ease-in-out ${
+              className={`absolute top-0 bottom-0 w-1/2 bg-card rounded-full transition-all duration-300 ease-in-out ${
                 activeTab === "group" ? "left-0" : "left-1/2"
               }`}
             />
@@ -88,8 +88,8 @@ const ManageGroup = () => {
               }}
               className={`flex-1 z-10 py-3 px-4 font-semibold rounded-full transition-colors duration-200 ${
                 activeTab === "group"
-                  ? "text-[#C6412A] font-semibold"
-                  : "text-gray-600 hover:bg-gray-200"
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               Groups
@@ -102,15 +102,15 @@ const ManageGroup = () => {
               }}
               className={`flex-1 z-10 py-3 px-4 font-semibold rounded-full transition-colors duration-200 ${
                 activeTab === "invites"
-                  ? "text-[#C6412A] font-semibold"
-                  : "text-gray-600 hover:bg-gray-200"
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               Invites
             </button>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg">
+          <div className="bg-card p-6 rounded-xl shadow-lg">
             {activeTab === "group" &&
               (group ? (
                 <Groups list={group} onProcessed={onUpdate} />

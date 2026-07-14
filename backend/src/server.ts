@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
-import { connectToDB } from "../lib/mongoClient";
+import { pool } from "../lib/db";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { createApp } from "./app";
-import mongoose from "mongoose";
 import { scheduledPaymentWorker } from "../workers/scheduledPaymentWorker";
 import { QueueEvents } from "bullmq";
 import connection from "../config/redis";
@@ -19,7 +20,10 @@ const queueEvents = new QueueEvents("scheduled-payments", { connection });
 
 const start = async () => {
   try {
-    await connectToDB();
+    // Apply pending migrations, then verify connectivity.
+    await migrate(drizzle(pool), { migrationsFolder: "./src/db/migrations" });
+    await pool.query("SELECT 1");
+    console.log("✅ Connected to PostgreSQL");
     const app: Express = createApp();
     initializeMonthlyBalanceCheck();
     server = app.listen(PORT,() => {
@@ -48,8 +52,8 @@ const shutdown = async () => {
     await scheduledPaymentWorker.close();
     console.log("🧹 Worker closed");
 
-    await mongoose.disconnect();
-    console.log("🧹 MongoDB disconnected");
+    await pool.end();
+    console.log("🧹 PostgreSQL pool closed");
   } catch (err) {
     console.error("❌ Shutdown error:", err);
   } finally {

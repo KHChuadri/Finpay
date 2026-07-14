@@ -9,6 +9,7 @@ import Header from './Header';
 import { ClipLoader } from 'react-spinners';
 import Notice from '../Notice';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 const Recipient = () => {
   const navigate = useNavigate();
@@ -82,21 +83,21 @@ const Recipient = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='w-2/3 lg:w-1/3 bg-white flex flex-col rounded-xl'>
+          <div className='w-2/3 lg:w-1/3 bg-card flex flex-col rounded-xl'>
             <Header />
 
             <div className='flex flex-col gap-10 rounded-lg px-10 py-6 mt-3'>
               {!loading ? (
                 <>
                   <div className='flex flex-col gap-5 h-full'>
-                    {errorMsg.length != 0 && <p className='text-red-500'>{errorMsg}</p>}
+                    {errorMsg.length != 0 && <p className='text-destructive'>{errorMsg}</p>}
 
                     <Notice />
 
                     {transactionType == 'transfer' ? (
-                      <h2 className='text-black text-xl font-semibold'>Who are you sending money to?</h2>
+                      <h2 className='text-foreground text-xl font-semibold'>Who are you sending money to?</h2>
                     ) : (
-                      <h2 className='text-black text-xl font-semibold'>Who are you requesting money from?</h2>
+                      <h2 className='text-foreground text-xl font-semibold'>Who are you requesting money from?</h2>
                     )}
 
                     <input
@@ -106,22 +107,19 @@ const Recipient = () => {
                       onChange={(e) => setRecipientEmail(e.target.value)}
                       onKeyUp={() => validateEmail()}
                       onKeyDown={() => validateEmail()}
-                      className='border-b-2 border-gray-700 p-2 w-full focus:outline-none'
+                      className='border-b-2 border-input p-2 w-full focus:outline-none'
                       placeholder='Email'
                     />
                   </div>
 
-                  <button
+                  <Button
                     disabled={!goNextPage || !isVerified || isLocked}
                     data-testid='first-continue-btn'
                     onClick={() => handleNextPage()}
-                    className={`w-full py-3 text-white font-bold rounded-xl transition ${goNextPage && isVerified && !isLocked
-                      ? 'bg-[#C6412A] hover:bg-[#A8321E] cursor-pointer'
-                      : 'bg-gray-400 cursor-not-allowed'
-                      }`}
+                    className='w-full py-3 rounded-xl'
                   >
                     Continue
-                  </button>
+                  </Button>
 
                   <div className='flex flex-col gap-2'>
                     {transactionType === 'transfer' && (
@@ -129,13 +127,13 @@ const Recipient = () => {
                         disabled={!isVerified || isLocked}
                         className={`text-lg font-semibold duration-200 relative w-fit
                           ${(isVerified && !isLocked) ?
-                            'text-blue-600 hover:text-blue-800 hover:cursor-pointer' :
-                            `text-gray-400 cursor-not-allowed`
+                            'text-primary hover:text-primary/80 hover:cursor-pointer' :
+                            `text-subtle cursor-not-allowed`
                           }`}
                         onClick={() => handleTransferToSelf()}
                       >
                         Send to yourself
-                        <span className='absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300'></span>
+                        <span className='absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300'></span>
                       </button>
                     )}
 
@@ -143,13 +141,13 @@ const Recipient = () => {
                       disabled={!isVerified || isLocked}
                       className={`text-lg font-semibold duration-200 relative w-fit
                         ${(isVerified && !isLocked) ?
-                          'text-blue-600 hover:text-blue-800 hover:cursor-pointer' :
-                          `text-gray-400 cursor-not-allowed`
+                          'text-primary hover:text-primary/80 hover:cursor-pointer' :
+                          `text-subtle cursor-not-allowed`
                         }`}
                       onClick={() => navigate('search')}
                     >
                       Search saved recipients
-                      <span className='absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300'></span>
+                      <span className='absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300'></span>
                     </button>
                   </div>
                 </>

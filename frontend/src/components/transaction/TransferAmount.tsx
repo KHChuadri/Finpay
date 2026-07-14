@@ -131,13 +131,13 @@ const TransferAmount = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl'>
+          <div className='w-1/2 lg:w-1/3 bg-card flex flex-col rounded-xl'>
             <Header />
 
             {
-              errorMsg.length != 0 
-                && 
-              <p className='text-red-500 text-md p-4'>{errorMsg}</p>
+              errorMsg.length != 0
+                &&
+              <p className='text-destructive text-md p-4'>{errorMsg}</p>
             }
 
             <div className="flex flex-col px-6 py-4 font-sans gap-6">
@@ -147,7 +147,7 @@ const TransferAmount = () => {
               <ExchangeRate data-testid="exchange-rate-convert" rate={exchangeRate} hasExchanged={hasExchanged} />
               <div>
                 <label data-testid="source-send-label" className="text-sm font-medium mb-2 block">You send exactly</label>
-                <div className="flex items-center border-b border-gray-300 pb-2">
+                <div className="flex items-center border-b border-input pb-2">
                   <Currencies currCurrency={currencyFrom} isOpen={openCurrencyFrom} setIsOpen={setOpenCurrencyFrom} handleSelectCurrency={selectCurrencyFrom} />
                   <input
                     type="number"
@@ -157,7 +157,7 @@ const TransferAmount = () => {
                     onChange={handleSourceCurrencyChange}
                     data-testid="source-currency-input"
                     placeholder="0.00"
-                    className="w-full text-3xl font-bold text-gray-700 bg-transparent outline-none"
+                    className="w-full text-3xl font-bold text-foreground bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -165,9 +165,9 @@ const TransferAmount = () => {
               {/* Recipient Gets */}
               <div>
                 <label data-testid="recipient-send-label" className="text-sm font-medium mb-2 block">Recipient gets</label>
-                <div className="flex items-center border-b border-gray-300 pb-2">
+                <div className="flex items-center border-b border-input pb-2">
                   <Currencies currCurrency={currencyTo} isOpen={openCurrencyTo} setIsOpen={setOpenCurrencyTo} handleSelectCurrency={selectCurrencyTo} />
-                  <div data-testid="recipient-amount-receive" className="text-3xl font-bold text-gray-700">
+                  <div data-testid="recipient-amount-receive" className="text-3xl font-bold text-foreground">
                     {isRateLoading && (
                       <ClipLoader color='black' size={10} aria-label="Loading Spinner" />
                     )}
@@ -175,7 +175,7 @@ const TransferAmount = () => {
                       <p>{rawDestCurrencyAmount.toLocaleString(currencyTo?.localeString)}</p>
                     )}
                     {exchangeRateError && (
-                      <p className='text-red-500 text-sm'>Failed to fetch exchange rate.</p>
+                      <p className='text-destructive text-sm'>Failed to fetch exchange rate.</p>
                     )}
                   </div>
                 </div>
@@ -185,7 +185,7 @@ const TransferAmount = () => {
                 disabled={!isValid || !isVerified || isLocked}
                 onClick={handleNextPage}
                 data-testid="continue-convert-button"
-                className={`w-full py-3 text-white font-bold rounded-xl transition cursor-pointer ${isValid ? 'bg-[#C6412A] hover:bg-[#A8321E]' : 'bg-gray-300 cursor-not-allowed'
+                className={`w-full py-3 font-bold rounded-xl transition cursor-pointer ${isValid ? 'bg-primary text-primary-foreground hover:opacity-90' : 'bg-muted text-muted-foreground cursor-not-allowed'
                   }`}
               >
                 Continue

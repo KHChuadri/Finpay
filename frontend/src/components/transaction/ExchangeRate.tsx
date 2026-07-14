@@ -9,7 +9,7 @@ interface ExchangeRateProps {
 const ExchangeRate = ({ rate, hasExchanged }: ExchangeRateProps) => {
   const { currencyFrom, currencyTo } = useTransactionStore();
   return (
-    <div className="text-sm text-right bg-gray-100 rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
+    <div className="text-sm text-right bg-muted rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
       <p>1 {currencyFrom?.code ?? 'AUD'} = {hasExchanged ? (
         `${Number(rate).toLocaleString(currencyTo?.localeString, {
             minimumFractionDigits: 8,

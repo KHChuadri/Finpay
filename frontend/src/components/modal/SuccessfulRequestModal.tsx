@@ -1,5 +1,6 @@
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/Button';
 
 interface SuccessfulRequestModalProps {
   amount: string;
@@ -25,11 +26,11 @@ const SuccessfulRequestModal = ({ amount, email, onClose }: SuccessfulRequestMod
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black/10 z-50'>
-      <div className='bg-white rounded-xl shadow-2xl w-full max-w-md p-6 mx-4'>
+      <div className='bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 mx-4'>
         <div className='flex flex-col items-center gap-4'>
           <div data-testid='request-success-heading' className='flex flex-col justify-center items-center'>
-            <div className='text-5xl text-green-600 mb-4'>✅</div>
-            <h2 className='text-xl font-bold text-black'>Request Successful</h2>
+            <div className='text-5xl text-positive mb-4'>✅</div>
+            <h2 className='text-xl font-bold text-foreground'>Request Successful</h2>
           </div>
 
           <p data-testid='request-summary-sentence'>Your request for <strong>{amount}</strong> has been sent to <strong>{email}</strong>.</p>
@@ -38,17 +39,17 @@ const SuccessfulRequestModal = ({ amount, email, onClose }: SuccessfulRequestMod
             <button
               onClick={continueMakingRequest}
               data-testid='another-request-button'
-              className='w-full bg-gray-200 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-300'
+              className='w-full bg-secondary text-foreground py-3 rounded-lg font-bold hover:bg-secondary/80'
             >
               Make more request
             </button>
-            <button
+            <Button
               onClick={backToDashboard}
               data-testid='dashboard-request-return'
-              className='w-full bg-[#C6412A] text-white py-3 rounded-lg font-bold hover:bg-[#A8321E]'
+              className="w-full py-3"
             >
               Dashboard
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -5,6 +5,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/authStore";
 import { API_URL } from "@/constants/API_URL";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Button } from "@/components/ui/Button";
 
 const AdminLoginForm = () => {
   const [email, setEmail] = useState("");
@@ -63,7 +66,7 @@ const AdminLoginForm = () => {
 
       // Logout if user change its password
       if (token && userId) {
-        await axios.post("http://localhost:3000/logout", { token, userId });
+        await axios.post(`${API_URL}/logout`, { token, userId });
       }
       resetAuth();
     }
@@ -79,38 +82,38 @@ const AdminLoginForm = () => {
   }, [email, password]);
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-2xl transition ease-in-out">
-      <h3 className="text-black text-2xl font-bold pt-2 text-center mb-2">
+    <div className="flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-xl transition ease-in-out">
+      <h3 className="text-foreground text-2xl font-bold pt-2 text-center mb-2">
         Admin Login
       </h3>
       {errorMsg.length != 0 && (
-        <p className="text-red-500 text-md">{errorMsg}</p>
+        <p className="text-destructive text-md">{errorMsg}</p>
       )}
-      <label className="flex flex-col">
-        Email
-        <input
+      <label className="flex flex-col gap-1">
+        <Label>Email</Label>
+        <Input
           type="email"
           value={email}
           onBlur={() => isEmailValid()}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          className="border-2 border-gray-300 p-2 rounded-lg focus:outline-2 focus:outline-blue-300"
+          error={emailError !== ""}
         />
         {emailError !== "" && (
-          <p className="text-red-500 text-sm">{emailError}</p>
+          <p className="text-destructive text-sm">{emailError}</p>
         )}
       </label>
 
-      <label className="flex flex-col">
-        Password
+      <label className="flex flex-col gap-1">
+        <Label>Password</Label>
         <div
           tabIndex={0}
           onFocus={() => setPasswordOnFocus(true)}
           onBlur={() => setPasswordOnFocus(false)}
-          className={`relative w-full rounded-lg p-2 ${
+          className={`relative w-full rounded-lg p-2 border-2 ${
             passwordOnFocus
-              ? "outline-2 outline-blue-300"
-              : "border-2 border-gray-300"
+              ? "border-ring ring-2 ring-ring/40"
+              : "border-input"
           }`}
         >
           <input
@@ -120,7 +123,7 @@ const AdminLoginForm = () => {
             onBlur={() => isPasswordValid()}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
-            className="border-none w-full focus:outline-none"
+            className="border-none w-full focus:outline-none bg-transparent text-foreground"
           />
           {showPassword == false ? (
             <FaEyeSlash
@@ -135,33 +138,29 @@ const AdminLoginForm = () => {
           )}
         </div>
         {passwordError !== "" && (
-          <p className="text-red-500 text-sm">{passwordError}</p>
+          <p className="text-destructive text-sm">{passwordError}</p>
         )}
       </label>
 
-      <button
+      <Button
         onClick={() => handleLogin()}
         disabled={disableButton}
-        className={`w-full text-white p-2 text-center rounded-xl font-bold hover:opacity-80 
-          ${
-            disableButton
-              ? "bg-gray-400 hover:cursor-not-allowed"
-              : "bg-[#C6412A] hover:cursor-pointer"
-          }`}
+        className="w-full rounded-xl py-2"
       >
         Submit
-      </button>
+      </Button>
 
-      <button
+      <Button
+        variant="ghost"
         onClick={() => navigate("/")}
-        className="w-full border-2 border-[#C6412A] text-center p-2 text-[#C6412A] rounded-xl font-bold hover:opacity-80 hover:cursor-pointer"
+        className="w-full rounded-xl py-2"
       >
         Back
-      </button>
+      </Button>
 
       <button
         onClick={() => navigate("/forgotpassword")}
-        className="underline self-center cursor-pointer text-gray-400"
+        className="underline self-center cursor-pointer text-subtle"
       >
         Reset password
       </button>

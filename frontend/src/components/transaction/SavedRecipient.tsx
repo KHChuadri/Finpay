@@ -7,6 +7,8 @@ import useAuthStore from '@/stores/authStore';
 import RecipientInfo from './RecipientInfo';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 interface SavedUsers {
   email: string;
@@ -54,12 +56,13 @@ const SavedRecipient = () => {
 
   const headerButtons = (
     <div className="gap-4 md:flex items-center">
-      <button
+      <Button
+        variant="ghost"
         onClick={() => navigate('/')}
-        className="bg-[#C6412A] text-white px-6 py-2 rounded-lg hover:bg-[#A8321E] transition"
+        className="px-6 py-2"
       >
         Back
-      </button>
+      </Button>
     </div>
   );
 
@@ -73,18 +76,18 @@ const SavedRecipient = () => {
     <div className="flex flex-col w-full min-h-screen">
       <Layout headerRight={headerButtons}>
         <div className="flex flex-grow justify-center items-start p-4">
-          <div className="flex flex-col w-full min-h-screen max-w-2xl bg-white rounded-2xl p-6 gap-4 shadow-lg">
-            <h2 className='text-2xl font-semibold text-gray-800'>Search saved recipients</h2>
+          <div className="flex flex-col w-full min-h-screen max-w-2xl bg-card rounded-2xl p-6 gap-4 shadow-lg">
+            <h2 className='text-2xl font-semibold text-foreground'>Search saved recipients</h2>
             <div className="relative">
 
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <UserIcon className="h-5 w-5 text-gray-500" />
+                <UserIcon className="h-5 w-5 text-muted-foreground" />
               </div>
 
-              <input
+              <Input
                 type="email"
                 placeholder="Search users by email"
-                className="w-full pl-10 px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-[#C6412A] focus:border-[#C6412A]"
+                className="pl-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -92,7 +95,7 @@ const SavedRecipient = () => {
 
             <div className="flex flex-col w-full h-full gap-4 overflow-y-auto max-h-[70vh]">
               {filteredUsers.length === 0 ? (
-                <p className='text-gray-600'>No saved user found.</p>
+                <p className='text-muted-foreground'>No saved user found.</p>
               ) : (
                 filteredUsers.map((user, index) => {
                   return (

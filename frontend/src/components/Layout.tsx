@@ -71,27 +71,29 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
 
   return (
     <div
-      className={`flex flex-col min-h-screen bg-gradient-to-b ${darkMode ? 'from-gray-950 to-gray-700' : 'from-[#FFA294] to-[#EECAB8]'} `}
+      className="flex flex-col min-h-screen bg-background text-foreground"
       onClick={updateActivity}
     >
       {/* Show Warning Popup */}
       {warning && token && (
-        <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-yellow-500 rounded-lg shadow-xl z-20">
+        <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-warning text-warning-foreground rounded-lg shadow-xl z-20">
           <p className="font-medium text-center">You&apos;ll be logged out due to inactivity in {countdown} seconds.</p>
         </div>
       )}
 
       {/* Shared Header */}
-      <nav className="w-full px-6 flex justify-between items-center bg-none">
-        <button
-          onClick={() => navigate('/dashboard')}
-          data-testid="finpay-header-logo"
-          className="flex items-center justify-center overflow-hidden cursor-pointer"
-        >
-          {darkMode ? <img src={'/FinpayDarkMode.png'} alt="FinPay Logo DarkMode" className="pt-5 pb-5 h-20 w-32" /> : 
-          <img src={'/Finpay.png'} alt="FinPay Logo" className="h-20 w-32" />}
-        </button>
-        {headerRight}
+      <nav className="sticky top-0 z-10 w-full border-b border-border bg-background/70 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <button
+            onClick={() => navigate('/dashboard')}
+            data-testid="finpay-header-logo"
+            className="flex items-center overflow-hidden cursor-pointer"
+          >
+            {darkMode ? <img src={'/FinpayDarkMode.png'} alt="FinPay Logo DarkMode" className="h-9 w-auto" /> :
+            <img src={'/Finpay.png'} alt="FinPay Logo" className="h-9 w-auto" />}
+          </button>
+          {headerRight}
+        </div>
       </nav>
 
       {/* Page Content */}
@@ -100,8 +102,8 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-gray-900 py-8">
-        <div className="text-center text-gray-400">
+      <footer className="w-full border-t border-border py-6">
+        <div className="mx-auto max-w-6xl px-6 text-center text-sm text-subtle">
           <p>© 2025 FinPay. All rights reserved.</p>
         </div>
       </footer>

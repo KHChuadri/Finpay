@@ -81,41 +81,41 @@ const Header = () => {
   };
 
   return (
-    <div className="flex items-center justify-between relative w-full bg-gray-300 h-16 px-4 py-3 rounded-t-xl">
+    <div className="flex items-center justify-between relative w-full bg-secondary h-16 px-4 py-3 rounded-t-xl">
       <div className="w-8 h-8" />
 
-      <nav className="flex space-x-2 md:space-x-10 text-gray-700 font-medium text-sm md:text-base">
+      <nav className="flex space-x-2 md:space-x-10 text-muted-foreground font-medium text-sm md:text-base">
         <div
           onClick={() => navigateToRecipient()}
-          className={`cursor-pointer ${isActive("/recipient") ? "text-black font-bold" : "hover:text-black"
+          className={`cursor-pointer ${isActive("/recipient") ? "text-foreground font-bold" : "hover:text-foreground"
             }`}
         >
           Recipient
           {isActive("/recipient") && (
-            <div className="w-full h-[2px] bg-black rounded-full" />
+            <div className="w-full h-[2px] bg-foreground rounded-full" />
           )}
         </div>
         <div
           onClick={() => navigateToAmount()}
-          className={`cursor-pointer ${isActive("/amount") ? "text-black font-bold" : "hover:text-black"
+          className={`cursor-pointer ${isActive("/amount") ? "text-foreground font-bold" : "hover:text-foreground"
             }`}
         >
           Amount
           {isActive("/amount") && (
-            <div className="w-full h-[2px] bg-black rounded-full" />
+            <div className="w-full h-[2px] bg-foreground rounded-full" />
           )}
         </div>
         {isTransfer && (
           <div
             onClick={() => navigateToPay()}
             className={`cursor-pointer ${isActive("/transfer/pay")
-                ? "text-black font-bold"
-                : "hover:text-black"
+                ? "text-foreground font-bold"
+                : "hover:text-foreground"
               }`}
           >
             Pay
             {isActive("/transfer/pay") && (
-              <div className="w-full h-[2px] bg-black rounded-full" />
+              <div className="w-full h-[2px] bg-foreground rounded-full" />
             )}
           </div>
         )}
@@ -123,13 +123,13 @@ const Header = () => {
           <div
             onClick={() => navigateToRequest()}
             className={`cursor-pointer ${isActive("/request/details")
-                ? "text-black font-bold"
-                : "hover:text-black"
+                ? "text-foreground font-bold"
+                : "hover:text-foreground"
               }`}
           >
             Request
             {isActive("/request/details") && (
-              <div className="w-full h-[2px] bg-black rounded-full" />
+              <div className="w-full h-[2px] bg-foreground rounded-full" />
             )}
           </div>
         )}
@@ -137,13 +137,13 @@ const Header = () => {
           <div
             onClick={() => navigateToTopup()}
             className={`cursor-pointer ${isActive("/request/details")
-                ? "text-black font-bold"
-                : "hover:text-black"
+                ? "text-foreground font-bold"
+                : "hover:text-foreground"
               }`}
           >
             TopUp
             {isActive("/request/details") && (
-              <div className="w-full h-[2px] bg-black rounded-full" />
+              <div className="w-full h-[2px] bg-foreground rounded-full" />
             )}
           </div>
         )}
@@ -151,13 +151,13 @@ const Header = () => {
           <div
             onClick={() => navigateToWithdraw()}
             className={`cursor-pointer ${isActive("/request/details")
-                ? "text-black font-bold"
-                : "hover:fill-black"
+                ? "text-foreground font-bold"
+                : "hover:fill-foreground"
             }`}
           >
             Withdraw
             {isActive("/request/details") && (
-              <div className="w-full h-[2px] bg-black rounded-full" />
+              <div className="w-full h-[2px] bg-foreground rounded-full" />
             )}
           </div>
         )}
@@ -167,7 +167,7 @@ const Header = () => {
         onClick={() => handleClose()}
         data-testid="header-close-x-button"
       >
-        <LiaTimesSolid className="w-8 h-8 text-gray-700 hover:fill-black transition hover:cursor-pointer hover:opacity-80" />
+        <LiaTimesSolid className="w-8 h-8 text-muted-foreground hover:fill-foreground transition hover:cursor-pointer hover:opacity-80" />
       </button>
     </div>
   );

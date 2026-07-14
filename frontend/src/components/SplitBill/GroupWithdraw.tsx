@@ -9,6 +9,7 @@ import Layout from "@/components/Layout";
 import type { Currency } from "@/stores/transactionStore";
 import { useGroupTransactionStore } from "@/stores/groupTransactionStore";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
 const GroupWithdraw = () => {
   const navigate = useNavigate();
@@ -110,12 +111,12 @@ const GroupWithdraw = () => {
     <div className="flex flex-col w-full h-screen">
       <Layout>
         <div className="flex flex-col flex-grow items-center justify-center w-full h-full">
-          <div className="w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl">
+          <div className="w-1/2 lg:w-1/3 bg-card border border-border flex flex-col rounded-xl">
             <Header />
 
             <div className="flex flex-col px-6 py-4 font-sans gap-6">
               {/* You Send */}
-              <div className="text-sm text-right bg-gray-100 rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
+              <div className="text-sm text-right bg-muted rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
                 <p>
                   1 {currencyFrom?.code ?? "AUD"} ={" "}
                   {hasExchanged ? (
@@ -136,7 +137,7 @@ const GroupWithdraw = () => {
                 <label className="text-sm font-medium mb-2 block">
                   Recepient Get Exactly
                 </label>
-                <div className="flex items-center border-b border-gray-300 pb-2">
+                <div className="flex items-center border-b border-input pb-2">
                   <Currencies
                     currCurrency={currencyTo}
                     isOpen={openCurrencyTo}
@@ -150,7 +151,7 @@ const GroupWithdraw = () => {
                     value={rawDestCurrencyAmount}
                     onChange={handleDestCurrencyChange}
                     placeholder="0.00"
-                    className="w-full text-3xl font-bold text-gray-700 bg-transparent outline-none"
+                    className="w-full text-3xl font-bold text-foreground bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -160,9 +161,9 @@ const GroupWithdraw = () => {
                 <label className="text-sm font-medium mb-2 block">
                   You Pay
                 </label>
-                <div className="flex items-center border-b border-gray-300 pb-2 gap-2">
+                <div className="flex items-center border-b border-input pb-2 gap-2">
                   {currencyFrom.code}
-                  <div className="text-3xl font-bold text-gray-700">
+                  <div className="text-3xl font-bold text-foreground">
                     {isRateLoading && (
                       <ClipLoader
                         color="black"
@@ -180,7 +181,7 @@ const GroupWithdraw = () => {
                         </p>
                       )}
                     {exchangeRateError && (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-destructive text-sm">
                         Failed to fetch exchange rate.
                       </p>
                     )}
@@ -188,17 +189,13 @@ const GroupWithdraw = () => {
                 </div>
               </div>
 
-              <button
+              <Button
                 disabled={!isValid}
                 onClick={handleNextPage}
-                className={`w-full py-3 text-white font-bold rounded-xl transition cursor-pointer ${
-                  isValid
-                    ? "bg-[#C6412A] hover:bg-[#A8321E]"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
+                className="w-full py-3 font-bold rounded-xl"
               >
                 Continue
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -89,15 +89,15 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
 
   return (
     <div className="flex-1 p-6 overflow-x-hidden">
-      <div className="bg-white rounded-xl shadow-md p-6">
+      <div className="bg-card rounded-xl shadow-md p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
         {/* Error Message */}
         {errorMessage && (
-          <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-200 border-2 border-red-400 text-red-700 rounded z-50">
+          <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
             <p className="break-words w-full pr-8">{errorMessage}</p>
             <button
               onClick={() => setErrorMessage(null)}
-              className="absolute top-4 right-4 text-red-700 hover:text-red-900"
+              className="absolute top-4 right-4 text-destructive hover:text-destructive/80"
             >
               <FaTimes />
             </button>
@@ -105,7 +105,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
         )}
 
           {/* Header */}
-          <h1 className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">
+          <h1 className="text-2xl font-bold text-foreground mb-4 md:mb-0">
             {activeTab === 'all' && 'All User Accounts'}
             {activeTab === 'verified' && 'Verified User Accounts'}
             {activeTab === 'unverified' && 'Unverified User Accounts'}
@@ -115,12 +115,12 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
           {/* Search Bar */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <MagnifyingGlassIcon className="h-5 w-5 text-gray-500" />
+              <MagnifyingGlassIcon className="h-5 w-5 text-muted-foreground" />
             </div>
             <input
               type="text"
               placeholder="Search users..."
-              className="w-full md:w-64 pl-10 pr-4 py-2 border border-gray-400 rounded-lg focus:ring-[#C6412A] focus:border-[#C6412A]"
+              className="w-full md:w-64 pl-10 pr-4 py-2 border border-input rounded-lg focus:ring-ring/40 focus:border-ring"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -129,19 +129,19 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
 
         {/* User Table */}
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] divide-y divide-gray-200">
-            <thead className="bg-gray-100">
+          <table className="w-full min-w-[900px] divide-y divide-border">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">NAME</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">USER ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">STATUS</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">EMAIL</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">IMAGE</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">LAST LOGIN</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 tracking-wider">ACTIONS</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">NAME</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">USER ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">STATUS</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">EMAIL</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">IMAGE</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">LAST LOGIN</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground tracking-wider">ACTIONS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-300">
+            <tbody className="divide-y divide-border">
               {usersList
                 .filter(user => {
                   const matchesSearch =
@@ -163,17 +163,17 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                     {/* Name Row */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-200">
-                          <UserIcon className="h-6 w-6 text-gray-500" />
+                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-secondary">
+                          <UserIcon className="h-6 w-6 text-muted-foreground" />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</div>
+                          <div className="text-sm font-medium text-foreground">{user.firstName} {user.lastName}</div>
                         </div>
                       </div>
                     </td>
 
                     {/* User ID Row */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {user.userId || '-'}
                     </td>
 
@@ -181,10 +181,10 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p
                         className={`px-2 inline-flex text-xs font-semibold leading-5 rounded-full ${user.isLocked
-                          ? 'bg-red-100 text-red-800'
+                          ? 'bg-destructive/10 text-destructive'
                           : user.isVerified
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-positive/10 text-positive'
+                            : 'bg-warning/10 text-warning'
                           }`}
                       >
                         {user.isLocked ? 'Locked' : user.isVerified ? 'Verified' : 'Unverified'}
@@ -192,7 +192,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                     </td>
 
                     {/* Email Row */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {user.email || '-'}
                     </td>
 
@@ -208,14 +208,14 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                           <img
                             src={user.KYCimg}
                             alt="KYC"
-                            className="w-16 h-16 object-cover rounded border border-gray-300 shadow-sm hover:border-[#C6412A] transition-colors"
+                            className="w-16 h-16 object-cover rounded border border-border shadow-sm hover:border-primary transition-colors"
                           />
                         </a>
                       )}
                     </td>
 
                     {/* Last Login Row */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {user.updatedAt ? new Date(user.updatedAt).toLocaleString() : 'Never accessed'}
                     </td>
 
@@ -225,14 +225,14 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                         {/* Verify/Unverify Button */}
                         {user.isVerified ? (
                           <button
-                            className="text-yellow-500 hover:text-yellow-700 cursor-pointer"
+                            className="text-warning hover:text-warning/80 cursor-pointer"
                             onClick={() => handleAdminVerify(user.userId, false)}
                           >
                             Unverify
                           </button>
                         ) : (
                           <button
-                            className="text-green-600 hover:text-green-800 cursor-pointer"
+                            className="text-primary hover:text-primary/80 cursor-pointer"
                             onClick={() => handleAdminVerify(user.userId, true)}
                           >
                             Verify
@@ -242,14 +242,14 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
                         {/* Lock/Unlock Button */}
                         {user.isLocked ? (
                           <button
-                            className="text-orange-600 hover:text-orange-800 cursor-pointer"
+                            className="text-primary hover:text-primary/80 cursor-pointer"
                             onClick={() => handleAdminBlock(user.userId, false)}
                           >
                             Unblock
                           </button>
                         ) : (
                           <button
-                            className="text-red-600 hover:text-red-800 cursor-pointer"
+                            className="text-destructive hover:text-destructive/80 cursor-pointer"
                             onClick={() => handleAdminBlock(user.userId, true)}
                           >
                             Block
@@ -265,7 +265,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
             <button
               disabled={page === 1}
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+              className="px-4 py-2 rounded bg-secondary hover:bg-secondary/80 disabled:opacity-50"
             >
               Prev
             </button>
@@ -273,7 +273,7 @@ const AdminMainPage = ({ activeTab }: AdminMainPageProps) => {
             <button
               disabled={page === totalPages}
               onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+              className="px-4 py-2 rounded bg-secondary hover:bg-secondary/80 disabled:opacity-50"
             >
               Next
             </button>

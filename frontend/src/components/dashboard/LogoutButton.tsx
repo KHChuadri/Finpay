@@ -3,6 +3,7 @@ import axios from "axios";
 import useAuthStore from "@/stores/authStore";
 import useDarkModeStore from "@/stores/darkModeStore";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
 const LogoutButton = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const LogoutButton = () => {
   const userId = useAuthStore((state) => state.userId);
   const resetAuth = useAuthStore((state) => state.resetAuth);
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
-  const { darkMode, setDarkMode } = useDarkModeStore();
+  const { setDarkMode } = useDarkModeStore();
 
   const handleLogout = async () => {
     try {
@@ -25,13 +26,14 @@ const LogoutButton = () => {
   };
 
   return (
-    <button
+    <Button
+      variant="destructive"
       onClick={handleLogout}
-      data-testid="logout-button" 
-      className={`${darkMode ?  "bg-gray-700 hover:bg-gray-900" : "bg-[#C6412A] hover:bg-[#A8321E]"} text-white px-6 py-2 rounded-lg  transition shadow-md cursor-pointer`}
+      data-testid="logout-button"
+      className="px-6 py-2 shadow-md"
     >
       Logout
-    </button>
+    </Button>
   );
 };
 

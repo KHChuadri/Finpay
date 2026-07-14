@@ -10,6 +10,7 @@ import Layout from '@/components/Layout';
 import type { Currency } from '@/stores/transactionStore';
 import useAuthStore from '@/stores/authStore';
 import { API_URL } from '@/constants/API_URL';
+import { Button } from '@/components/ui/Button';
 
 const GroupTopUp = () => {
   const navigate = useNavigate();
@@ -112,14 +113,14 @@ const GroupTopUp = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='w-1/2 lg:w-1/3 bg-white flex flex-col rounded-xl'>
+          <div className='w-1/2 lg:w-1/3 bg-card border border-border flex flex-col rounded-xl'>
             <Header />
 
-            {errorMsg.length != 0 && <p className='text-red-500 text-md'>{errorMsg}</p>}
+            {errorMsg.length != 0 && <p className='text-destructive text-md'>{errorMsg}</p>}
 
             <div className="flex flex-col px-6 py-4 font-sans gap-6">
               {/* You Send */}
-              <div className="text-sm text-right bg-gray-100 rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
+              <div className="text-sm text-right bg-muted rounded-full px-2 py-0.5 mt-2 max-w-max font-sans">
               <p>1 {currencyFrom?.code ?? 'AUD'} = {hasExchanged ? (
                 `${exchangeRate.toLocaleString(currencyTo?.localeString)} ${currencyTo?.code ?? 'IDR'}`) : (
             <ClipLoader
@@ -133,7 +134,7 @@ const GroupTopUp = () => {
     </div>
               <div>
                 <label className="text-sm font-medium mb-2 block">You send exactly</label>
-                <div className="flex items-center border-b border-gray-300 pb-2">
+                <div className="flex items-center border-b border-input pb-2">
                   <Currencies currCurrency={currencyFrom} isOpen={openCurrencyFrom} setIsOpen={setOpenCurrencyFrom} handleSelectCurrency={selectCurrencyFrom} />
                   <input
                     type="number"
@@ -142,7 +143,7 @@ const GroupTopUp = () => {
                     value={rawSourceCurrencyAmount}
                     onChange={handleSourceCurrencyChange}
                     placeholder="0.00"
-                    className="w-full text-3xl font-bold text-gray-700 bg-transparent outline-none"
+                    className="w-full text-3xl font-bold text-foreground bg-transparent outline-none"
                   />
                 </div>
               </div>
@@ -150,9 +151,9 @@ const GroupTopUp = () => {
               {/* Recipient Gets */}
               <div>
                 <label className="text-sm font-medium mb-2 block">Recipient gets</label>
-                <div className="flex items-center border-b border-gray-300 pb-2 gap-2">
+                <div className="flex items-center border-b border-input pb-2 gap-2">
                   {currencyTo.code}
-                  <div className="text-3xl font-bold text-gray-700">
+                  <div className="text-3xl font-bold text-foreground">
                     {isRateLoading && (
                       <ClipLoader color='black' size={10} aria-label="Loading Spinner" />
                     )}
@@ -160,20 +161,19 @@ const GroupTopUp = () => {
                       <p>{rawDestCurrencyAmount.toLocaleString(currencyTo?.localeString)}</p>
                     )}
                     {exchangeRateError && (
-                      <p className='text-red-500 text-sm'>Failed to fetch exchange rate.</p>
+                      <p className='text-destructive text-sm'>Failed to fetch exchange rate.</p>
                     )}
                   </div>
                 </div>
               </div>
 
-              <button
+              <Button
                 disabled={!isValid}
                 onClick={() => handleNextPage()}
-                className={`w-full py-3 text-white font-bold rounded-xl transition cursor-pointer ${isValid ? 'bg-[#C6412A] hover:bg-[#A8321E]' : 'bg-gray-300 cursor-not-allowed'
-                  }`}
+                className="w-full py-3 font-bold rounded-xl"
               >
                 Continue
-              </button>
+              </Button>
 
             </div>
           </div>

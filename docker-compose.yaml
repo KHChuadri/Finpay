@@ -20,10 +20,17 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      # Override any localhost values from .env: inside the compose network the
+      # datastores are reachable by service name, not localhost.
+      - DATABASE_URL=postgresql://finpay:finpay@postgres:5432/finpay
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -39,6 +46,30 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: postgres:16
+    container_name: postgres-payment
+    environment:
+      POSTGRES_USER: finpay
+      POSTGRES_PASSWORD: finpay
+      POSTGRES_DB: finpay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finpay -d finpay"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 volumes:
   redis_data:
+  postgres_data:
