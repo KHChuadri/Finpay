@@ -115,7 +115,7 @@ describe("Reset Password page testing", () => {
     fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'john@gmail.com' } });
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'NewMockPass1!' } });
 
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Enter the 6-digit code we sent to your email/i)).toBeInTheDocument();

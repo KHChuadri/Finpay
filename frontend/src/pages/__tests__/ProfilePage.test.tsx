@@ -52,9 +52,8 @@ describe("Profile page testing", () => {
     fireEvent.change(screen.getByTestId('lastname-input'), { target: { value: 'Doe' } });
     fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'john@example.com' } });
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'ValidPass1!' } });
-    fireEvent.change(screen.getByTestId('confirm-password-input'), { target: { value: 'ValidPass1!' } });
 
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(screen.getByRole('button', { name: /create account/i }));
 
     await waitFor(() => {
       expect(screen.getByTestId('location-display')).toHaveTextContent('/dashboard');

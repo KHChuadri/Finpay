@@ -9,68 +9,23 @@ import { API_URL } from '@/constants/API_URL';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Button } from '@/components/ui/Button';
+import { PasswordStrength, passwordChecks } from '@/components/dashboard/PasswordStrength';
 
 const RegisterForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmationPassword, setConfirmationPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmationPassword, setShowConfirmationPassword] = useState(false);
   const [firstNameError, setFirstNameError] = useState('');
   const [lastNameError, setLastNameError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmationPasswordError, setConfirmationPasswordError] = useState('');
-  const [passwordVisited, setPasswordVisited] = useState(false);
-  const [confirmationPasswordVisited, setConfirmationPasswordVisited] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(true);
   const [passwordOnFocus, setPasswordOnFocus] = useState(false);
-  const [confirmationPasswordOnFocus, setConfirmationPasswordOnFocus] = useState(false);
   const [errorMsg, setErrorMsg] = useState('')
 
   const navigate = useNavigate();
   const setAuth = useAuthStore.getState().setAuth;
-
-  useEffect(() => {
-    if (confirmationPasswordOnFocus || confirmationPasswordVisited) {
-      const handler = setTimeout(() => {
-        if (confirmationPassword.length == 0) {
-          setConfirmationPasswordError('Please enter confirmation password');
-          return;
-        }
-        if (password && confirmationPassword) {
-          if (password === confirmationPassword) {
-            setConfirmationPasswordError('');
-          } else if (confirmationPassword.length == 0) {
-            setConfirmationPasswordError('Please enter confirmation password');
-          } else {
-            setConfirmationPasswordError('Password and confirmation password does not match')
-          }
-        }
-      }, 300);
-      return () => clearTimeout(handler);
-    }
-  }, [password, confirmationPassword, confirmationPasswordVisited]);
-
-  useEffect(() => {
-    if (passwordOnFocus || passwordVisited) {
-      const handler = setTimeout(() => {
-        if (password.length == 0) {
-          setPasswordError('Please enter your password');
-          return;
-        }
-        const validPasswordRegex = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[^A-Za-z0-9\s]).{8,16}$/
-        if (!validPasswordRegex.test(password)) {
-          setPasswordError('Password must contain at least one lowercase, uppercase, number, and symbol, with length 8 - 16 characters');
-        } else {
-          setPasswordError('');
-        }
-      }, 300);
-      return () => clearTimeout(handler);
-    }
-  }, [password, passwordVisited]);
 
   const isFirstNameValid = () => {
     if (firstName.length == 0) {
@@ -101,9 +56,7 @@ const RegisterForm = () => {
     setLastName('');
     setEmail('');
     setPassword('');
-    setConfirmationPassword('');
     setShowPassword(false);
-    setShowConfirmationPassword(false);
   }
 
   const handleSubmit = async () => {
@@ -136,54 +89,60 @@ const RegisterForm = () => {
   }
 
   useEffect(() => {
-    if (email.length == 0 || password.length == 0 || confirmationPassword.length == 0 || firstName.length == 0 || lastName.length == 0) {
-      setHasError(true)
-    } else if (emailError.length != 0 || passwordError.length != 0 || confirmationPasswordError.length != 0 ||
-      firstNameError.length != 0 || lastNameError.length != 0 || password != confirmationPassword) {
-      setHasError(true)
-    } else {
+    const validEmail = email.length !== 0 && validator.isEmail(email);
+    const validPassword = passwordChecks.every((c) => c.test(password));
+    if (firstName && lastName && validEmail && validPassword) {
       setHasError(false);
+    } else {
+      setHasError(true);
     }
-  }, [firstName, lastName, email, password, confirmationPassword, firstNameError, lastNameError, emailError, passwordError, confirmationPasswordError])
+  }, [firstName, lastName, email, password])
 
   return (
-    <div className='flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-xl transition ease-in-out'>
-      <h3 className='text-foreground text-2xl font-bold pt-2 text-center mb-2'>Registration</h3>
+    <div className='flex flex-col bg-card border border-border rounded-[16px] p-8 w-full max-w-[440px] gap-4 shadow-xl'>
+      <img src="/FinpayDarkMode.png" alt="FinPay Logo" className="h-8 w-auto self-center mb-2" />
 
-      {errorMsg && <p className='text-destructive text-md'>{errorMsg}</p>}
+      <div className="flex flex-col gap-1 text-center">
+        <h1 className='text-foreground text-2xl font-bold'>Create your account</h1>
+        <p className="text-muted-foreground text-sm">Free forever. No card required.</p>
+      </div>
+
+      {errorMsg && <p className='text-destructive text-sm text-center'>{errorMsg}</p>}
 
       <div className='flex flex-col gap-3 w-full'>
-        <label className='flex flex-col gap-1'>
-          <Label required>First name</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <label className='flex flex-col gap-1'>
+            <Label required>First name</Label>
 
-          <Input
-            data-testid="firstname-input"
-            type="text"
-            value={firstName}
-            onBlur={() => isFirstNameValid()}
-            onChange={(e) => setFirstName(e.target.value)}
-            placeholder='Enter your first name'
-            error={firstNameError.length !== 0}
-          />
+            <Input
+              data-testid="firstname-input"
+              type="text"
+              value={firstName}
+              onBlur={() => isFirstNameValid()}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder='Enter your first name'
+              error={firstNameError.length !== 0}
+            />
 
-          {firstNameError.length != 0 && <p className='text-destructive text-sm'>{firstNameError}</p>}
-        </label>
+            {firstNameError.length != 0 && <p className='text-destructive text-sm'>{firstNameError}</p>}
+          </label>
 
-        <label className='flex flex-col gap-1'>
-          <Label required>Last name</Label>
+          <label className='flex flex-col gap-1'>
+            <Label required>Last name</Label>
 
-          <Input
-            data-testid="lastname-input"
-            type="text"
-            value={lastName}
-            onBlur={() => isLastNameValid()}
-            onChange={(e) => setLastName(e.target.value)}
-            placeholder='Enter your last name'
-            error={lastNameError.length !== 0}
-          />
+            <Input
+              data-testid="lastname-input"
+              type="text"
+              value={lastName}
+              onBlur={() => isLastNameValid()}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder='Enter your last name'
+              error={lastNameError.length !== 0}
+            />
 
-          {lastNameError.length != 0 && <p className='text-destructive text-sm'>{lastNameError}</p>}
-        </label>
+            {lastNameError.length != 0 && <p className='text-destructive text-sm'>{lastNameError}</p>}
+          </label>
+        </div>
 
         <label className='flex flex-col gap-1'>
           <Label required>Email</Label>
@@ -201,7 +160,7 @@ const RegisterForm = () => {
         </label>
 
         <label className='flex flex-col gap-1'>
-          <Label required>Password</Label>
+          <Label>Password</Label>
 
           <div
             tabIndex={0}
@@ -214,7 +173,6 @@ const RegisterForm = () => {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onBlur={() => setPasswordVisited(true)}
               placeholder='Enter your password'
               className='border-none w-full focus:outline-none bg-transparent text-foreground'
             />
@@ -232,60 +190,31 @@ const RegisterForm = () => {
             }
           </div>
 
-          {passwordError !== '' && <p className='text-destructive text-sm'>{passwordError}</p>}
-        </label>
-
-        <label className='flex flex-col gap-1'>
-          <Label required>Confirm password</Label>
-
-          <div
-            tabIndex={0}
-            onFocus={() => setConfirmationPasswordOnFocus(true)}
-            onBlur={() => setConfirmationPasswordOnFocus(false)}
-            className={`relative w-full rounded-lg p-2 border-2 ${confirmationPasswordOnFocus ? 'border-ring ring-2 ring-ring/40' : 'border-input'}`}
-          >
-            <input
-              data-testid="confirm-password-input"
-              type={showConfirmationPassword ? 'text' : 'password'}
-              value={confirmationPassword}
-              onChange={(e) => setConfirmationPassword(e.target.value)}
-              onBlur={() => setConfirmationPasswordVisited(true)}
-              placeholder='Enter your password'
-              className='border-none w-full focus:outline-none bg-transparent text-foreground'
-            />
-            {showConfirmationPassword == false ? (
-              <FaEyeSlash
-                className='absolute right-2 bottom-2.5'
-                onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
-              />
-            ) : (
-              <IoEyeSharp
-                className='absolute right-2 bottom-2.5'
-                onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
-              />
-            )
-            }
-          </div>
-
-          {confirmationPasswordError !== '' && <p className='text-destructive text-sm'>{confirmationPasswordError}</p>}
+          <PasswordStrength password={password} />
         </label>
       </div>
 
       <Button
         onClick={() => handleSubmit()}
         disabled={hasError}
-        className='w-full rounded-xl py-2'
+        className='w-full'
       >
-        Submit
+        Create account
       </Button>
 
-      <Button
-        variant="ghost"
-        onClick={() => navigate('/')}
-        className='w-full rounded-xl py-2'
-      >
-        Back
-      </Button>
+      <p className="text-center text-xs text-subtle">
+        By creating an account, you agree to our Terms and Privacy Policy.
+      </p>
+
+      <p className="text-center text-sm text-muted-foreground">
+        Already have an account?{' '}
+        <button
+          onClick={() => navigate('/login')}
+          className="underline cursor-pointer text-foreground"
+        >
+          Sign in
+        </button>
+      </p>
     </div>
   )
 }

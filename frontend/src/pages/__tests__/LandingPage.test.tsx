@@ -57,13 +57,12 @@ describe('LandingPage render testing', () => {
 });
 
 describe('LandingPage navigation testing', () => {
-  it('test header buttons for login/signup button', () => {
+  it('login button navigates to /login', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>
           <Route path="/" element={<><LandingPage />< LocationDisplay /></>} />
           <Route path="/login" element={<><Login /><LocationDisplay /></>} />
-          <Route path="/register" element={<><Register />< LocationDisplay /></>} />
         </Routes>
       </MemoryRouter>
     );
@@ -72,17 +71,25 @@ describe('LandingPage navigation testing', () => {
     expect(loginBtn).toBeInTheDocument();
 
     fireEvent.click(loginBtn);
-    expect(screen.getByText(/Reset Password/i)).toBeInTheDocument(); // 'reset password' is unique to login page 
+    expect(screen.getByText(/forgot/i)).toBeInTheDocument(); // 'forgot' link is unique to login page
     expect(screen.getByTestId('location-display')).toHaveTextContent('/login');
+  });
 
-    const backBtns = screen.getAllByRole('button', { name: /Back/i });
-    fireEvent.click(backBtns[0]);
+  it('signup button navigates to /register', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path="/" element={<><LandingPage />< LocationDisplay /></>} />
+          <Route path="/register" element={<><Register />< LocationDisplay /></>} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     const signupBtn = screen.getByRole('button', { name: /Sign up/i });
     expect(signupBtn).toBeInTheDocument();
 
     fireEvent.click(signupBtn);
-    expect(screen.getByText(/Registration/i)).toBeInTheDocument();
+    expect(screen.getByText(/create your account/i)).toBeInTheDocument();
     expect(screen.getByTestId('location-display')).toHaveTextContent('/register');
   });
 })

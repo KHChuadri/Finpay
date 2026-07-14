@@ -51,25 +51,16 @@ describe("Login page testing", () => {
 
   it('renders the login page with form', () => {
     expect(screen.getByTestId('location-display')).toHaveTextContent('/login');
-    const backBtns = screen.getAllByRole('button', { name: /back/i });
-    expect(backBtns).toHaveLength(2);
 
-    expect(screen.getByRole('heading', { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/enter your email/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument();
     expect(screen.getByText("Password")).toBeInTheDocument();
-    expect(screen.getByText("Reset password")).toBeInTheDocument();
-  });
-
-  it('navigates back when back button is clicked', () => {
-    const backBtns = screen.getAllByRole('button', { name: /back/i });
-    expect(backBtns).toHaveLength(2);
-    fireEvent.click(backBtns[0]);
-    expect(screen.getByTestId('location-display')).toHaveTextContent('/');
+    expect(screen.getByText(/forgot/i)).toBeInTheDocument();
   });
 
   it('disables submit button when form is invalid', async () => {
-    const submitButton = screen.getByRole('button', { name: /submit/i });
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
     expect(submitButton).toBeDisabled();
 
     // Fill in valid data
@@ -88,7 +79,7 @@ describe("Login page testing", () => {
     fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'invalid@example.com' } });
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'wrongpassword' } });
 
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Account does not exist with the given email/i)).toBeInTheDocument();
@@ -102,7 +93,7 @@ describe("Login page testing", () => {
     fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'valid@gmail.com' } });
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'incorrectpassword' } });
 
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Incorrect password/i)).toBeInTheDocument();
@@ -111,7 +102,7 @@ describe("Login page testing", () => {
 
   it('navigates to forgot password page', async () => {
     const user = userEvent.setup();
-    const forgotPasswordLink = screen.getByText(/reset password/i);
+    const forgotPasswordLink = screen.getByText(/forgot/i);
     await user.click(forgotPasswordLink);
     expect(screen.getByTestId('location-display')).toHaveTextContent('/forgotpassword');
   });
@@ -123,7 +114,7 @@ describe("Login page testing", () => {
     fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'valid@gmail.com' } });
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'correctpassword' } });
 
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Enter the 6-digit code we sent to your email/i)).toBeInTheDocument();
@@ -143,7 +134,7 @@ describe("Login page testing", () => {
     fireEvent.change(screen.getByPlaceholderText(/enter your email/i), { target: { value: 'valid@gmail.com' } });
     fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'correctpassword' } });
 
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Enter the 6-digit code we sent to your email/i)).toBeInTheDocument();

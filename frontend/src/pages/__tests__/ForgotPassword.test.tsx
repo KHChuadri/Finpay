@@ -38,7 +38,7 @@ describe("Forgot Password page testing", () => {
 
   it("renders forgot password page successfully", async () => {
     const user = userEvent.setup();
-    const resetBtn = screen.getByRole('button', { name: /Reset password/i });
+    const resetBtn = screen.getByRole('button', { name: /forgot/i });
     await user.click(resetBtn);
 
     expect(screen.getByTestId('location-display')).toHaveTextContent('/forgotpassword');
@@ -50,7 +50,7 @@ describe("Forgot Password page testing", () => {
   it('shows error for unknown email, clears error when input is cleared', async () => {
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole('button', { name: /reset password/i }));
+    await user.click(screen.getByRole('button', { name: /forgot/i }));
     await user.type(screen.getByPlaceholderText(/enter your email/i), 'notfound@example.com');
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
@@ -65,7 +65,7 @@ describe("Forgot Password page testing", () => {
 
   it('shows error for empty email', async () => {
     const user = userEvent.setup();
-    await user.click(screen.getByRole('button', { name: /reset password/i }));
+    await user.click(screen.getByRole('button', { name: /forgot/i }));
 
     // submit empty email
     await user.click(screen.getByRole('button', { name: /submit/i }));
@@ -83,7 +83,7 @@ describe("Forgot Password page testing", () => {
     jest.useFakeTimers(); // fake timer for the interval
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-    await user.click(screen.getByRole('button', { name: /reset password/i }));
+    await user.click(screen.getByRole('button', { name: /forgot/i }));
     await user.type(screen.getByPlaceholderText(/enter your email/i), 'john@example.com');
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
@@ -117,7 +117,7 @@ describe("Forgot Password page testing", () => {
 
   it('Back button navigates to /login', async () => {
     const user = userEvent.setup();
-    await user.click(screen.getByRole('button', { name: /reset password/i }));
+    await user.click(screen.getByRole('button', { name: /forgot/i }));
     await user.click(screen.getByRole('button', { name: /back/i }));
     expect(screen.getByTestId('location-display')).toHaveTextContent('/login');
   });
