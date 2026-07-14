@@ -81,7 +81,7 @@ const ResetPassword = () => {
       <div className='relative glass flex flex-col rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 transition ease-in-out'>
         <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
         <X
-          className="absolute right-5 top-5 fill-subtle hover:fill-muted-foreground hover:cursor-pointer"
+          className="absolute right-5 top-5 text-subtle hover:text-muted-foreground hover:cursor-pointer"
           size={20}
           onClick={() => navigate('/login')}
         />
