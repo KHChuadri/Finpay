@@ -72,7 +72,7 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
 
   return (
     <div
-      className="flex flex-col min-h-screen bg-background text-foreground"
+      className="flex flex-col min-h-screen text-foreground"
       onClick={updateActivity}
     >
       <AuroraBackground />
