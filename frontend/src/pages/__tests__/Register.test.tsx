@@ -79,6 +79,13 @@ describe('Register Page testing', () => {
 		await waitFor(() => {
 			expect(submitButton).not.toBeDisabled();
 		});
+
+		// A weak password alone should keep the button disabled
+		fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'weak' } });
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: /create account/i })).toBeDisabled();
+		});
 	});
 
 	it('submits the form successfully', async () => {

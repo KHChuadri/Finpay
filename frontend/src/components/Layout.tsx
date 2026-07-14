@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import useAuthStore from "@/stores/authStore";
 import useDarkModeStore from '@/stores/darkModeStore';
@@ -13,8 +13,15 @@ interface LayoutProps {
 const TIMEOUT_DURATION = 3 * 60 * 1000; // 3 minutes
 const WARNING_DURATION = 15 * 1000; // 15 seconds warning before timeout
 
-const Layout = ({ children, headerRight, title = "Home" }: LayoutProps) => {
+const TITLES: Record<string, string> = {
+  '/dashboard': 'Home', '/history': 'Transactions', '/request/list': 'Requests',
+  '/groups': 'Groups', '/profile': 'Profile', '/notification': 'Notifications',
+};
+
+const Layout = ({ children, headerRight, title }: LayoutProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const pageTitle = title ?? TITLES[pathname] ?? (pathname.split('/')[1] ? pathname.split('/')[1][0].toUpperCase() + pathname.split('/')[1].slice(1) : 'Finpay');
   const [activity, setActivity] = useState(Date.now());
   const [warning, setWarning] = useState(false);
   const [countdown, setCountdown] = useState(WARNING_DURATION / 1000);
@@ -115,7 +122,7 @@ const Layout = ({ children, headerRight, title = "Home" }: LayoutProps) => {
 
       <div className="flex flex-1 flex-col">
         <div className="flex h-14 items-center justify-between border-b border-border px-5">
-          <h1 className="text-[15px] font-semibold tracking-tight">{title}</h1>
+          <h1 className="text-[15px] font-semibold tracking-tight">{pageTitle}</h1>
           {headerRight}
         </div>
 

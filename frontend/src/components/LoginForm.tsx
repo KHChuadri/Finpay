@@ -119,7 +119,7 @@ const LoginForm = () => {
       >
         <img src="/FinpayDarkMode.png" alt="FinPay Logo" className="h-8 w-auto" />
         <div className="flex flex-col gap-3">
-          <h2 className="text-[26px] font-semibold leading-tight text-primary-foreground">
+          <h2 className="text-[26px] font-semibold leading-tight text-foreground">
             Money that moves at your pace.
           </h2>
           <p className="text-muted-foreground text-sm">
