@@ -1,0 +1,34 @@
+{
+  "pkg": "..",
+  "globalName": "FinpayUI",
+  "projectId": "4ef0cbf1-99d7-479d-b28a-44b925c0f4e0",
+  "shape": "package",
+  "srcDir": "src/components/ui",
+  "tsconfig": "tsconfig.app.json",
+  "cssEntry": "dist/ds-styles.css",
+  "buildCmd": "cd frontend && npx vite build && cp dist/assets/index-*.css dist/ds-styles.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "componentSrcMap": {
+    "Button": "src/components/ui/Button.tsx",
+    "Card": "src/components/ui/Card.tsx",
+    "Input": "src/components/ui/Input.tsx",
+    "Label": "src/components/ui/Label.tsx",
+    "Pill": "src/components/ui/Pill.tsx",
+    "ProgressBar": "src/components/ui/ProgressBar.tsx",
+    "PageContainer": "src/components/ui/PageContainer.tsx",
+    "CountUp": "src/components/ui/CountUp.tsx"
+  },
+  "overrides": {
+    "PageContainer": { "cardMode": "column" }
+  },
+  "dtsPropsFor": {
+    "Button": "/** Visual style. @default 'primary' */\n  variant?: 'primary' | 'ghost' | 'destructive';\n  children?: React.ReactNode;\n  className?: string;\n  type?: 'button' | 'submit' | 'reset';\n  disabled?: boolean;\n  onClick?: React.MouseEventHandler<HTMLButtonElement>;",
+    "Card": "/** Use a stronger border to emphasize the card. */\n  emphasis?: boolean;\n  children?: React.ReactNode;\n  className?: string;",
+    "Input": "/** Apply error-state styling (red border/ring). */\n  error?: boolean;\n  className?: string;\n  placeholder?: string;\n  value?: string | number;\n  defaultValue?: string | number;\n  type?: string;\n  disabled?: boolean;\n  onChange?: React.ChangeEventHandler<HTMLInputElement>;",
+    "Label": "/** Appends a red asterisk after the text. */\n  required?: boolean;\n  children?: React.ReactNode;\n  className?: string;",
+    "Pill": "children?: React.ReactNode;\n  className?: string;",
+    "ProgressBar": "/** Current progress value. */\n  value: number;\n  /** Value representing 100%. */\n  max: number;\n  className?: string;",
+    "PageContainer": "/** Max-width preset: 'default' (max-w-6xl) or 'narrow' (max-w-md). @default 'default' */\n  size?: 'default' | 'narrow';\n  children?: React.ReactNode;\n  className?: string;",
+    "CountUp": "/** Target number to animate to. */\n  value: number;\n  /** Formats the displayed number. Defaults to en-AU with 2 decimals. */\n  format?: (n: number) => string;\n  className?: string;"
+  }
+}
