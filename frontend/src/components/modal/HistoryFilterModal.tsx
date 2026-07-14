@@ -104,10 +104,10 @@ const HistoryFilterModal = () => {
 
   return (
     <div
-      className='fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/30 z-50'
+      className='fixed inset-0 flex items-center justify-center bg-[rgba(6,7,9,.5)] backdrop-blur-sm z-50'
       data-testid="history-filter-modal"
     >
-      <div className='glass rounded-xl w-11/12 sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl p-6 mx-4'>
+      <div className='bg-[#17181C] border border-border-strong rounded-[16px] shadow-[0_30px_70px_-25px_rgba(0,0,0,.8)] w-11/12 sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl p-6 mx-4'>
         {/* Header */}
         <div className='flex justify-between items-center mb-4'>
           <h1 className='font-bold text-2xl text-foreground'>Filters</h1>

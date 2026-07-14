@@ -13,8 +13,8 @@ const FailedRequestModal = ({ onClose }: FailedRequestModalProps) => {
   };
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center bg-black/10 z-50'>
-      <div className='glass rounded-xl w-full max-w-md p-6 mx-4'>
+    <div className='fixed inset-0 flex items-center justify-center bg-[rgba(6,7,9,.5)] backdrop-blur-sm z-50'>
+      <div className='bg-[#17181C] border border-border-strong rounded-[16px] shadow-[0_30px_70px_-25px_rgba(0,0,0,.8)] w-full max-w-md p-6 mx-4'>
         <div className='flex flex-col items-center'>
           <div className='text-5xl text-destructive mb-4'>❌</div>
           <h2 className='text-xl font-bold text-foreground mb-2'>Request Failed</h2>
