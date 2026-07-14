@@ -191,7 +191,7 @@ const GroupPage = () => {
             <p className="text-muted-foreground">{group?.description}</p>
           </div>
 
-          <div className="bg-card p-6 rounded-xl shadow-md space-y-4">
+          <div className="glass p-6 rounded-xl space-y-4">
             <div className="flex items-center gap-3">
               {currency && (
                 <FlagGetter countryCodes={currency.countryCode.toLowerCase()} />
@@ -200,7 +200,7 @@ const GroupPage = () => {
                 {currency?.code} Balance
               </h3>
             </div>
-            <h1 className="text-5xl sm:text-6xl font-extrabold text-foreground">
+            <h1 className="text-5xl sm:text-6xl font-extrabold text-foreground font-mono tabular-nums">
               {group?.walletBalance?.toLocaleString("en-AU", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -225,7 +225,7 @@ const GroupPage = () => {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-xl shadow space-y-2">
+          <div className="glass p-6 rounded-xl space-y-2">
             <h3 className="text-xl font-semibold">
               Shared wallet transactions history
             </h3>
