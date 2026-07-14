@@ -33,7 +33,7 @@ const ScheduledPayment = ({setSuccess}: ScheduledPaymentModal) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-      <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 mx-4">
+      <div className="glass rounded-xl w-full max-w-md p-6 mx-4">
         <div className="flex flex-col items-center gap-1">
           <div className="flex flex-col justify-between w-full">
             <h1 className="font-bold text-2xl">Schedule a payment</h1>
