@@ -109,6 +109,15 @@ describe("Request balance test", () => {
       expect(screen.getByTestId('request-list-header')).toBeInTheDocument();
       expect(screen.getByTestId('no-requests')).toBeInTheDocument();
     });
+
+    const newRequestBtn = screen.getByTestId('new-request-button');
+    expect(newRequestBtn).toBeInTheDocument();
+
+    fireEvent.click(newRequestBtn);
+
+    await waitFor(() => {
+      expect(navMock).toHaveBeenCalledWith('/request/recipient')
+    })
   });
 
   it('rendering and filling the fields for making a request', async () => {

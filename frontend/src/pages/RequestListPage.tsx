@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '@/components/Layout';
 import useAuthStore from '@/stores/authStore';
@@ -17,6 +18,7 @@ interface Request {
 }
 
 const RequestListPage = () => {
+  const navigate = useNavigate();
   const [requestList, setRequestList] = useState<Request[]>([]);
   const { userId } = useAuthStore();
   const [loadingStates, setLoadingStates] = useState<Record<string, "accept" | "decline" | null>>({});
@@ -89,7 +91,17 @@ const RequestListPage = () => {
       <Layout>
         <div className='flex flex-grow justify-center items-start p-4 w-full'>
           <div className='flex flex-col bg-card rounded-2xl p-6 gap-4 shadow-lg w-3/4 md:w-1/2'>
-            <h2 className='text-2xl font-semibold text-foreground'>Request List</h2>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-2xl font-semibold text-foreground'>Request List</h2>
+              <Button
+                variant="primary"
+                size="sm"
+                data-testid="new-request-button"
+                onClick={() => navigate('/request/recipient')}
+              >
+                New request
+              </Button>
+            </div>
 
             <div data-testid='request-list-header' className='flex flex-col w-full h-full gap-4 overflow-y-auto max-h-[70vh]'>
               {requestList.length === 0 ? (

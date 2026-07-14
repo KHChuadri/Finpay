@@ -75,7 +75,7 @@ function HeaderButtons() {
             </div>
           ) : isVerified ? (
             <div className="relative">
-              <CircleCheck className="w-4 h-4 text-primary bg-card rounded-full" />
+              <CircleCheck className="w-4 h-4 text-positive bg-card rounded-full" />
               <div className="absolute hidden group-hover:block bottom-full -left-2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
                 Account verified
               </div>

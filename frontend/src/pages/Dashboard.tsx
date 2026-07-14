@@ -70,6 +70,7 @@ const Dashboard = () => {
         countryCode: wallet.walletCurrency.slice(0, 2).toLowerCase(),
         walletBalance: wallet.walletBalance,
         walletCurrency: wallet.walletCurrency,
+        currencyName: wallet.currencyName,
       }));
 
       setUserWallets(mappedWallets);
