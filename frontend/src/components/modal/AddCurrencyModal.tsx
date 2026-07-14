@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { FiSearch, FiX } from 'react-icons/fi';
+import { Search, X } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 import { useTransactionStore } from '@/stores/transactionStore';
 import useAuthStore from '@/stores/authStore';
@@ -42,7 +42,7 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
 
   return (
     <div data-testid="add-currency-dialog" className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-xs z-50">
-      <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="glass rounded-xl w-full max-w-md mx-4 overflow-hidden">
         {/* Header */}
         <div className="relative flex items-center justify-center p-4 border-b border-border shadow-xs">
           <h2 className="text-2xl font-bold text-foreground text-center w-full">
@@ -53,7 +53,7 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
             aria-label="add-currency-close"
             className="absolute right-6 text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-pointer"
           >
-            <FiX size={26} />
+            <X className="h-7 w-7" />
           </button>
         </div>
 
@@ -61,7 +61,7 @@ const AddCurrencyModal = ({ onClose, onAddCurrency }: AddCurrencyModalProps) => 
         <div className="p-6">
           <div className="relative">
             <div className="absolute flex items-center inset-y-0 left-0 pl-3 pointer-events-none">
-              <FiSearch className="text-muted-foreground" />
+              <Search className="text-muted-foreground" />
             </div>
             <Input
               type="text"
