@@ -205,15 +205,15 @@ const ViewScheduledPayments = () => {
                 placeholder='Search by email'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className='w-full pl-12 pr-4 py-2 glass text-foreground placeholder:text-subtle rounded-full
+                className='w-full pl-12 pr-4 py-2 bg-card2 border border-border-strong text-foreground placeholder:text-subtle rounded-full
                    focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
               />
             </div>
 
             <button
               onClick={() => setShowModal(true)}
-              className='flex flex-row glass text-foreground rounded-full pl-6 pr-6 py-2 items-center justify-center
-                gap-2 font-bold hover:bg-muted transition-colors shadow-md cursor-pointer'
+              className='flex flex-row bg-card2 border border-border-strong text-foreground rounded-full pl-6 pr-6 py-2 items-center justify-center
+                gap-2 font-bold hover:bg-hover transition-colors shadow-md cursor-pointer'
             >
               <Filter className='h-5 w-5' />
               <p>Filters</p>
@@ -227,7 +227,7 @@ const ViewScheduledPayments = () => {
         <div className='flex flex-col ml-5 mr-5 w-full p-4 gap-2 overflow-y-auto flex-grow justify-center items-center h-full'>
           {filteredData.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full">
-              <div className="glass p-8 rounded-2xl max-w-md w-full text-center">
+              <div className="bg-card border border-border p-8 rounded-2xl max-w-md w-full text-center">
                 <div className="text-6xl mb-4">⏰</div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No scheduled payments found</h3>
                 <p className="text-muted-foreground mb-4">

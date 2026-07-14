@@ -88,7 +88,7 @@ const AdminPage = () => {
         </div>
       )}
       <div className="flex flex-col md:flex-row min-h-screen bg-background w-full">
-        <div className="w-full md:w-64 glass p-4">
+        <div className="w-full md:w-64 bg-card border border-border p-4">
           <h1 className="text-2xl font-semibold text-foreground mb-4">Administrator Page</h1>
 
           {/* User Management Dropdown Toggle */}

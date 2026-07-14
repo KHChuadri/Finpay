@@ -352,7 +352,7 @@ const ChallengesList = () => {
                 placeholder='Search challenges'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className='w-full pl-12 pr-4 py-2 glass rounded-full text-foreground
+                className='w-full pl-12 pr-4 py-2 bg-card2 border border-border-strong rounded-full text-foreground
                    focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
               />
             </div>
@@ -360,7 +360,7 @@ const ChallengesList = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className='px-4 py-2 glass rounded-full text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
+              className='px-4 py-2 bg-card2 border border-border-strong rounded-full text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
             >
               <option value="all">All Categories</option>
               <option value="pay">Pay</option>

@@ -38,7 +38,7 @@ const GroupPage = () => {
   return (
     <Layout headerRight={<HeaderButtons />}>
       <div className="w-full flex flex-col justify-start items-center min-h-screen">
-        <div className="relative flex flex-col glass rounded-2xl p-6 w-2/3 h-1/2 gap-6 transition ease-in-out">
+        <div className="relative flex flex-col bg-card border border-border rounded-2xl p-6 w-2/3 h-1/2 gap-6 transition ease-in-out">
 
           <div className="flex w-full flex-row items-center min-h-max">
             <h2 className='font-semibold text-xl md:text-3xl w-max-content'>Notification List</h2>

@@ -453,7 +453,7 @@ const ProfilePage = () => {
   return (
     <Layout headerRight={headerButtons}>
       <div className={`flex justify-center items-center py-8 px-4`}>
-        <div className="w-full max-w-2xl rounded-xl overflow-hidden glass text-foreground">
+        <div className="w-full max-w-2xl rounded-xl overflow-hidden bg-card border border-border text-foreground">
           {/* Profile Header */}
           <div className="bg-muted px-6 py-4 border-b border-border">
             <div className="flex flex-row items-center gap-6">
@@ -739,7 +739,7 @@ const ProfilePage = () => {
             {/* Change Account Modal */}
             {changeAccountModal && (
               <div className="flex items-center justify-center fixed inset-0 backdrop-blur-xs z-50">
-                <div className="glass p-6 rounded-lg w-100">
+                <div className="bg-card border border-border p-6 rounded-lg w-100">
                   <h2 className="text-xl font-semibold mb-6">Change Account Type</h2>
                   <p className="mb-4 text-md text-foreground">
                     Are you sure you want to change your account type to
