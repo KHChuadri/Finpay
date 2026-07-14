@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import useAuthStore from "@/stores/authStore";
 import useDarkModeStore from '@/stores/darkModeStore';
+import { AuroraBackground } from '@/components/ui/AuroraBackground';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -71,9 +72,10 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
 
   return (
     <div
-      className="flex flex-col min-h-screen bg-background text-foreground"
+      className="flex flex-col min-h-screen text-foreground"
       onClick={updateActivity}
     >
+      <AuroraBackground />
       {/* Show Warning Popup */}
       {warning && token && (
         <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-warning text-warning-foreground rounded-lg shadow-xl z-20">
@@ -82,7 +84,7 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
       )}
 
       {/* Shared Header */}
-      <nav className="sticky top-0 z-10 w-full border-b border-border bg-background/70 backdrop-blur-md">
+      <nav className="glass sticky top-0 z-10 w-full !rounded-none !border-x-0 !border-t-0">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <button
             onClick={() => navigate('/dashboard')}

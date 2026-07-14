@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { IoEyeSharp } from "react-icons/io5";
-import { FaEyeSlash, FaTimes } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
+import { Eye, EyeOff, X } from "lucide-react";
 import axios from "axios";
 import { API_URL } from "@/constants/API_URL";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
+import { AuroraBackground } from "@/components/ui/AuroraBackground";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -77,11 +76,12 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="bg-background min-h-screen flex w-full justify-center items-center">
-      <div className='relative flex flex-col bg-card border border-border rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-xl transition ease-in-out'>
+    <div className="min-h-screen flex w-full justify-center items-center">
+      <AuroraBackground />
+      <div className='relative glass flex flex-col rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 transition ease-in-out'>
         <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
-        <IoMdClose
-          className="absolute right-5 top-5 fill-subtle hover:fill-muted-foreground hover:cursor-pointer"
+        <X
+          className="absolute right-5 top-5 text-subtle hover:text-muted-foreground hover:cursor-pointer"
           size={20}
           onClick={() => navigate('/login')}
         />
@@ -101,7 +101,7 @@ const ResetPassword = () => {
                   onClick={() => setErrorMessage(null)}
                   className="absolute top-4 right-4 text-destructive hover:opacity-80 cursor-pointer"
                 >
-                  <FaTimes />
+                  <X />
                 </button>
               </div>
             )}
@@ -118,13 +118,13 @@ const ResetPassword = () => {
                   className='border-none w-full focus:outline-none bg-transparent text-foreground'
                 />
                 {showPassword == false ? (
-                  <FaEyeSlash
-                    className='absolute right-2 bottom-2.5'
+                  <EyeOff
+                    className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 ) : (
-                  <IoEyeSharp
-                    className='absolute right-2 bottom-2.5'
+                  <Eye
+                    className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 )}
@@ -144,13 +144,13 @@ const ResetPassword = () => {
                   className='border-none w-full focus:outline-none bg-transparent text-foreground'
                 />
                 {showConfirmationPassword == false ? (
-                  <FaEyeSlash
-                    className='absolute right-2 bottom-2.5'
+                  <EyeOff
+                    className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                     onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
                   />
                 ) : (
-                  <IoEyeSharp
-                    className='absolute right-2 bottom-2.5'
+                  <Eye
+                    className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                     onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
                   />
                 )}

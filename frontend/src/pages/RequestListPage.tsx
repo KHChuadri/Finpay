@@ -88,7 +88,7 @@ const RequestListPage = () => {
     <div className='flex flex-col w-full min-h-screen'>
       <Layout>
         <div className='flex flex-grow justify-center items-start p-4 w-full'>
-          <div className='flex flex-col bg-card rounded-2xl p-6 gap-4 shadow-lg w-3/4 md:w-1/2'>
+          <div className='flex flex-col glass rounded-2xl p-6 gap-4 w-3/4 md:w-1/2'>
             <h2 className='text-2xl font-semibold text-foreground'>Request List</h2>
 
             <div data-testid='request-list-header' className='flex flex-col w-full h-full gap-4 overflow-y-auto max-h-[70vh]'>
@@ -109,7 +109,7 @@ const RequestListPage = () => {
                           Requested on: {formatDate(r.requestDate)}
                         </p>
                       </div>
-                      <p data-testid="requester-amount" className="text-lg font-bold text-foreground">
+                      <p data-testid="requester-amount" className="text-lg font-bold text-foreground font-mono tabular-nums">
                         {r.amount.toLocaleString()} {r.currency}
                       </p>
                     </div>

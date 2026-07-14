@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import HeaderButtons from "@/components/dashboard/HeaderButtons";
 import useAuthStore from "@/stores/authStore";
 import NotificationList, { type Props } from "@/components/NotificationList";
-import { IoMdRefresh } from "react-icons/io";
+import { RefreshCw } from "lucide-react";
 import { API_URL } from "@/constants/API_URL";
 
 const GroupPage = () => {
@@ -38,14 +38,13 @@ const GroupPage = () => {
   return (
     <Layout headerRight={<HeaderButtons />}>
       <div className="w-full flex flex-col justify-start items-center min-h-screen">
-        <div className="relative flex flex-col bg-card rounded-2xl p-6 w-2/3 h-1/2 gap-6 shadow-2xl transition ease-in-out">
+        <div className="relative flex flex-col glass rounded-2xl p-6 w-2/3 h-1/2 gap-6 transition ease-in-out">
 
           <div className="flex w-full flex-row items-center min-h-max">
             <h2 className='font-semibold text-xl md:text-3xl w-max-content'>Notification List</h2>
-            <IoMdRefresh
-              size={40}
+            <RefreshCw
+              className="h-10 w-10 absolute right-5 border-2 border-border rounded-full hover:bg-muted p-1 fill-primary cursor-pointer"
               onClick={() => fetchNotification()}
-              className="absolute right-5 border-2 border-border rounded-full hover:bg-muted p-1 fill-primary "
             />
           </div>
 

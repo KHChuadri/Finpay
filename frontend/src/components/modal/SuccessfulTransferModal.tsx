@@ -22,7 +22,7 @@ const SuccessfulTransferModal = () => {
   }
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black/10 z-50'>
-      <div className='bg-card border border-border rounded-xl shadow-2xl w-full max-w-md p-6 mx-4'>
+      <div className='glass rounded-xl w-full max-w-md p-6 mx-4'>
         <div className='flex flex-col items-center gap-4'>
           <div className='flex flex-col justify-center items-center'>
             <div className='text-5xl text-positive mb-4'>✅</div>

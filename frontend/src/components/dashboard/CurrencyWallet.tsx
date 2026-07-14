@@ -84,14 +84,14 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
           <button
             key={index}
             onClick={() => navigate(`/currencywallet/${item.walletCurrency}`)}
-            className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card"
+            className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card border border-border"
           >
             <div className="py-2 h-full flex flex-col justify-start">
               <div className="text-lg font-bold flex flex-row items-center gap-4 w-full overflow-hidden">
                 <FlagGetter countryCodes={item.countryCode} />
-                <div className="break-words whitespace-normal leading-snug mt-1 text-foreground">{item.walletCurrency}</div>
+                <div className="break-words whitespace-normal leading-snug mt-1 text-play-cyan">{item.walletCurrency}</div>
               </div>
-              <div className="ml-2 mt-auto text-lg font-bold flex items-end text-foreground">
+              <div className="ml-2 mt-auto text-lg font-bold flex items-end font-mono tabular-nums text-foreground">
                 {item.walletBalance.toLocaleString()}
               </div>
             </div>
@@ -99,7 +99,7 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
         ))}
 
         <button
-          className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card text-foreground"
+          className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card border border-border text-foreground"
           onClick={toggleCurrencyModal}
           data-testid="wallet-addition"
         >

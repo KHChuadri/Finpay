@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { FaArrowUp, FaArrowDown, FaPeopleArrows, FaTimes } from "react-icons/fa";
-import { FaArrowRightArrowLeft } from "react-icons/fa6";
+import { ArrowUp, ArrowDown, Users, X, ArrowLeftRight } from "lucide-react";
 import axios from 'axios';
 import Layout from '@/components/Layout';
 import HeaderButtons from '@/components/dashboard/HeaderButtons';
@@ -143,7 +142,7 @@ const CurrencyWalletPage = () => {
             onClick={() => setErrorMsg(null)}
             className="absolute top-4 right-4 text-destructive hover:text-destructive/80"
           >
-            <FaTimes />
+            <X className="h-5 w-5" />
           </button>
         </div>
       )}
@@ -159,7 +158,7 @@ const CurrencyWalletPage = () => {
                 onClick={() => setShowCloseModal(true)}
                 className="flex items-center gap-2 text-base sm:text-lg"
               >
-                <FaTimes size={16} />
+                <X size={16} />
                 <span className="sr-only">Close balance</span>
               </Button>
             </div>
@@ -171,7 +170,7 @@ const CurrencyWalletPage = () => {
               </h1>
             </div>
 
-            <h2 className="text-foreground font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
+            <h2 className="text-foreground font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-mono tabular-nums">
               {userWallet?.walletBalance?.toLocaleString('en-AU', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -185,7 +184,7 @@ const CurrencyWalletPage = () => {
             onClick={() => setShowCloseModal(true)}
             className="hidden md:flex items-center gap-2 text-lg absolute top-6 md:top-10 right-6 md:right-10"
           >
-            <FaTimes />
+            <X className="h-5 w-5" />
             Close balance
           </Button>
         </div>
@@ -194,10 +193,10 @@ const CurrencyWalletPage = () => {
         <div className="mt-8 sm:mt-12">
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-3xl mx-auto">
             {[
-              { icon: <FaArrowUp />, label: 'Deposit', action: () => navigate('/deposit') },
-              { icon: <FaArrowDown />, label: 'Withdraw', action: () => navigate('/withdraw') },
-              { icon: <FaArrowRightArrowLeft />, label: 'Convert', action: () => handleConversion() },
-              { icon: <FaPeopleArrows />, label: 'Send', action: () => navigate('/transfer/recipient') }
+              { icon: <ArrowUp className="h-5 w-5 text-foreground" />, label: 'Deposit', action: () => navigate('/deposit') },
+              { icon: <ArrowDown className="h-5 w-5 text-foreground" />, label: 'Withdraw', action: () => navigate('/withdraw') },
+              { icon: <ArrowLeftRight className="h-5 w-5 text-play-cyan" />, label: 'Convert', action: () => handleConversion() },
+              { icon: <Users className="h-5 w-5 text-primary" />, label: 'Send', action: () => navigate('/transfer/recipient') }
             ].map((button, index) => (
               <div key={index} className="flex flex-col items-center gap-2 w-[calc(50%-4rem)] sm:w-auto">
                 <button

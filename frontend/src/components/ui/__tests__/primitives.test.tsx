@@ -66,4 +66,9 @@ describe('ui primitives', () => {
     render(<Button variant="destructive">Delete</Button>);
     expect(screen.getByText('Delete').className).toContain('bg-destructive');
   });
+
+  it('Button primary carries the neon glow class', () => {
+    render(<Button>Send</Button>);
+    expect(screen.getByRole('button', { name: 'Send' }).className).toContain('glow-primary');
+  });
 });

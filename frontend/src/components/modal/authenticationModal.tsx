@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { LiaTimesSolid } from 'react-icons/lia';
+import { X } from 'lucide-react';
 import useOtpStore from '../../stores/otpStore';
 import { Button } from '@/components/ui/Button';
 
@@ -136,7 +136,7 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
       onClick={() => onClose()}
     >
       <div
-        className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md transform transition-all animate-in zoom-in-95 duration-200"
+        className="relative glass rounded-2xl w-full max-w-md transform transition-all animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -146,7 +146,7 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
           type="button"
           aria-label="Close modal"
         >
-          <LiaTimesSolid className="w-5 h-5 text-muted-foreground" />
+          <X className="w-5 h-5 text-muted-foreground" />
         </button>
 
         <div className="p-8">

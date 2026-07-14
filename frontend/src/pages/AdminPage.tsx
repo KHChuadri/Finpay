@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { PiHandWithdraw } from "react-icons/pi";
+import { HandCoins, ListPlus } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
 import AdminMainPage from '@/components/admin/AdminMainPage';
 import { LockClosedIcon, ShieldCheckIcon, UserIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { MdAddTask } from "react-icons/md";
 import AdminChallengePage from '@/components/admin/AdminChallengePage';
 import AdminWithdraw from '@/components/transaction/adminWithdraw';
 import axios from 'axios';
@@ -89,7 +88,7 @@ const AdminPage = () => {
         </div>
       )}
       <div className="flex flex-col md:flex-row min-h-screen bg-background w-full">
-        <div className="w-full md:w-64 bg-card shadow-lg p-4">
+        <div className="w-full md:w-64 glass p-4">
           <h1 className="text-2xl font-semibold text-foreground mb-4">Administrator Page</h1>
 
           {/* User Management Dropdown Toggle */}
@@ -162,7 +161,7 @@ const AdminPage = () => {
                 onClick={() => handleNavigateToChallenge('create')}
                 className={`cursor-pointer flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeChallengeTab === 'create' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
-                <MdAddTask className="w-5 h-5 mr-3" />
+                <ListPlus className="w-5 h-5 mr-3" />
                 Create challenge
               </button>
             </nav>
@@ -187,7 +186,7 @@ const AdminPage = () => {
                 onClick={() => handleNavigateToRequest('withdraw')}
                 className={`cursor-pointer flex items-center w-full px-4 py-2 text-left rounded-lg transition ${activeRequestTab === 'withdraw' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}
               >
-                <PiHandWithdraw className="w-5 h-5 mr-3" />
+                <HandCoins className="w-5 h-5 mr-3" />
                 Withdraw Request
               </button>
             </nav>

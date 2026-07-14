@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaEyeSlash } from 'react-icons/fa';
-import { IoEyeSharp } from 'react-icons/io5';
+import { Eye, EyeOff } from 'lucide-react';
 import validator from 'validator';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
@@ -147,7 +146,7 @@ const RegisterForm = () => {
   }, [firstName, lastName, email, password, confirmationPassword, firstNameError, lastNameError, emailError, passwordError, confirmationPasswordError])
 
   return (
-    <div className='flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-xl transition ease-in-out'>
+    <div className='glass flex flex-col rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 transition ease-in-out'>
       <h3 className='text-foreground text-2xl font-bold pt-2 text-center mb-2'>Registration</h3>
 
       {errorMsg && <p className='text-destructive text-md'>{errorMsg}</p>}
@@ -219,13 +218,13 @@ const RegisterForm = () => {
               className='border-none w-full focus:outline-none bg-transparent text-foreground'
             />
             {showPassword == false ? (
-              <FaEyeSlash
-                className='absolute right-2 bottom-2.5 cursor-pointer'
+              <EyeOff
+                className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                 onClick={() => setShowPassword(!showPassword)}
               />
             ) : (
-              <IoEyeSharp
-                className='absolute right-2 bottom-2.5 cursor-pointer'
+              <Eye
+                className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                 onClick={() => setShowPassword(!showPassword)}
               />
             )
@@ -254,13 +253,13 @@ const RegisterForm = () => {
               className='border-none w-full focus:outline-none bg-transparent text-foreground'
             />
             {showConfirmationPassword == false ? (
-              <FaEyeSlash
-                className='absolute right-2 bottom-2.5'
+              <EyeOff
+                className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                 onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
               />
             ) : (
-              <IoEyeSharp
-                className='absolute right-2 bottom-2.5'
+              <Eye
+                className='absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground'
                 onClick={() => setShowConfirmationPassword(!showConfirmationPassword)}
               />
             )
