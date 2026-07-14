@@ -68,8 +68,8 @@ const ForgotPassword = () => {
 
   return (
     <Layout>
-      <div className="bg-background min-h-screen flex justify-center items-center w-full">
-        <div className='flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 gap-4 shadow-xl transition ease-in-out'>
+      <div className="min-h-screen flex justify-center items-center w-full">
+        <div className='glass flex flex-col rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 gap-4 transition ease-in-out'>
           <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
 
           {success && (
