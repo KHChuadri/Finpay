@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import axios from "axios";
-import { IoIosSend, IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
-import { FaArrowRightArrowLeft } from "react-icons/fa6";
+import { Send, ArrowUp, ArrowDown, ArrowLeftRight } from "lucide-react";
 import Layout from '../components/Layout';
 import HeaderButtons from "@/components/dashboard/HeaderButtons";
 import CurrencyWallet from "../components/dashboard/CurrencyWallet";
@@ -116,43 +115,47 @@ const Dashboard = () => {
           </div>
           <div className="md:flex md:flex-row gap-4 grid grid-cols-2">
             <div className="flex flex-col items-center">
-              <button
+              <Button
                 onClick={() => navigate("/transfer/recipient")}
                 data-testid="Send-dashboard-button"
-                className="w-18 h-18 sm:w-20 sm:h-20 bg-card border border-border hover:border-border-strong text-foreground rounded-full cursor-pointer transition-colors shadow-sm flex items-center justify-center"
+                variant="primary"
+                className="w-18 h-18 sm:w-20 sm:h-20 rounded-full p-0 shadow-sm flex items-center justify-center"
               >
-                <IoIosSend className="w-8 h-8" />
-              </button>
+                <Send className="h-8 w-8" />
+              </Button>
               <label className="mt-1 text-muted-foreground">Send</label>
             </div>
             <div className="flex flex-col items-center">
-              <button
+              <Button
                 onClick={() => navigate("/deposit")}
                 data-testid="Deposit-dashboard-button"
-                className="w-18 h-18 sm:w-20 sm:h-20 bg-card border border-border hover:border-border-strong text-foreground rounded-full cursor-pointer transition-colors shadow-sm flex items-center justify-center"
+                variant="ghost"
+                className="w-18 h-18 sm:w-20 sm:h-20 rounded-full p-0 bg-card shadow-sm flex items-center justify-center"
               >
-                <IoMdArrowUp className="w-8 h-8" />
-              </button>
+                <ArrowUp className="h-8 w-8" />
+              </Button>
               <label className="mt-1 text-muted-foreground">Deposit</label>
             </div>
             <div className="flex flex-col items-center">
-              <button
+              <Button
                 onClick={() => navigate("/withdraw")}
                 data-testid="Withdraw-dashboard-button"
-                className="w-18 h-18 sm:w-20 sm:h-20 bg-card border border-border hover:border-border-strong text-foreground rounded-full cursor-pointer transition-colors shadow-sm flex items-center justify-center"
+                variant="ghost"
+                className="w-18 h-18 sm:w-20 sm:h-20 rounded-full p-0 bg-card shadow-sm flex items-center justify-center"
               >
-                <IoMdArrowDown className="w-8 h-8" />
-              </button>
+                <ArrowDown className="h-8 w-8" />
+              </Button>
               <label className="mt-1 text-muted-foreground">Withdraw</label>
             </div>
             <div className="flex flex-col items-center">
-              <button
+              <Button
                 onClick={() => handleConvertNavigation()}
                 data-testid="Convert-dashboard-button"
-                className="w-18 h-18 sm:w-20 sm:h-20 bg-card border border-border hover:border-border-strong text-foreground rounded-full cursor-pointer transition-colors shadow-sm flex items-center justify-center"
+                variant="ghost"
+                className="w-18 h-18 sm:w-20 sm:h-20 rounded-full p-0 bg-card shadow-sm flex items-center justify-center"
               >
-                <FaArrowRightArrowLeft className="w-6 h-6" />
-              </button>
+                <ArrowLeftRight className="h-6 w-6 text-play-cyan" />
+              </Button>
               <label className="mt-1 text-muted-foreground">Convert</label>
             </div>
           </div>
@@ -161,13 +164,15 @@ const Dashboard = () => {
         {/* Right Wallet Section */}
         <div className="w-3/4 md:w-1/2 flex flex-col justify-center text-center md:text-left">
 
-          <h2 data-testid="total-balance-heading" className="text-xl font-extrabold justify-center relative md:left-0 mb-2 md:ml-13">Total balance:</h2>
+          <div className="glass rounded-xl p-5">
+            <h2 data-testid="total-balance-heading" className="text-xl font-extrabold justify-center relative md:left-0 mb-2">Total balance:</h2>
 
-          <div className="flex justify-center md:justify-start md:items-end mb-2 relative md:left-0">
-            <p data-testid="wallet-currency" className="text-2xl md:text-3xl font-bold mr-2 md:ml-13">
-              $<CountUp value={audTotal} />
-            </p>
-            <p data-testid="aud-currency" className="text-2xl font-semibold">AUD</p>
+            <div className="flex justify-center md:justify-start md:items-end mb-2 relative md:left-0">
+              <p data-testid="wallet-currency" className="text-2xl md:text-3xl font-bold mr-2 font-mono tabular-nums tracking-tight">
+                $<CountUp value={audTotal} />
+              </p>
+              <p data-testid="aud-currency" className="text-2xl font-semibold">AUD</p>
+            </div>
           </div>
 
           {/* Wallet List */}
