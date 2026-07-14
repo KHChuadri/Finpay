@@ -4,8 +4,7 @@ import Layout from "@/components/Layout";
 import HistoryFilterModal from "@/components/modal/HistoryFilterModal";
 import useAuthStore from "@/stores/authStore";
 import useHistoryStore from "@/stores/historyStore";
-import { FaFilter, FaSearch } from "react-icons/fa";
-import { MdCancel } from "react-icons/md";
+import { Filter, Search, X } from "lucide-react";
 import axios from "axios";
 import { API_URL } from "@/constants/API_URL";
 
@@ -199,24 +198,24 @@ const ViewScheduledPayments = () => {
           <div className='flex flex-col sm:flex-row w-full md:w-auto gap-4 items-stretch'>
             <div className='relative flex-grow max-w-md'>
               <div className='absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground'>
-                <FaSearch className='w-4 h-4' />
+                <Search className='w-4 h-4' />
               </div>
               <input
                 type='text'
                 placeholder='Search by email'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className='w-full pl-12 pr-4 py-2 bg-card border border-border text-foreground placeholder:text-subtle rounded-full
+                className='w-full pl-12 pr-4 py-2 glass text-foreground placeholder:text-subtle rounded-full
                    focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
               />
             </div>
 
             <button
               onClick={() => setShowModal(true)}
-              className='flex flex-row bg-card text-foreground rounded-full pl-6 pr-6 py-2 items-center justify-center
+              className='flex flex-row glass text-foreground rounded-full pl-6 pr-6 py-2 items-center justify-center
                 gap-2 font-bold hover:bg-muted transition-colors shadow-md cursor-pointer'
             >
-              <FaFilter />
+              <Filter className='h-5 w-5' />
               <p>Filters</p>
             </button>
           </div>
@@ -228,7 +227,7 @@ const ViewScheduledPayments = () => {
         <div className='flex flex-col ml-5 mr-5 w-full p-4 gap-2 overflow-y-auto flex-grow justify-center items-center h-full'>
           {filteredData.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full">
-              <div className="bg-card border border-border p-8 rounded-2xl shadow-sm max-w-md w-full text-center">
+              <div className="glass p-8 rounded-2xl max-w-md w-full text-center">
                 <div className="text-6xl mb-4">⏰</div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No scheduled payments found</h3>
                 <p className="text-muted-foreground mb-4">
@@ -281,7 +280,10 @@ const ViewScheduledPayments = () => {
                           </div>
                         </div>
                         <div className='flex flex-col items-end gap-2'>
-                          <div className={`font-bold ${amountColor}`}>
+                          <span className='inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-warning/15 text-warning'>
+                            Scheduled
+                          </span>
+                          <div className={`font-bold font-mono tabular-nums ${amountColor}`}>
                             {`${amountSign} ${formatCurrency(payment.amountDest, payment.currencyDest)}`}
                           </div>
                           <div className='text-muted-foreground text-sm'>
@@ -292,7 +294,7 @@ const ViewScheduledPayments = () => {
                             disabled={isCancelling}
                             className='flex items-center gap-1 px-3 py-1 text-sm bg-destructive/10 text-destructive rounded-full hover:bg-destructive/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
                           >
-                            <MdCancel className='w-4 h-4' />
+                            <X className='w-4 h-4' />
                             {isCancelling ? 'Cancelling...' : 'Cancel'}
                           </button>
                         </div>
