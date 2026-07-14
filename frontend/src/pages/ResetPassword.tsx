@@ -5,7 +5,6 @@ import axios from "axios";
 import { API_URL } from "@/constants/API_URL";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
-import { AuroraBackground } from "@/components/ui/AuroraBackground";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -76,9 +75,8 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen flex w-full justify-center items-center">
-      <AuroraBackground />
-      <div className='relative glass flex flex-col rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 transition ease-in-out'>
+    <div className="min-h-screen flex w-full justify-center items-center bg-background">
+      <div className='relative bg-card border border-border flex flex-col rounded-2xl px-4 py-6 w-3/4 md:w-1/2 lg:w-1/4 gap-4 transition ease-in-out'>
         <h1 className="text-xl font-bold text-center">Reset Your Password</h1>
         <X
           className="absolute right-5 top-5 text-subtle hover:text-muted-foreground hover:cursor-pointer"

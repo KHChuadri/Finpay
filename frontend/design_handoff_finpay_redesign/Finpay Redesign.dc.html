@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#0B0C0E;--panel:#0E0F12;--card:#141518;--card2:#191A1E;--hover:#1E1F24;
+--border:#24262C;--border2:#31343B;--text:#ECEDEE;--muted:#9A9FA8;--subtle:#666B74;
+--green:#4CC38A;--greend:#3DAE79;--greenbg:rgba(76,195,138,.13);--greenbd:rgba(76,195,138,.34);
+--red:#EE6A60;--redbg:rgba(238,106,96,.12);--redbd:rgba(238,106,96,.32);--amber:#E0A24E;--amberbg:rgba(224,162,78,.13);
+--mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:'cv11','ss01';letter-spacing:-.01em}
+a{color:var(--green);text-decoration:none}
+a:hover{color:var(--greend)}
+.dv-turn{padding:52px 56px;border-bottom:1px solid var(--border);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:center;gap:10px;margin:0 0 5px}
+.dv-tid{font:600 10px var(--mono);padding:3px 7px;background:var(--green);color:#08130C;border-radius:5px;text-decoration:none}
+.dv-tname{font:600 15px 'Inter';color:var(--text)}
+.dv-tsub{font:400 13.5px/1.5 'Inter';color:var(--muted);margin:0 0 28px;max-width:640px}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px var(--mono);padding:3px 7px;background:var(--card2);color:var(--muted);border:1px solid var(--border);border-radius:6px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:9px;font:400 13px 'Inter';color:var(--muted);max-width:520px}
+.dv-olabel b{color:var(--text);font-weight:600}
+.dv-opt:target .dv-oid{background:var(--green);color:#08130C;border-color:var(--green)}
+.dv-next{margin:30px 0 0;font:400 12.5px/1.7 'Inter';color:var(--subtle)}
+.dv-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.02),0 20px 50px -30px rgba(0,0,0,.8)}
+.num{font-family:var(--mono);font-feature-settings:'tnum';letter-spacing:-.02em}
+@keyframes dvpulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes dvspin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t0" style="border-bottom:1px solid var(--border)">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+    <div style="width:30px;height:30px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;color:#08130C;font-size:16px">F</div>
+    <div style="font-weight:600;font-size:16px">Finpay — Linear-inspired redesign</div>
+  </div>
+  <p style="max-width:680px;font-size:14px;line-height:1.65;color:var(--muted);margin:0 0 22px">
+    A darker, quieter, more <b style="color:var(--text)">production-grade</b> system. Warm-neutral surfaces layered by elevation, hairline borders instead of drop-shadows, tight typographic hierarchy, and the Finpay green reserved as a <b style="color:var(--text)">functional accent</b> (primary action, positive balance, active state) rather than filling large areas. Photos are dropped in favour of type, iconography and real data. Numbers set in a mono face with tabular figures. Each surface below shows 3 directions — reference any by its id in chat (e.g. <a href="#1b" class="dv-oid">1b</a>).
+  </p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px"><span style="width:15px;height:15px;border-radius:4px;background:#0B0C0E;border:1px solid var(--border2)"></span><span style="font:500 11px var(--mono);color:var(--muted)">bg 0B0C0E</span></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px"><span style="width:15px;height:15px;border-radius:4px;background:#141518;border:1px solid var(--border2)"></span><span style="font:500 11px var(--mono);color:var(--muted)">card 141518</span></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px"><span style="width:15px;height:15px;border-radius:4px;background:#24262C"></span><span style="font:500 11px var(--mono);color:var(--muted)">border 24262C</span></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px"><span style="width:15px;height:15px;border-radius:4px;background:#4CC38A"></span><span style="font:500 11px var(--mono);color:var(--muted)">accent 4CC38A</span></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px"><span style="font:500 11px var(--mono);color:var(--text)">Inter</span><span style="font:400 11px var(--mono);color:var(--subtle)">+ JetBrains Mono</span></div>
+  </div>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Dashboard</span></div>
+  <p class="dv-tsub">From stacked photo blocks + oversized circular buttons to a real app shell. Three structural directions: a classic sidebar workspace, a command-palette-forward single column, and a two-pane workspace.</p>
+  <div class="dv-opts">
+
+    <!-- 1a : SIDEBAR APP SHELL -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span><b>Sidebar workspace.</b> Persistent nav + balance hero, compact quick-actions, wallet grid, activity table. The by-the-book Linear structure.</span></div>
+      <div class="dv-card" style="width:1140px;height:724px;display:flex">
+        <!-- sidebar -->
+        <aside style="width:236px;flex:none;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:14px 12px">
+          <button style="display:flex;align-items:center;gap:9px;width:100%;padding:8px;border:0;background:none;cursor:pointer;border-radius:9px" style-hover="background:var(--hover)">
+            <span style="width:26px;height:26px;border-radius:7px;background:var(--green);color:#08130C;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center">F</span>
+            <span style="font-weight:600;font-size:13.5px;color:var(--text)">Finpay</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-left:auto;color:var(--subtle)"><path d="M8 9l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button style="display:flex;align-items:center;gap:9px;margin-top:12px;padding:7px 9px;background:var(--card);border:1px solid var(--border);border-radius:9px;color:var(--subtle);cursor:pointer;font-size:12.5px" style-hover="border-color:var(--border2)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Search
+            <span style="margin-left:auto;font:500 10px var(--mono);color:var(--subtle);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:2px 5px">⌘K</span>
+          </button>
+          <nav style="display:flex;flex-direction:column;gap:2px;margin-top:16px">
+            <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;background:var(--card2);color:var(--text);font-size:13px;font-weight:500"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 10l8-6 8 6v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="var(--green)" stroke-width="1.8" stroke-linejoin="round"/></svg>Home</span>
+            <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;color:var(--muted);font-size:13px" style-hover="background:var(--hover);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>Wallets</span>
+            <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;color:var(--muted);font-size:13px" style-hover="background:var(--hover);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Transactions</span>
+            <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;color:var(--muted);font-size:13px" style-hover="background:var(--hover);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Requests<span style="margin-left:auto;font:600 10px var(--mono);color:var(--green);background:var(--greenbg);border-radius:20px;padding:1px 7px">3</span></span>
+            <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;color:var(--muted);font-size:13px" style-hover="background:var(--hover);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 19a5 5 0 0110 0M15 7a3 3 0 010 4m2-6a5 5 0 010 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Groups</span>
+          </nav>
+          <div style="margin-top:20px;padding:0 6px;font:600 10px var(--mono);letter-spacing:.08em;color:var(--subtle)">WALLETS</div>
+          <div style="display:flex;flex-direction:column;gap:1px;margin-top:8px">
+            <div style="display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:8px;font-size:12.5px;color:var(--muted)" style-hover="background:var(--hover);color:var(--text)"><span style="width:18px;height:18px;border-radius:5px;background:#1B3A8A;font:600 8px var(--mono);color:#cfe0ff;display:flex;align-items:center;justify-content:center">AU</span>AUD<span class="num" style="margin-left:auto;color:var(--text)">9,240.50</span></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:8px;font-size:12.5px;color:var(--muted)" style-hover="background:var(--hover);color:var(--text)"><span style="width:18px;height:18px;border-radius:5px;background:#0E5137;font:600 8px var(--mono);color:#bff0d8;display:flex;align-items:center;justify-content:center">US</span>USD<span class="num" style="margin-left:auto;color:var(--text)">2,180.00</span></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:8px;font-size:12.5px;color:var(--muted)" style-hover="background:var(--hover);color:var(--text)"><span style="width:18px;height:18px;border-radius:5px;background:#5A3A12;font:600 8px var(--mono);color:#f3dcb6;display:flex;align-items:center;justify-content:center">EU</span>EUR<span class="num" style="margin-left:auto;color:var(--text)">640.20</span></div>
+          </div>
+          <div style="margin-top:auto;display:flex;align-items:center;gap:9px;padding:8px;border-radius:10px;border:1px solid var(--border)">
+            <span style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#2b3a2f,#17361f);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;color:var(--green)">JD</span>
+            <div style="line-height:1.2;min-width:0"><div style="font-size:12.5px;font-weight:500;color:var(--text)">Jordan Diaz</div><div style="font-size:10.5px;color:var(--subtle);display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--green)"></span>Verified</div></div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-left:auto;color:var(--subtle)"><circle cx="12" cy="6" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/></svg>
+          </div>
+        </aside>
+        <!-- main -->
+        <div style="flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)">
+          <header style="height:56px;flex:none;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 22px">
+            <div><div style="font-size:14.5px;font-weight:600">Home</div></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button style="width:32px;height:32px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:var(--border2);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6c0 5 2 6 2 6H4s2-1 2-6a6 6 0 016-6zM10 20a2 2 0 004 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button style="display:flex;align-items:center;gap:7px;padding:0 13px;height:32px;border-radius:8px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#57d197"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>New transfer</button>
+            </div>
+          </header>
+          <div style="flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:18px">
+            <!-- balance hero -->
+            <div style="border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg,var(--card),var(--panel));padding:22px 24px">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between">
+                <div>
+                  <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Total balance</div>
+                  <div style="display:flex;align-items:baseline;gap:8px"><span class="num" style="font-size:38px;font-weight:600;letter-spacing:-.03em">$12,480.50</span><span style="font-size:15px;color:var(--muted);font-weight:500">AUD</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:10px"><span style="display:inline-flex;align-items:center;gap:4px;font:600 11px 'Inter';color:var(--green);background:var(--greenbg);border:1px solid var(--greenbd);border-radius:20px;padding:2px 9px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>2.4%</span><span style="font-size:11.5px;color:var(--subtle)">vs last month</span></div>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><button style="width:44px;height:44px;border-radius:11px;background:var(--card2);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:var(--green);color:var(--green)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><span style="font-size:11px;color:var(--muted)">Send</span></div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><button style="width:44px;height:44px;border-radius:11px;background:var(--card2);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:var(--green);color:var(--green)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-size:11px;color:var(--muted)">Deposit</span></div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><button style="width:44px;height:44px;border-radius:11px;background:var(--card2);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:var(--green);color:var(--green)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-size:11px;color:var(--muted)">Withdraw</span></div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><button style="width:44px;height:44px;border-radius:11px;background:var(--card2);border:1px solid var(--border);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:var(--green);color:var(--green)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M7 8h13l-3-3M17 16H4l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-size:11px;color:var(--muted)">Convert</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- wallets grid -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="font-size:13px;font-weight:600">Wallets</span><span style="font-size:11.5px;color:var(--subtle);cursor:pointer">View all</span></div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                <div style="border:1px solid var(--border);border-radius:12px;background:var(--card);padding:14px" style-hover="border-color:var(--border2)">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:6px;background:#1B3A8A;font:600 9px var(--mono);color:#cfe0ff;display:flex;align-items:center;justify-content:center">AU</span><span style="font-size:12.5px;font-weight:600">AUD</span></div><span style="font:600 10px 'Inter';color:var(--green);background:var(--greenbg);border-radius:20px;padding:1px 7px">+1.2%</span></div>
+                  <div class="num" style="font-size:20px;font-weight:600;margin-bottom:2px">9,240.50</div>
+                  <div style="font-size:11px;color:var(--subtle)">Australian Dollar</div>
+                  <svg viewBox="0 0 120 26" width="100%" height="22" style="margin-top:10px" preserveAspectRatio="none"><polyline points="0,20 20,17 40,19 60,11 80,13 100,6 120,4" fill="none" stroke="var(--green)" stroke-width="1.5"/></svg>
+                </div>
+                <div style="border:1px solid var(--border);border-radius:12px;background:var(--card);padding:14px" style-hover="border-color:var(--border2)">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:6px;background:#0E5137;font:600 9px var(--mono);color:#bff0d8;display:flex;align-items:center;justify-content:center">US</span><span style="font-size:12.5px;font-weight:600">USD</span></div><span style="font:600 10px 'Inter';color:var(--muted);background:var(--card2);border-radius:20px;padding:1px 7px">0.0%</span></div>
+                  <div class="num" style="font-size:20px;font-weight:600;margin-bottom:2px">2,180.00</div>
+                  <div style="font-size:11px;color:var(--subtle)">US Dollar</div>
+                  <svg viewBox="0 0 120 26" width="100%" height="22" style="margin-top:10px" preserveAspectRatio="none"><polyline points="0,12 20,14 40,10 60,13 80,11 100,14 120,12" fill="none" stroke="var(--subtle)" stroke-width="1.5"/></svg>
+                </div>
+                <div style="border:1px dashed var(--border2);border-radius:12px;background:none;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--subtle);cursor:pointer;min-height:118px" style-hover="border-color:var(--green);color:var(--green)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <span style="font-size:12px;font-weight:500">Add wallet</span>
+                </div>
+              </div>
+            </div>
+            <!-- activity -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><span style="font-size:13px;font-weight:600">Recent activity</span><span style="font-size:11.5px;color:var(--subtle);cursor:pointer">View all</span></div>
+              <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden">
+                <div style="display:grid;grid-template-columns:1fr 110px 120px 130px;gap:10px;padding:9px 16px;background:var(--panel);border-bottom:1px solid var(--border);font:600 10px var(--mono);letter-spacing:.05em;color:var(--subtle)"><span>DESCRIPTION</span><span>TYPE</span><span>DATE</span><span style="text-align:right">AMOUNT</span></div>
+                <div style="display:grid;grid-template-columns:1fr 110px 120px 130px;gap:10px;padding:12px 16px;align-items:center;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:8px;background:var(--greenbg);color:var(--green);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div style="font-size:12.5px;font-weight:500">Salary — Acme Corp</div><div style="font-size:10.5px;color:var(--subtle)">Deposit · Bank transfer</div></div></div><span style="font:500 10.5px 'Inter';color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;justify-self:start">Deposit</span><span style="font-size:12px;color:var(--muted)">Jul 12, 2026</span><span class="num" style="text-align:right;color:var(--green);font-weight:600">+3,500.00</span></div>
+                <div style="display:grid;grid-template-columns:1fr 110px 120px 130px;gap:10px;padding:12px 16px;align-items:center;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:8px;background:var(--card2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><div><div style="font-size:12.5px;font-weight:500">To Maya Chen</div><div style="font-size:10.5px;color:var(--subtle)">Transfer · Split dinner</div></div></div><span style="font:500 10.5px 'Inter';color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;justify-self:start">Transfer</span><span style="font-size:12px;color:var(--muted)">Jul 11, 2026</span><span class="num" style="text-align:right;color:var(--text);font-weight:600">−48.00</span></div>
+                <div style="display:grid;grid-template-columns:1fr 110px 120px 130px;gap:10px;padding:12px 16px;align-items:center"><div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:8px;background:var(--card2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 8h13l-3-3M17 16H4l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div style="font-size:12.5px;font-weight:500">USD → AUD</div><div style="font-size:10.5px;color:var(--subtle)">Conversion · Rate 1.52</div></div></div><span style="font:500 10.5px 'Inter';color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;justify-self:start">Convert</span><span style="font-size:12px;color:var(--muted)">Jul 9, 2026</span><span class="num" style="text-align:right;color:var(--text);font-weight:600">760.00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1b : COMMAND-PALETTE FORWARD -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span><b>⌘K-forward, single column.</b> Keyboard-first. Slim top bar, balance strip, wallet chips, activity — with the command palette shown open as the primary way to act.</span></div>
+      <div class="dv-card" style="width:720px;height:724px;position:relative;display:flex;flex-direction:column;background:var(--bg)">
+        <header style="height:52px;flex:none;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px">
+          <div style="display:flex;align-items:center;gap:9px"><span style="width:24px;height:24px;border-radius:7px;background:var(--green);color:#08130C;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">F</span><span style="font-weight:600;font-size:13.5px">Finpay</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="font-size:12.5px;color:var(--muted)">Home</span><span style="font-size:12.5px;color:var(--subtle)">Wallets</span><span style="font-size:12.5px;color:var(--subtle)">Activity</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><button style="width:30px;height:30px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 016 6c0 5 2 6 2 6H4s2-1 2-6a6 6 0 016-6zM10 20a2 2 0 004 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#2b3a2f,#17361f);color:var(--green);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center">JD</span></div>
+        </header>
+        <div style="padding:22px 24px;display:flex;flex-direction:column;gap:18px;flex:1;filter:blur(1.5px);opacity:.5">
+          <div><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Total balance</div><div style="display:flex;align-items:baseline;gap:8px"><span class="num" style="font-size:34px;font-weight:600;letter-spacing:-.03em">$12,480.50</span><span style="font-size:14px;color:var(--muted)">AUD</span></div></div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card)"><span style="width:18px;height:18px;border-radius:5px;background:#1B3A8A;font:600 8px var(--mono);color:#cfe0ff;display:flex;align-items:center;justify-content:center">AU</span><span style="font-size:12px;font-weight:600">AUD</span><span class="num" style="font-size:12px;color:var(--muted)">9,240.50</span></span><span style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card)"><span style="width:18px;height:18px;border-radius:5px;background:#0E5137;font:600 8px var(--mono);color:#bff0d8;display:flex;align-items:center;justify-content:center">US</span><span style="font-size:12px;font-weight:600">USD</span><span class="num" style="font-size:12px;color:var(--muted)">2,180.00</span></span></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="display:flex;justify-content:space-between;padding:9px 0"><span style="font-size:12.5px">Salary — Acme Corp</span><span class="num" style="color:var(--green);font-weight:600;font-size:12.5px">+3,500.00</span></div><div style="display:flex;justify-content:space-between;padding:9px 0"><span style="font-size:12.5px">To Maya Chen</span><span class="num" style="font-weight:600;font-size:12.5px">−48.00</span></div></div>
+        </div>
+        <!-- palette overlay -->
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.55);backdrop-filter:blur(2px);display:flex;align-items:flex-start;justify-content:center;padding-top:96px">
+          <div style="width:520px;background:#17181C;border:1px solid var(--border2);border-radius:14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.85);overflow:hidden">
+            <div style="display:flex;align-items:center;gap:11px;padding:15px 17px;border-bottom:1px solid var(--border)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style="color:var(--subtle)"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span style="font-size:15px;color:var(--text)">Send money to<span style="color:var(--subtle)"> </span></span><span style="width:1px;height:17px;background:var(--green);animation:dvpulse 1.1s infinite"></span>
+              <span style="margin-left:auto;font:500 10px var(--mono);color:var(--subtle);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:3px 6px">ESC</span>
+            </div>
+            <div style="padding:8px">
+              <div style="padding:4px 10px 6px;font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle)">ACTIONS</div>
+              <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;background:var(--greenbg);border:1px solid var(--greenbd)"><span style="width:26px;height:26px;border-radius:7px;background:var(--green);color:#08130C;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><div style="line-height:1.25"><div style="font-size:13px;font-weight:500">Send a transfer</div><div style="font-size:10.5px;color:var(--subtle)">Pay a person or saved recipient</div></div><span style="margin-left:auto;font:500 10px var(--mono);color:var(--green)">↵</span></div>
+              <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px"><span style="width:26px;height:26px;border-radius:7px;background:var(--card2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div style="line-height:1.25"><div style="font-size:13px;font-weight:500;color:var(--text)">Deposit funds</div><div style="font-size:10.5px;color:var(--subtle)">Top up a wallet</div></div></div>
+              <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px"><span style="width:26px;height:26px;border-radius:7px;background:var(--card2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 8h13l-3-3M17 16H4l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div style="line-height:1.25"><div style="font-size:13px;font-weight:500;color:var(--text)">Convert currency</div><div style="font-size:10.5px;color:var(--subtle)">Exchange between wallets</div></div></div>
+              <div style="padding:8px 10px 6px;font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle)">RECENT RECIPIENTS</div>
+              <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px"><span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3a2b3f,#1f1730);color:#d9b6f3;font:600 10px var(--mono);display:flex;align-items:center;justify-content:center">MC</span><span style="font-size:13px;color:var(--text)">Maya Chen</span><span style="margin-left:auto;font-size:11px;color:var(--subtle)">maya@acme.io</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1c : TWO-PANE WORKSPACE -->
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span><b>Two-pane workspace.</b> Sidebar + balance & wallets on the left, a persistent activity feed docked on the right. Denser, more "at-a-glance".</span></div>
+      <div class="dv-card" style="width:1140px;height:724px;display:flex">
+        <aside style="width:64px;flex:none;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px">
+          <span style="width:32px;height:32px;border-radius:9px;background:var(--green);color:#08130C;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">F</span>
+          <span style="width:38px;height:38px;border-radius:10px;background:var(--card2);color:var(--green);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 10l8-6 8 6v9a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+          <span style="width:38px;height:38px;border-radius:10px;color:var(--subtle);display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg></span>
+          <span style="width:38px;height:38px;border-radius:10px;color:var(--subtle);display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <span style="width:38px;height:38px;border-radius:10px;color:var(--subtle);display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 19a5 5 0 0110 0M15 7a3 3 0 010 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <span style="margin-top:auto;width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#2b3a2f,#17361f);color:var(--green);font-weight:600;font-size:11px;display:flex;align-items:center;justify-content:center">JD</span>
+        </aside>
+        <div style="flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)">
+          <header style="height:56px;flex:none;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px">
+            <div style="font-size:15px;font-weight:600">Good afternoon, Jordan</div>
+            <button style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:9px;color:var(--subtle);cursor:pointer;font-size:12.5px;width:220px" style-hover="border-color:var(--border2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Search or jump to…<span style="margin-left:auto;font:500 10px var(--mono);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:2px 5px">⌘K</span></button>
+          </header>
+          <div style="flex:1;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:20px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between">
+              <div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Total balance · all wallets</div><div style="display:flex;align-items:baseline;gap:8px"><span class="num" style="font-size:44px;font-weight:600;letter-spacing:-.035em">$12,480.50</span><span style="font-size:16px;color:var(--muted)">AUD</span></div></div>
+              <div style="display:flex;gap:8px"><button style="display:flex;align-items:center;gap:7px;padding:0 14px;height:36px;border-radius:9px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:12.5px;cursor:pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Send</button><button style="display:flex;align-items:center;gap:7px;padding:0 14px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);color:var(--text);font-weight:500;font-size:12.5px;cursor:pointer" style-hover="border-color:var(--border2)">Deposit</button><button style="width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:var(--border2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 8h13l-3-3M17 16H4l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
+              <div style="border:1px solid var(--border);border-radius:14px;background:var(--card);padding:18px;position:relative;overflow:hidden">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:9px"><span style="width:26px;height:26px;border-radius:7px;background:#1B3A8A;font:600 10px var(--mono);color:#cfe0ff;display:flex;align-items:center;justify-content:center">AU</span><div><div style="font-size:13px;font-weight:600">AUD</div><div style="font-size:10.5px;color:var(--subtle)">Australian Dollar</div></div></div><span style="font:600 10px 'Inter';color:var(--green);background:var(--greenbg);border-radius:20px;padding:2px 8px">+1.2%</span></div>
+                <div class="num" style="font-size:26px;font-weight:600">9,240.50</div>
+                <svg viewBox="0 0 240 40" width="100%" height="34" style="margin-top:8px" preserveAspectRatio="none"><polyline points="0,32 40,28 80,30 120,18 160,22 200,10 240,6" fill="none" stroke="var(--green)" stroke-width="1.5"/></svg>
+              </div>
+              <div style="border:1px solid var(--border);border-radius:14px;background:var(--card);padding:18px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:9px"><span style="width:26px;height:26px;border-radius:7px;background:#0E5137;font:600 10px var(--mono);color:#bff0d8;display:flex;align-items:center;justify-content:center">US</span><div><div style="font-size:13px;font-weight:600">USD</div><div style="font-size:10.5px;color:var(--subtle)">US Dollar</div></div></div><span style="font:600 10px 'Inter';color:var(--muted);background:var(--card2);border-radius:20px;padding:2px 8px">0.0%</span></div>
+                <div class="num" style="font-size:26px;font-weight:600">2,180.00</div>
+                <svg viewBox="0 0 240 40" width="100%" height="34" style="margin-top:8px" preserveAspectRatio="none"><polyline points="0,20 40,22 80,16 120,20 160,18 200,22 240,19" fill="none" stroke="var(--subtle)" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+            <button style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border:1px dashed var(--border2);border-radius:12px;background:none;color:var(--subtle);cursor:pointer;font-size:12.5px;font-weight:500" style-hover="border-color:var(--green);color:var(--green)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Add another wallet</button>
+          </div>
+        </div>
+        <!-- right feed -->
+        <aside style="width:300px;flex:none;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column">
+          <div style="height:56px;flex:none;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px"><span style="font-size:13px;font-weight:600">Activity</span><span style="font:600 10px var(--mono);color:var(--green);background:var(--greenbg);border-radius:20px;padding:2px 8px">3 today</span></div>
+          <div style="flex:1;overflow:auto;padding:8px">
+            <div style="padding:6px 8px;font:600 10px var(--mono);letter-spacing:.05em;color:var(--subtle)">TODAY</div>
+            <div style="display:flex;gap:11px;padding:10px 8px;border-radius:10px" style-hover="background:var(--hover)"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:var(--greenbg);color:var(--green);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div style="min-width:0;flex:1"><div style="display:flex;justify-content:space-between;gap:6px"><span style="font-size:12.5px;font-weight:500">Salary</span><span class="num" style="font-size:12px;color:var(--green);font-weight:600">+3,500</span></div><div style="font-size:10.5px;color:var(--subtle)">Acme Corp · 2:14pm</div></div></div>
+            <div style="display:flex;gap:11px;padding:10px 8px;border-radius:10px" style-hover="background:var(--hover)"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:var(--card2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-7 16-2-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><div style="min-width:0;flex:1"><div style="display:flex;justify-content:space-between;gap:6px"><span style="font-size:12.5px;font-weight:500">To Maya Chen</span><span class="num" style="font-size:12px;font-weight:600">−48.00</span></div><div style="font-size:10.5px;color:var(--subtle)">Split dinner · 12:02pm</div></div></div>
+            <div style="padding:10px 8px 6px;font:600 10px var(--mono);letter-spacing:.05em;color:var(--subtle)">YESTERDAY</div>
+            <div style="display:flex;gap:11px;padding:10px 8px;border-radius:10px" style-hover="background:var(--hover)"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:var(--card2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 8h13l-3-3M17 16H4l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div style="min-width:0;flex:1"><div style="display:flex;justify-content:space-between;gap:6px"><span style="font-size:12.5px;font-weight:500">USD → AUD</span><span class="num" style="font-size:12px;font-weight:600">760.00</span></div><div style="font-size:10.5px;color:var(--subtle)">Rate 1.52 · 4:40pm</div></div></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "build out <a class="dv-oid" href="#1a">1a</a> as an interactive prototype" · "combine <a class="dv-oid" href="#1a">1a</a>'s sidebar with <a class="dv-oid" href="#1c">1c</a>'s activity feed" · "show <a class="dv-oid" href="#1b">1b</a> in light mode" · "more dashboard directions"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Login &amp; Register</span></div>
+  <p class="dv-tsub">The current auth is a lone floating card. These treat sign-in as a real product surface: a split brand panel, a focused single-column register with live password strength, and a minimal keyboard-first card.</p>
+  <div class="dv-opts">
+
+    <!-- 2a : LOGIN SPLIT -->
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a><span><b>Split brand panel.</b> Typographic left panel carries the identity; the form sits quiet and centred on the right. Passkey offered first.</span></div>
+      <div class="dv-card" style="width:900px;height:560px;display:flex">
+        <div style="width:360px;flex:none;background:linear-gradient(165deg,#101512,#0B0C0E 60%);border-right:1px solid var(--border);padding:32px;display:flex;flex-direction:column;position:relative;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:8px;background:var(--green);color:#08130C;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">F</span><span style="font-weight:600;font-size:15px">Finpay</span></div>
+          <div style="margin-top:auto">
+            <div style="font-size:26px;font-weight:600;line-height:1.25;letter-spacing:-.02em;margin-bottom:14px">Money that moves<br>at your pace.</div>
+            <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0">Multi-currency wallets, instant transfers, and split bills — in one calm, secure place.</p>
+            <div style="display:flex;gap:8px;margin-top:22px"><span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px"><span style="width:6px;height:6px;border-radius:50%;background:var(--green)"></span>Bank-grade 2FA</span><span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px">30+ currencies</span></div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 44px">
+          <div style="max-width:320px;width:100%;margin:0 auto">
+            <h2 style="font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0 0 4px">Welcome back</h2>
+            <p style="font-size:13px;color:var(--muted);margin:0 0 24px">Sign in to your Finpay account.</p>
+            <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;height:40px;border-radius:10px;background:var(--card2);border:1px solid var(--border2);color:var(--text);font-weight:500;font-size:13px;cursor:pointer;margin-bottom:16px" style-hover="border-color:var(--green);color:var(--green)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.8"/></svg>Sign in with a passkey</button>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="flex:1;height:1px;background:var(--border)"></span><span style="font-size:11px;color:var(--subtle)">or</span><span style="flex:1;height:1px;background:var(--border)"></span></div>
+            <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px">Email</label>
+            <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="color:var(--subtle)"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M4 7l8 5 8-5" stroke="currentColor" stroke-width="1.7"/></svg><span style="font-size:13.5px;color:var(--text)">jordan@acme.io</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><label style="font-size:12px;font-weight:500;color:var(--muted)">Password</label><span style="font-size:11.5px;color:var(--green)">Forgot?</span></div>
+            <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;background:var(--card2);border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);border-radius:10px;margin-bottom:20px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="color:var(--subtle)"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 11V8a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.7"/></svg><span style="font-size:15px;letter-spacing:3px;color:var(--text)">••••••••</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto;color:var(--subtle)"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/></svg></div>
+            <button style="width:100%;height:42px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13.5px;cursor:pointer" style-hover="background:#57d197">Sign in</button>
+            <p style="text-align:center;font-size:12.5px;color:var(--subtle);margin:20px 0 0">New to Finpay? <span style="color:var(--green)">Create an account</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2b : REGISTER SINGLE COLUMN -->
+    <div class="dv-opt" id="2b">
+      <div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a><span><b>Focused register.</b> One clean column, paired name fields, and a live password-strength meter that replaces the wall-of-text error.</span></div>
+      <div class="dv-card" style="width:440px;height:640px;padding:34px 36px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px"><span style="width:26px;height:26px;border-radius:7px;background:var(--green);color:#08130C;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center">F</span><span style="font-weight:600;font-size:14px">Finpay</span></div>
+        <h2 style="font-size:21px;font-weight:600;letter-spacing:-.02em;margin:0 0 4px">Create your account</h2>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 22px">Free forever. No card required.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div><label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px">First name</label><div style="height:38px;padding:0 11px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:9px;font-size:13.5px">Jordan</div></div>
+          <div><label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px">Last name</label><div style="height:38px;padding:0 11px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:9px;font-size:13.5px">Diaz</div></div>
+        </div>
+        <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px">Email</label>
+        <div style="height:38px;padding:0 11px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--border);border-radius:9px;font-size:13.5px;margin-bottom:12px">jordan@acme.io</div>
+        <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px">Password</label>
+        <div style="height:38px;padding:0 11px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);border-radius:9px;margin-bottom:10px"><span style="font-size:15px;letter-spacing:3px">••••••••••</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="margin-left:auto;color:var(--subtle)"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <div style="display:flex;gap:5px;margin-bottom:8px"><span style="flex:1;height:4px;border-radius:3px;background:var(--green)"></span><span style="flex:1;height:4px;border-radius:3px;background:var(--green)"></span><span style="flex:1;height:4px;border-radius:3px;background:var(--green)"></span><span style="flex:1;height:4px;border-radius:3px;background:var(--border2)"></span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:20px">
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>8+ characters</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Upper &amp; lowercase</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Number</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--subtle)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/></svg>One symbol</span>
+        </div>
+        <button style="width:100%;height:42px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13.5px;cursor:pointer;margin-top:auto" style-hover="background:#57d197">Create account</button>
+        <p style="text-align:center;font-size:11.5px;color:var(--subtle);margin:14px 0 0;line-height:1.5">By continuing you agree to our <span style="color:var(--muted)">Terms</span> &amp; <span style="color:var(--muted)">Privacy Policy</span>.</p>
+      </div>
+    </div>
+
+    <!-- 2c : MINIMAL CENTERED -->
+    <div class="dv-opt" id="2c">
+      <div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a><span><b>Minimal &amp; keyboard-first.</b> Ultra-quiet centred card on a dotted field, ⏎ to submit, no chrome. Closest to Linear's own auth.</span></div>
+      <div class="dv-card" style="width:440px;height:560px;background:radial-gradient(circle at 50% 30%,#111316,#0B0C0E 70%);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:22px 22px;opacity:.5"></div>
+        <div style="position:relative;width:300px;text-align:center">
+          <span style="display:inline-flex;width:44px;height:44px;border-radius:12px;background:var(--green);color:#08130C;font-weight:700;font-size:22px;align-items:center;justify-content:center;margin-bottom:20px">F</span>
+          <h2 style="font-size:19px;font-weight:600;letter-spacing:-.02em;margin:0 0 26px">Sign in to Finpay</h2>
+          <div style="text-align:left">
+            <div style="height:40px;padding:0 13px;display:flex;align-items:center;background:rgba(20,21,24,.7);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;font-size:13.5px;color:var(--text)">jordan@acme.io</div>
+            <div style="height:40px;padding:0 13px;display:flex;align-items:center;background:rgba(20,21,24,.7);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;font-size:15px;letter-spacing:3px;color:var(--text)">••••••••</div>
+            <button style="width:100%;height:42px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-hover="background:#57d197">Continue<span style="font:600 11px var(--mono);background:rgba(8,19,12,.25);border-radius:5px;padding:2px 6px">↵</span></button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:22px;font-size:12px;color:var(--subtle)"><span style="cursor:pointer" style-hover="color:var(--text)">Create account</span><span style="width:3px;height:3px;border-radius:50%;background:var(--border2)"></span><span style="cursor:pointer" style-hover="color:var(--text)">Reset password</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "use <a class="dv-oid" href="#2a">2a</a>'s brand panel for register too" · "add a Google/Apple button to <a class="dv-oid" href="#2c">2c</a>" · "show the error state for a wrong password"</p>
+</section>
+<section class="dv-turn" id="t3">
+  <div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Two-factor / OTP modal</span></div>
+  <p class="dv-tsub">The current 2FA modal leans on a big lock illustration and heavy shadows. These are quieter and more assured: a clean centred dialog, a device-context version, and a compact single-field variant.</p>
+  <div class="dv-opts">
+
+    <!-- 3a -->
+    <div class="dv-opt" id="3a">
+      <div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a><span><b>Quiet centred.</b> No illustration — just a small badge, six segmented inputs and a live resend timer.</span></div>
+      <div class="dv-card" style="width:460px;height:500px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:376px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);padding:28px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px"><span style="width:34px;height:34px;border-radius:10px;background:var(--greenbg);border:1px solid var(--greenbd);color:var(--green);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.8"/></svg></span><button style="width:28px;height:28px;border-radius:8px;background:none;border:0;color:var(--subtle);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:var(--hover);color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+          <h3 style="font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px">Verify it's you</h3>
+          <p style="font-size:12.5px;line-height:1.5;color:var(--muted);margin:0 0 22px">Enter the 6-digit code we sent to <span style="color:var(--text)">j•••@acme.io</span>.</p>
+          <div style="display:flex;gap:8px;margin-bottom:20px">
+            <div style="flex:1;height:52px;border-radius:10px;border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 22px var(--mono);color:var(--text)">4</div>
+            <div style="flex:1;height:52px;border-radius:10px;border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 22px var(--mono);color:var(--text)">1</div>
+            <div style="flex:1;height:52px;border-radius:10px;border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 22px var(--mono);color:var(--text)">7</div>
+            <div style="flex:1;height:52px;border-radius:10px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 22px var(--mono);color:var(--subtle);position:relative"><span style="width:1px;height:22px;background:var(--green);animation:dvpulse 1.1s infinite"></span></div>
+            <div style="flex:1;height:52px;border-radius:10px;border:1px solid var(--border);background:var(--card2)"></div>
+            <div style="flex:1;height:52px;border-radius:10px;border:1px solid var(--border);background:var(--card2)"></div>
+          </div>
+          <button style="width:100%;height:42px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13.5px;cursor:pointer" style-hover="background:#57d197">Verify code</button>
+          <p style="text-align:center;font-size:12px;color:var(--subtle);margin:16px 0 0">Didn't get it? <span style="color:var(--subtle)">Resend in 24s</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3b -->
+    <div class="dv-opt" id="3b">
+      <div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a><span><b>Device context.</b> Codes grouped 3 + 3, an explicit "check spam" hint, and a secondary action to change the delivery method.</span></div>
+      <div class="dv-card" style="width:460px;height:500px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:390px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);overflow:hidden">
+          <div style="padding:22px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:13px">
+            <span style="width:40px;height:40px;border-radius:11px;background:var(--card2);border:1px solid var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M4 7l8 5 8-5" stroke="currentColor" stroke-width="1.7"/></svg></span>
+            <div><div style="font-size:15px;font-weight:600">Two-factor authentication</div><div style="font-size:11.5px;color:var(--subtle)">Sent to jordan@acme.io · check spam</div></div>
+          </div>
+          <div style="padding:26px">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:22px">
+              <div style="display:flex;gap:7px"><div style="width:40px;height:50px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 20px var(--mono)">4</div><div style="width:40px;height:50px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 20px var(--mono)">1</div><div style="width:40px;height:50px;border-radius:9px;border:1px solid var(--border2);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 20px var(--mono)">7</div></div>
+              <span style="width:12px;height:2px;border-radius:2px;background:var(--border2)"></span>
+              <div style="display:flex;gap:7px"><div style="width:40px;height:50px;border-radius:9px;border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);background:var(--card2);display:flex;align-items:center;justify-content:center"><span style="width:1px;height:20px;background:var(--green);animation:dvpulse 1.1s infinite"></span></div><div style="width:40px;height:50px;border-radius:9px;border:1px solid var(--border);background:var(--card2)"></div><div style="width:40px;height:50px;border-radius:9px;border:1px solid var(--border);background:var(--card2)"></div></div>
+            </div>
+            <button style="width:100%;height:42px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13.5px;cursor:pointer;margin-bottom:10px" style-hover="background:#57d197">Verify &amp; continue</button>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--green);cursor:pointer">Resend code</span><span style="font-size:12px;color:var(--subtle);cursor:pointer">Use another method</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3c -->
+    <div class="dv-opt" id="3c">
+      <div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a><span><b>Single-field, autofill-ready.</b> One wide monospace field with paste support and a countdown ring — fewer boxes, less fiddly on mobile.</span></div>
+      <div class="dv-card" style="width:460px;height:500px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:360px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);padding:28px;text-align:center">
+          <div style="position:relative;width:52px;height:52px;margin:0 auto 18px">
+            <svg width="52" height="52" viewBox="0 0 52 52" style="transform:rotate(-90deg)"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--border2)" stroke-width="3"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-dasharray="144.5" stroke-dashoffset="52"/></svg>
+            <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 13px var(--mono);color:var(--green)">24</span>
+          </div>
+          <h3 style="font-size:16px;font-weight:600;margin:0 0 5px">Enter your code</h3>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 20px">6-digit code sent to your email</p>
+          <div style="height:56px;border-radius:12px;border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);background:var(--card2);display:flex;align-items:center;justify-content:center;font:600 26px var(--mono);letter-spacing:12px;color:var(--text);margin-bottom:8px;padding-left:12px">417<span style="width:2px;height:26px;background:var(--green);margin-left:8px;animation:dvpulse 1.1s infinite"></span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--subtle);margin-bottom:20px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 16V6a2 2 0 012-2h10" stroke="currentColor" stroke-width="1.8"/></svg>Paste supported</div>
+          <button style="width:100%;height:42px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13.5px;cursor:pointer" style-hover="background:#57d197">Verify</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "show <a class="dv-oid" href="#3a">3a</a>'s error state (wrong code)" · "add a verifying spinner state" · "make <a class="dv-oid" href="#3b">3b</a> also offer an authenticator app"</p>
+</section>
+
+<section class="dv-turn" id="t4">
+  <div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Confirmation / destructive modal</span></div>
+  <p class="dv-tsub">The current "Close Balance" dialog shouts with a red triangle and oversized text. Destructive actions should feel calm but deliberate: clear consequence, a real cost shown, and friction proportional to risk.</p>
+  <div class="dv-opts">
+
+    <!-- 4a -->
+    <div class="dv-opt" id="4a">
+      <div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a><span><b>Calm confirm.</b> Neutral by default, destructive colour only on the action. Shows exactly what happens next.</span></div>
+      <div class="dv-card" style="width:460px;height:420px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:376px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);padding:26px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="width:38px;height:38px;border-radius:11px;background:var(--redbg);border:1px solid var(--redbd);color:var(--red);display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><h3 style="font-size:16px;font-weight:600;margin:0">Close AUD wallet?</h3></div></div>
+          <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 16px">This permanently closes your AUD balance. Any remaining funds are transferred to your primary wallet first.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;margin-bottom:22px"><span style="font-size:12.5px;color:var(--muted)">Balance moving to USD</span><span class="num" style="font-size:13.5px;font-weight:600">$9,240.50</span></div>
+          <div style="display:flex;gap:10px"><button style="flex:1;height:40px;border-radius:10px;background:var(--card2);border:1px solid var(--border2);color:var(--text);font-weight:500;font-size:13px;cursor:pointer" style-hover="border-color:var(--border2);background:var(--hover)">Cancel</button><button style="flex:1;height:40px;border-radius:10px;background:var(--red);border:1px solid var(--redbd);color:#1a0605;font-weight:600;font-size:13px;cursor:pointer" style-hover="opacity:.9">Close wallet</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4b -->
+    <div class="dv-opt" id="4b">
+      <div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a><span><b>Type-to-confirm.</b> High-risk pattern for irreversible actions — the confirm button stays disabled until the wallet name is typed.</span></div>
+      <div class="dv-card" style="width:460px;height:420px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:376px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);padding:26px">
+          <h3 style="font-size:16px;font-weight:600;margin:0 0 6px">Delete account</h3>
+          <p style="font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 16px">This can't be undone. All wallets, history and scheduled payments will be erased.</p>
+          <label style="display:block;font-size:12px;color:var(--muted);margin-bottom:7px">Type <span class="num" style="color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:1px 6px">DELETE</span> to confirm</label>
+          <div style="height:40px;padding:0 12px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--border2);border-radius:10px;margin-bottom:22px;font:500 13.5px var(--mono);color:var(--subtle)">DELE<span style="width:1px;height:16px;background:var(--red);margin-left:1px;animation:dvpulse 1.1s infinite"></span></div>
+          <div style="display:flex;gap:10px"><button style="flex:1;height:40px;border-radius:10px;background:var(--card2);border:1px solid var(--border2);color:var(--text);font-weight:500;font-size:13px;cursor:pointer">Cancel</button><button style="flex:1;height:40px;border-radius:10px;background:var(--redbg);border:1px solid var(--redbd);color:var(--red);font-weight:600;font-size:13px;cursor:not-allowed;opacity:.6">Delete forever</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4c -->
+    <div class="dv-opt" id="4c">
+      <div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a><span><b>Inline banner confirm.</b> Non-modal — slides in at the bottom for low-stakes reversible actions, with an undo affordance.</span></div>
+      <div class="dv-card" style="width:460px;height:420px;background:var(--panel);position:relative;overflow:hidden">
+        <div style="padding:20px;opacity:.4;filter:blur(.5px)"><div style="height:44px;border-bottom:1px solid var(--border);margin:-20px -20px 18px;display:flex;align-items:center;padding:0 20px;font-size:13px;font-weight:600">Scheduled payments</div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:12.5px">Rent → Landlord</span><span class="num" style="font-size:12.5px">−1,800.00</span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:12.5px">Gym → FitCo</span><span class="num" style="font-size:12.5px">−59.00</span></div></div>
+        <div style="position:absolute;left:20px;right:20px;bottom:20px;background:#17181C;border:1px solid var(--border2);border-radius:13px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);padding:15px 16px;display:flex;align-items:center;gap:13px">
+          <span style="width:34px;height:34px;flex:none;border-radius:9px;background:var(--redbg);color:var(--red);display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">Cancel "Gym → FitCo"?</div><div style="font-size:11px;color:var(--subtle)">Next payment was due Jul 20</div></div>
+          <button style="height:32px;padding:0 12px;border-radius:8px;background:none;border:1px solid var(--border2);color:var(--muted);font-size:12px;cursor:pointer">Keep</button>
+          <button style="height:32px;padding:0 12px;border-radius:8px;background:var(--red);border:1px solid var(--redbd);color:#1a0605;font-weight:600;font-size:12px;cursor:pointer">Cancel it</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "use <a class="dv-oid" href="#4a">4a</a>'s style for all destructive dialogs" · "add a loading state to the confirm button" · "make <a class="dv-oid" href="#4c">4c</a> show a 5-second undo toast after"</p>
+</section>
+<section class="dv-turn" id="t5">
+  <div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Add currency / wallet modal</span></div>
+  <p class="dv-tsub">The picker becomes a fast, keyboard-navigable list. Three takes: a refined searchable list, a visual grid of currency tiles, and a command-menu style combobox.</p>
+  <div class="dv-opts">
+
+    <!-- 5a -->
+    <div class="dv-opt" id="5a">
+      <div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a><span><b>Searchable list.</b> Sticky search, "Popular" group, hairline-divided rows, radio-dot selection. Footer shows the choice before confirming.</span></div>
+      <div class="dv-card" style="width:440px;height:560px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:388px;height:496px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);display:flex;flex-direction:column;overflow:hidden">
+          <div style="padding:18px 20px 14px;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px"><h3 style="font-size:15px;font-weight:600;margin:0">Add a wallet</h3><button style="width:26px;height:26px;border-radius:7px;background:none;border:0;color:var(--subtle);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:var(--hover)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div style="display:flex;align-items:center;gap:9px;height:36px;padding:0 11px;background:var(--card2);border:1px solid var(--border2);border-radius:9px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--subtle)"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span style="font-size:13px;color:var(--subtle)">Search currency or country…</span></div></div>
+          <div style="flex:1;overflow:auto;padding:8px">
+            <div style="padding:6px 10px;font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle)">POPULAR</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px;background:var(--greenbg);border:1px solid var(--greenbd)"><span style="width:26px;height:20px;border-radius:5px;background:#0E5137;font:600 9px var(--mono);color:#bff0d8;display:flex;align-items:center;justify-content:center">US</span><div style="flex:1"><div style="font-size:13px;font-weight:500">US Dollar</div><div style="font-size:10.5px;color:var(--subtle)">USD</div></div><span style="width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="#08130C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px" style-hover="background:var(--hover)"><span style="width:26px;height:20px;border-radius:5px;background:#3A1E5A;font:600 9px var(--mono);color:#e0cdf3;display:flex;align-items:center;justify-content:center">EU</span><div style="flex:1"><div style="font-size:13px;font-weight:500">Euro</div><div style="font-size:10.5px;color:var(--subtle)">EUR</div></div><span style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2)"></span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px" style-hover="background:var(--hover)"><span style="width:26px;height:20px;border-radius:5px;background:#5A1E2A;font:600 9px var(--mono);color:#f3cdd4;display:flex;align-items:center;justify-content:center">GB</span><div style="flex:1"><div style="font-size:13px;font-weight:500">British Pound</div><div style="font-size:10.5px;color:var(--subtle)">GBP</div></div><span style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2)"></span></div>
+            <div style="padding:10px 10px 6px;font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle)">ALL CURRENCIES</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px" style-hover="background:var(--hover)"><span style="width:26px;height:20px;border-radius:5px;background:#1E3A5A;font:600 9px var(--mono);color:#cddff3;display:flex;align-items:center;justify-content:center">CA</span><div style="flex:1"><div style="font-size:13px;font-weight:500">Canadian Dollar</div><div style="font-size:10.5px;color:var(--subtle)">CAD</div></div><span style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2)"></span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px" style-hover="background:var(--hover)"><span style="width:26px;height:20px;border-radius:5px;background:#5A4A12;font:600 9px var(--mono);color:#f3e6b6;display:flex;align-items:center;justify-content:center">JP</span><div style="flex:1"><div style="font-size:13px;font-weight:500">Japanese Yen</div><div style="font-size:10.5px;color:var(--subtle)">JPY</div></div><span style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2)"></span></div>
+          </div>
+          <div style="padding:14px 16px;border-top:1px solid var(--border)"><button style="width:100%;height:40px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px" style-hover="background:#57d197">Add USD wallet</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5b -->
+    <div class="dv-opt" id="5b">
+      <div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a><span><b>Currency tiles.</b> A two-column grid you scan by flag. Good when there are a handful of supported currencies rather than a long list.</span></div>
+      <div class="dv-card" style="width:440px;height:560px;background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:388px;background:#17181C;border:1px solid var(--border2);border-radius:16px;box-shadow:0 30px 70px -25px rgba(0,0,0,.8);padding:22px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><h3 style="font-size:15px;font-weight:600;margin:0">Choose a currency</h3><button style="width:26px;height:26px;border-radius:7px;background:none;border:0;color:var(--subtle);cursor:pointer">✕</button></div>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 18px">Open a new balance in any supported currency.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+            <div style="border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);border-radius:11px;background:var(--card2);padding:13px;position:relative"><span style="position:absolute;top:11px;right:11px;width:16px;height:16px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 6" stroke="#08130C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span style="display:inline-flex;width:30px;height:22px;border-radius:5px;background:#0E5137;font:600 10px var(--mono);color:#bff0d8;align-items:center;justify-content:center;margin-bottom:10px">US</span><div style="font-size:13px;font-weight:600">USD</div><div style="font-size:10.5px;color:var(--subtle)">US Dollar</div></div>
+            <div style="border:1px solid var(--border2);border-radius:11px;background:var(--card2);padding:13px" style-hover="border-color:var(--border2)"><span style="display:inline-flex;width:30px;height:22px;border-radius:5px;background:#3A1E5A;font:600 10px var(--mono);color:#e0cdf3;align-items:center;justify-content:center;margin-bottom:10px">EU</span><div style="font-size:13px;font-weight:600">EUR</div><div style="font-size:10.5px;color:var(--subtle)">Euro</div></div>
+            <div style="border:1px solid var(--border2);border-radius:11px;background:var(--card2);padding:13px"><span style="display:inline-flex;width:30px;height:22px;border-radius:5px;background:#5A1E2A;font:600 10px var(--mono);color:#f3cdd4;align-items:center;justify-content:center;margin-bottom:10px">GB</span><div style="font-size:13px;font-weight:600">GBP</div><div style="font-size:10.5px;color:var(--subtle)">British Pound</div></div>
+            <div style="border:1px solid var(--border2);border-radius:11px;background:var(--card2);padding:13px"><span style="display:inline-flex;width:30px;height:22px;border-radius:5px;background:#5A4A12;font:600 10px var(--mono);color:#f3e6b6;align-items:center;justify-content:center;margin-bottom:10px">JP</span><div style="font-size:13px;font-weight:600">JPY</div><div style="font-size:10.5px;color:var(--subtle)">Japanese Yen</div></div>
+            <div style="border:1px solid var(--border2);border-radius:11px;background:var(--card2);padding:13px"><span style="display:inline-flex;width:30px;height:22px;border-radius:5px;background:#1E3A5A;font:600 10px var(--mono);color:#cddff3;align-items:center;justify-content:center;margin-bottom:10px">CA</span><div style="font-size:13px;font-weight:600">CAD</div><div style="font-size:10.5px;color:var(--subtle)">Canadian Dollar</div></div>
+            <div style="border:1px solid var(--border2);border-radius:11px;background:var(--card2);padding:13px"><span style="display:inline-flex;width:30px;height:22px;border-radius:5px;background:#12405A;font:600 10px var(--mono);color:#c3ecf3;align-items:center;justify-content:center;margin-bottom:10px">SG</span><div style="font-size:13px;font-weight:600">SGD</div><div style="font-size:10.5px;color:var(--subtle)">Singapore Dollar</div></div>
+          </div>
+          <button style="width:100%;height:40px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#57d197">Add USD wallet</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5c -->
+    <div class="dv-opt" id="5c">
+      <div class="dv-olabel"><a class="dv-oid" href="#5c">5c</a><span><b>Command-menu combobox.</b> Reuses the ⌘K vocabulary — type to filter, arrow keys to move, ⏎ to add. Fastest for power users.</span></div>
+      <div class="dv-card" style="width:440px;height:560px;background:var(--panel);display:flex;align-items:flex-start;justify-content:center;padding-top:70px;position:relative">
+        <div style="position:absolute;inset:0;background:rgba(6,7,9,.5);backdrop-filter:blur(2px)"></div>
+        <div style="position:relative;width:392px;background:#17181C;border:1px solid var(--border2);border-radius:14px;box-shadow:0 30px 70px -25px rgba(0,0,0,.85);overflow:hidden">
+          <div style="display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid var(--border)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="color:var(--subtle)"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span style="font-size:14.5px;color:var(--text)">doll</span><span style="width:1px;height:16px;background:var(--green);animation:dvpulse 1.1s infinite"></span><span style="margin-left:auto;font:500 10px var(--mono);color:var(--subtle);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:2px 6px">ESC</span></div>
+          <div style="padding:7px">
+            <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;background:var(--greenbg);border:1px solid var(--greenbd)"><span style="width:24px;height:18px;border-radius:4px;background:#0E5137;font:600 8px var(--mono);color:#bff0d8;display:flex;align-items:center;justify-content:center">US</span><span style="font-size:13px;font-weight:500;color:var(--text)">US <b style="color:var(--green)">Doll</b>ar</span><span style="font-size:11px;color:var(--subtle)">USD</span><span style="margin-left:auto;font:500 10px var(--mono);color:var(--green)">↵</span></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px"><span style="width:24px;height:18px;border-radius:4px;background:#1E3A5A;font:600 8px var(--mono);color:#cddff3;display:flex;align-items:center;justify-content:center">CA</span><span style="font-size:13px;color:var(--text)">Canadian <b style="color:var(--green)">Doll</b>ar</span><span style="font-size:11px;color:var(--subtle)">CAD</span></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px"><span style="width:24px;height:18px;border-radius:4px;background:#12405A;font:600 8px var(--mono);color:#c3ecf3;display:flex;align-items:center;justify-content:center">SG</span><span style="font-size:13px;color:var(--text)">Singapore <b style="color:var(--green)">Doll</b>ar</span><span style="font-size:11px;color:var(--subtle)">SGD</span></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px"><span style="width:24px;height:18px;border-radius:4px;background:#12405A;font:600 8px var(--mono);color:#c3ecf3;display:flex;align-items:center;justify-content:center">NZ</span><span style="font-size:13px;color:var(--text)">New Zealand <b style="color:var(--green)">Doll</b>ar</span><span style="font-size:11px;color:var(--subtle)">NZD</span></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-top:1px solid var(--border);font-size:10.5px;color:var(--subtle)"><span style="display:flex;gap:10px"><span>↑↓ Navigate</span><span>↵ Add</span></span><span>4 results</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "wire <a class="dv-oid" href="#5a">5a</a> up with the real currency list" · "add exchange-rate preview to each row" · "combine <a class="dv-oid" href="#5b">5b</a>'s tiles with <a class="dv-oid" href="#5a">5a</a>'s search"</p>
+</section>
+
+<section class="dv-turn" id="t6">
+  <div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">Core components</span></div>
+  <p class="dv-tsub">The primitives every screen above is built from — retuned for the new system. Buttons, inputs, wallet cards, and status/badge tokens with consistent radii, hairline borders and the green used only where it means something.</p>
+  <div class="dv-opts">
+    <div class="dv-opt" id="6a">
+      <div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a><span><b>Buttons &amp; inputs.</b> Primary (green), secondary, ghost, destructive; sizes, disabled, loading. Inputs with default / focus / error / with-icon states.</span></div>
+      <div class="dv-card" style="width:520px;padding:26px;display:flex;flex-direction:column;gap:22px">
+        <div>
+          <div style="font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle);margin-bottom:12px">BUTTONS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:11px">
+            <button style="height:36px;padding:0 15px;border-radius:9px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#57d197">Primary</button>
+            <button style="height:36px;padding:0 15px;border-radius:9px;background:var(--card2);border:1px solid var(--border2);color:var(--text);font-weight:500;font-size:13px;cursor:pointer" style-hover="border-color:var(--green)">Secondary</button>
+            <button style="height:36px;padding:0 15px;border-radius:9px;background:none;border:1px solid transparent;color:var(--muted);font-weight:500;font-size:13px;cursor:pointer" style-hover="background:var(--hover);color:var(--text)">Ghost</button>
+            <button style="height:36px;padding:0 15px;border-radius:9px;background:var(--redbg);border:1px solid var(--redbd);color:var(--red);font-weight:600;font-size:13px;cursor:pointer">Destructive</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <button style="height:30px;padding:0 12px;border-radius:8px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:12px;cursor:pointer">Small</button>
+            <button style="height:42px;padding:0 18px;border-radius:10px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:14px;cursor:pointer">Large</button>
+            <button style="height:36px;padding:0 15px;border-radius:9px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13px;opacity:.45;cursor:not-allowed">Disabled</button>
+            <button style="height:36px;padding:0 15px;border-radius:9px;background:var(--green);border:1px solid var(--greend);color:#08130C;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="animation:dvspin 1s linear infinite"><circle cx="12" cy="12" r="9" stroke="rgba(8,19,12,.3)" stroke-width="3"/><path d="M12 3a9 9 0 019 9" stroke="#08130C" stroke-width="3" stroke-linecap="round"/></svg>Loading</button>
+          </div>
+        </div>
+        <div>
+          <div style="font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle);margin-bottom:12px">INPUTS</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="height:38px;padding:0 12px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--border2);border-radius:9px;font-size:13px;color:var(--subtle)">Default placeholder</div>
+            <div style="height:38px;padding:0 12px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--green);box-shadow:0 0 0 3px var(--greenbg);border-radius:9px;font-size:13px;color:var(--text)">Focused<span style="width:1px;height:15px;background:var(--green);margin-left:1px;animation:dvpulse 1.1s infinite"></span></div>
+            <div><div style="height:38px;padding:0 12px;display:flex;align-items:center;background:var(--card2);border:1px solid var(--redbd);box-shadow:0 0 0 3px var(--redbg);border-radius:9px;font-size:13px;color:var(--text)">Wrong value</div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--red);margin-top:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v6M12 16v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Please enter a valid amount</div></div>
+            <div style="height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border2);border-radius:9px;font-size:13px;color:var(--text)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--subtle)"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>With leading icon</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="6b">
+      <div class="dv-olabel"><a class="dv-oid" href="#6b">6b</a><span><b>Cards, badges &amp; data.</b> Wallet card, transaction row, type pills, status dots, toggle and keyboard-key tokens.</span></div>
+      <div class="dv-card" style="width:420px;padding:26px;display:flex;flex-direction:column;gap:22px">
+        <div>
+          <div style="font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle);margin-bottom:12px">WALLET CARD</div>
+          <div style="border:1px solid var(--border);border-radius:12px;background:var(--card);padding:15px" style-hover="border-color:var(--border2)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:9px"><span style="width:24px;height:24px;border-radius:6px;background:#1B3A8A;font:600 9px var(--mono);color:#cfe0ff;display:flex;align-items:center;justify-content:center">AU</span><div><div style="font-size:12.5px;font-weight:600">AUD</div><div style="font-size:10px;color:var(--subtle)">Australian Dollar</div></div></div><span style="font:600 10px 'Inter';color:var(--green);background:var(--greenbg);border-radius:20px;padding:2px 8px">+1.2%</span></div>
+            <div class="num" style="font-size:22px;font-weight:600">9,240.50</div>
+            <svg viewBox="0 0 260 30" width="100%" height="26" style="margin-top:8px" preserveAspectRatio="none"><polyline points="0,24 43,20 86,22 130,13 173,16 216,7 260,4" fill="none" stroke="var(--green)" stroke-width="1.5"/></svg>
+          </div>
+        </div>
+        <div>
+          <div style="font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle);margin-bottom:12px">BADGES &amp; PILLS</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <span style="font:500 10.5px 'Inter';color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:3px 9px">Deposit</span>
+            <span style="font:500 10.5px 'Inter';color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:3px 9px">Transfer</span>
+            <span style="font:500 10.5px 'Inter';color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:3px 9px">Convert</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:600 10.5px 'Inter';color:var(--green);background:var(--greenbg);border:1px solid var(--greenbd);border-radius:20px;padding:3px 9px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green)"></span>Verified</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:600 10.5px 'Inter';color:var(--amber);background:var(--amberbg);border:1px solid rgba(224,162,78,.3);border-radius:20px;padding:3px 9px"><span style="width:5px;height:5px;border-radius:50%;background:var(--amber)"></span>Pending</span>
+            <span style="display:inline-flex;align-items:center;gap:5px;font:600 10.5px 'Inter';color:var(--red);background:var(--redbg);border:1px solid var(--redbd);border-radius:20px;padding:3px 9px"><span style="width:5px;height:5px;border-radius:50%;background:var(--red)"></span>Locked</span>
+          </div>
+        </div>
+        <div>
+          <div style="font:600 10px var(--mono);letter-spacing:.06em;color:var(--subtle);margin-bottom:12px">CONTROLS</div>
+          <div style="display:flex;align-items:center;gap:18px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="width:34px;height:20px;border-radius:20px;background:var(--green);position:relative;display:inline-block"><span style="position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#08130C"></span></span><span style="font-size:12px;color:var(--muted)">On</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="width:34px;height:20px;border-radius:20px;background:var(--border2);position:relative;display:inline-block"><span style="position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--subtle)"></span></span><span style="font-size:12px;color:var(--muted)">Off</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="font:500 10px var(--mono);color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:3px 6px">⌘</span><span style="font:500 10px var(--mono);color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:3px 6px">K</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="dv-next">Try next: "add tabs, tooltips and a date-picker to the set" · "show these components in light mode" · "export this as a Storybook-style spec page"</p>
+</section></x-dc>
+</body>
+</html>
