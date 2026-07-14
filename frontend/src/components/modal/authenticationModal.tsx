@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { LiaTimesSolid } from 'react-icons/lia';
+import { Lock } from 'lucide-react';
 import useOtpStore from '../../stores/otpStore';
 import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 
 type AuthenticationProp = {
   onClose: () => void;
@@ -132,11 +134,11 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(6,7,9,.5)] backdrop-blur-sm animate-in fade-in duration-200"
       onClick={() => onClose()}
     >
       <div
-        className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md transform transition-all animate-in zoom-in-95 duration-200"
+        className="relative bg-[#17181C] border border-border-strong rounded-[16px] shadow-[0_30px_70px_-25px_rgba(0,0,0,.8)] w-[376px] animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -150,22 +152,20 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
         </button>
 
         <div className="p-8">
-          <div className="w-20 h-20 mx-auto mb-6 bg-primary rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
-            <svg className="w-10 h-10 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
+          <div className="h-10 w-10 mb-4 rounded-[9px] bg-green-tint text-primary flex items-center justify-center">
+            <Lock className="w-5 h-5" />
           </div>
 
-          <h2 className="text-2xl font-bold text-foreground text-center mb-2">
-            Two-Factor Authentication
+          <h2 className="text-[18px] font-semibold text-foreground mb-2">
+            Verify it&apos;s you
           </h2>
 
-          <p className="text-muted-foreground text-center mb-6">
+          <p className="text-muted-foreground mb-6">
             Enter the 6-digit code we sent to your email (check spam folder as well)
           </p>
 
           {errorMsg && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive rounded-lg flex items-center gap-2 animate-in slide-in-from-top duration-200">
+            <div className="mb-4 p-3 bg-destructive-tint border border-destructive-tint-border rounded-[10px] flex items-center gap-2 animate-in slide-in-from-top duration-200">
               <svg className="w-5 h-5 text-destructive flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
@@ -183,13 +183,14 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
                   maxLength={1}
                   inputMode="numeric"
                   pattern="[0-9]"
-                  className={`
-                    w-12 h-14 text-center text-2xl font-semibold text-foreground
-                    border-2 rounded-lg transition-all duration-200
-                    ${otp[i] ? 'border-primary bg-primary/10' : 'border-input hover:border-border-strong'}
-                    focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                  `}
+                  className={cn(
+                    'w-11 h-12 rounded-[9px] text-center num text-xl transition-colors',
+                    'focus:outline-none focus:ring-2 focus:ring-green-tint focus:border-primary',
+                    'disabled:opacity-50 disabled:cursor-not-allowed',
+                    otp[i]
+                      ? 'border-primary bg-green-tint'
+                      : 'border border-border-strong hover:border-border-strong',
+                  )}
                   ref={(el) => {
                     inputsRef.current[i] = el;
                   }}
@@ -212,19 +213,10 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
               data-testid="submit-authentication-button"
               onClick={(e) => onFormSubmit(e)}
               disabled={otp.join('').length !== 6 || isSubmitting}
-              className="w-full py-3 px-4 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+              loading={isSubmitting}
+              className="w-full"
             >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Verifying...
-                </span>
-              ) : (
-                'Verify Code'
-              )}
+              {isSubmitting ? 'Verifying...' : 'Verify Code'}
             </Button>
 
             <div className="mt-6 text-center">
@@ -233,13 +225,12 @@ const AuthenticationModal = ({ onClose, userId, email }: AuthenticationProp) => 
                 <button
                   disabled={disableSendOtp}
                   onClick={(e) => handleResendOTP(e)}
-                  className={`
-                    font-semibold transition-colors duration-200
-                    ${disableSendOtp
+                  className={cn(
+                    'font-semibold transition-colors duration-200',
+                    disableSendOtp
                       ? 'text-subtle cursor-not-allowed'
-                      : 'text-primary hover:opacity-80 hover:underline'
-                    }
-                  `}
+                      : 'text-primary hover:opacity-80 hover:underline',
+                  )}
                 >
                   {disableSendOtp ? (
                     <span>Resend in {timeLeft}s</span>
