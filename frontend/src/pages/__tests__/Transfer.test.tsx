@@ -450,7 +450,7 @@ describe("Transfer page testing", () => {
 
     // Verify OTP modal appears
     await waitFor(() => {
-      expect(screen.getByText(/Two-Factor Authentication/i)).toBeInTheDocument();
+      expect(screen.getByText(/Verify it.?s you/i)).toBeInTheDocument();
       expect(screen.getByText(/Enter the 6-digit code we sent to your email/i)).toBeInTheDocument();
     });
 
