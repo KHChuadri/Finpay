@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaEyeSlash } from "react-icons/fa";
-import { IoEyeSharp } from "react-icons/io5";
+import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/authStore";
@@ -101,7 +100,7 @@ const LoginForm = () => {
   }, [emailInput, password]);
 
   return (
-    <div className="flex flex-col bg-card border border-border rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 shadow-xl transition ease-in-out">
+    <div className="glass flex flex-col rounded-2xl p-4 w-3/4 md:w-1/2 lg:w-1/4 justify-start gap-4 transition ease-in-out">
       {showAuthenticationModal && (
         <AuthenticationModal
           onClose={() => handleCloseOTPModal()}
@@ -152,13 +151,13 @@ const LoginForm = () => {
             className="border-none w-full focus:outline-none bg-transparent text-foreground"
           />
           {showPassword == false ? (
-            <FaEyeSlash
-              className="absolute right-2 bottom-2.5"
+            <EyeOff
+              className="absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground"
               onClick={() => setShowPassword(!showPassword)}
             />
           ) : (
-            <IoEyeSharp
-              className="absolute right-2 bottom-2.5"
+            <Eye
+              className="absolute right-2 bottom-2.5 h-5 w-5 cursor-pointer text-muted-foreground"
               onClick={() => setShowPassword(!showPassword)}
             />
           )}
