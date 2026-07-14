@@ -44,8 +44,6 @@ const CurrencyConversionPage = () => {
     setOpenCurrencyTo(false);
   }
 
-  const isValid = sourceCurrencyAmount > 0 && destCurrencyAmount > 0;
-
   const {
     data: exchangeRateData,
     isLoading: isRateLoading,
