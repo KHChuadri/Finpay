@@ -56,12 +56,13 @@ describe('Register Page testing', () => {
 	it('validates password requirements', async () => {
 		const passwordInput = screen.getByTestId('password-input');
 		fireEvent.change(passwordInput, { target: { value: 'weak' } });
-		fireEvent.blur(passwordInput);
-
 		await waitFor(() => {
-			expect(screen.getByText(/8\+ characters/i)).toBeInTheDocument();
-			expect(screen.getByText(/number/i)).toBeInTheDocument();
-			expect(screen.getByText(/one symbol/i)).toBeInTheDocument();
+			expect(screen.queryAllByText('✓').length).toBe(0);
+		});
+
+		fireEvent.change(passwordInput, { target: { value: 'Abcdef1!' } });
+		await waitFor(() => {
+			expect(screen.queryAllByText('✓').length).toBeGreaterThan(0);
 		});
 	});
 

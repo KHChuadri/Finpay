@@ -203,6 +203,7 @@ const LoginForm = () => {
                 onBlur={() => isPasswordValid()}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
+                aria-label="Password"
                 className="border-none w-full focus:outline-none bg-transparent text-foreground"
               />
               {showPassword == false ? (
