@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 @import 'tailwind-scrollbar-hide/v4';
 @import "tw-animate-css";
@@ -7,6 +7,7 @@
 
 @theme inline {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -33,6 +34,15 @@
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-positive: var(--positive);
+  --color-panel: var(--panel);
+  --color-card2: var(--card2);
+  --color-hover: var(--hover);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-border: var(--primary-border);
+  --color-green-tint: var(--green-tint);
+  --color-green-tint-border: var(--green-tint-border);
+  --color-destructive-tint: var(--destructive-tint);
+  --color-destructive-tint-border: var(--destructive-tint-border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -76,6 +86,16 @@
   --border-strong: #D3D8DF;
   --input: #E4E7EC;
   --ring: #4B9A1E;
+  /* redesign tokens — light equivalents (dark is the primary target) */
+  --panel: #FBFBFC;
+  --card2: #EEF0F3;
+  --hover: #EEF0F3;
+  --primary-hover: #3E8519;
+  --primary-border: #4B9A1E;
+  --green-tint: rgba(75, 154, 30, 0.10);
+  --green-tint-border: rgba(75, 154, 30, 0.30);
+  --destructive-tint: rgba(220, 38, 38, 0.10);
+  --destructive-tint-border: rgba(220, 38, 38, 0.30);
   --sidebar: #FFFFFF;
   --sidebar-foreground: #14171C;
   --sidebar-primary: #4B9A1E;
@@ -87,38 +107,48 @@
 }
 
 .dark {
-  --background: #0B0D11;
-  --foreground: #E7EBF2;
-  --card: #12151B;
-  --card-foreground: #E7EBF2;
-  --popover: #12151B;
-  --popover-foreground: #E7EBF2;
-  --primary: #B6FF3B;
-  --primary-foreground: #0B0D11;
-  --secondary: #1E232C;
-  --secondary-foreground: #E7EBF2;
-  --muted: #1E232C;
-  --muted-foreground: #9AA4B2;
-  --subtle: #616B7A;
-  --accent: #1E232C;
-  --accent-foreground: #E7EBF2;
-  --positive: #57C98A;
-  --destructive: #F87171;
-  --destructive-foreground: #0B0D11;
-  --warning: #F59E0B;
-  --warning-foreground: #0B0D11;
-  --border: #1E232C;
-  --border-strong: #262D38;
-  --input: #262D38;
-  --ring: #B6FF3B;
-  --sidebar: #12151B;
-  --sidebar-foreground: #E7EBF2;
-  --sidebar-primary: #B6FF3B;
-  --sidebar-primary-foreground: #0B0D11;
-  --sidebar-accent: #1E232C;
-  --sidebar-accent-foreground: #E7EBF2;
-  --sidebar-border: #1E232C;
-  --sidebar-ring: #B6FF3B;
+  --background: #0B0C0E;
+  --foreground: #ECEDEE;
+  --card: #141518;
+  --card-foreground: #ECEDEE;
+  --popover: #141518;
+  --popover-foreground: #ECEDEE;
+  --primary: #4CC38A;
+  --primary-foreground: #08130C;
+  --secondary: #191A1E;
+  --secondary-foreground: #ECEDEE;
+  --muted: #1E1F24;
+  --muted-foreground: #9A9FA8;
+  --subtle: #666B74;
+  --accent: #1E1F24;
+  --accent-foreground: #ECEDEE;
+  --positive: #4CC38A;
+  --destructive: #EE6A60;
+  --destructive-foreground: #08130C;
+  --warning: #E0A24E;
+  --warning-foreground: #08130C;
+  --border: #24262C;
+  --border-strong: #31343B;
+  --input: #24262C;
+  --ring: #4CC38A;
+  /* redesign tokens (new) */
+  --panel: #0E0F12;
+  --card2: #191A1E;
+  --hover: #1E1F24;
+  --primary-hover: #57D197;
+  --primary-border: #3DAE79;
+  --green-tint: rgba(76, 195, 138, 0.13);
+  --green-tint-border: rgba(76, 195, 138, 0.34);
+  --destructive-tint: rgba(238, 106, 96, 0.12);
+  --destructive-tint-border: rgba(238, 106, 96, 0.32);
+  --sidebar: #0E0F12;
+  --sidebar-foreground: #ECEDEE;
+  --sidebar-primary: #4CC38A;
+  --sidebar-primary-foreground: #08130C;
+  --sidebar-accent: #1E1F24;
+  --sidebar-accent-foreground: #ECEDEE;
+  --sidebar-border: #24262C;
+  --sidebar-ring: #4CC38A;
 }
 
 @layer base {
@@ -131,9 +161,19 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: 'cv11', 'ss01';
+    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4 {
     @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* mono figures for money, codes, kbd hints, OTP digits */
+  .num {
+    font-family: var(--font-mono);
+    font-feature-settings: 'tnum';
+    letter-spacing: -0.02em;
   }
 }
