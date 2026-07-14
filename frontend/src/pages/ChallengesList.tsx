@@ -405,7 +405,7 @@ const ChallengesList = () => {
             className='flex-1 py-3'
           >
             <div className='flex items-center justify-center gap-2'>
-              <Clock className='w-4 h-4 text-warning' />
+              <Clock className='w-4 h-4' />
               In Progress ({inProgressChallenges.length})
             </div>
           </Button>
@@ -416,7 +416,7 @@ const ChallengesList = () => {
             className='flex-1 py-3'
           >
             <div className='flex items-center justify-center gap-2'>
-              <CheckCircle2 className='w-4 h-4 text-positive' />
+              <CheckCircle2 className='w-4 h-4' />
               Completed ({completedChallenges.length + expiredChallenges.length})
             </div>
           </Button>
