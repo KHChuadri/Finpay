@@ -195,7 +195,7 @@ const CurrencyWalletPage = () => {
             {[
               { icon: <ArrowUp className="h-5 w-5 text-foreground" />, label: 'Deposit', action: () => navigate('/deposit') },
               { icon: <ArrowDown className="h-5 w-5 text-foreground" />, label: 'Withdraw', action: () => navigate('/withdraw') },
-              { icon: <ArrowLeftRight className="h-5 w-5 text-play-cyan" />, label: 'Convert', action: () => handleConversion() },
+              { icon: <ArrowLeftRight className="h-5 w-5 text-primary" />, label: 'Convert', action: () => handleConversion() },
               { icon: <Users className="h-5 w-5 text-primary" />, label: 'Send', action: () => navigate('/transfer/recipient') }
             ].map((button, index) => (
               <div key={index} className="flex flex-col items-center gap-2 w-[calc(50%-4rem)] sm:w-auto">
