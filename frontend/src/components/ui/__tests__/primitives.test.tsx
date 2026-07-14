@@ -25,13 +25,15 @@ describe('ui primitives', () => {
     render(<Button onClick={onClick}>Go</Button>);
     const btn = screen.getByRole('button', { name: 'Go' });
     expect(btn.className).toContain('bg-primary');
+    expect(btn.className).toContain('text-primary-foreground');
     btn.click();
     expect(onClick).toHaveBeenCalled();
   });
 
   it('Button ghost uses transparent/hairline style', () => {
     render(<Button variant="ghost">Ghost</Button>);
-    expect(screen.getByRole('button', { name: 'Ghost' }).className).toContain('border');
+    expect(screen.getByRole('button', { name: 'Ghost' }).className).toContain('bg-transparent');
+    expect(screen.getByRole('button', { name: 'Ghost' }).className).toContain('hover:bg-hover');
   });
 
   it('Pill renders mono hairline', () => {
@@ -41,7 +43,7 @@ describe('ui primitives', () => {
 
   it('Input uses input border by default', () => {
     render(<Input placeholder="name" />);
-    expect(screen.getByPlaceholderText('name').className).toContain('border-input');
+    expect(screen.getByPlaceholderText('name').className).toContain('border-border-strong');
   });
 
   it('Input error swaps to destructive border', () => {
@@ -64,6 +66,6 @@ describe('ui primitives', () => {
 
   it('Button destructive variant uses destructive bg', () => {
     render(<Button variant="destructive">Delete</Button>);
-    expect(screen.getByText('Delete').className).toContain('bg-destructive');
+    expect(screen.getByText('Delete').className).toContain('bg-destructive-tint');
   });
 });
