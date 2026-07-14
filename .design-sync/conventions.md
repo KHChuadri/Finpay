@@ -53,6 +53,29 @@ verified present. If you need a token combination that isn't in the stylesheet
 in a `<label>`), `Pill` (mono tag), `ProgressBar` (value, max), `PageContainer`
 (size: default | narrow, centers + caps width), `CountUp` (animated number).
 
+## Feature components
+
+Higher-level, presentational pieces (compose them, pass real props):
+
+- **Modals** (full-screen `fixed inset-0` overlays; render one at a time over content):
+  `ConfirmationModal` (message, confirmText, onConfirm, onCancel), `ErrorModal` /
+  `SuccessModal` (message, onClose), `LeaveGroupModal` (onClose, onConfirm),
+  `SuccessfulTransferModal`, `SuccessfulRequestModal` (amount, email, onClose),
+  `SuccessfulTopupModal`, `FailedTransferModal` (errorMsg), `FailedRequestModal`
+  (onClose), `HistoryFilterModal`.
+- **Transaction:** `PaymentReceipt` (transfer receipt), `RecipientInfo` (email,
+  firstName, lastName, onClick), `ExchangeRate` (rate, hasExchanged).
+- **Landing:** `RequestMoney` / `SendMoney` (transferCompleted, onTransfer) — full flow cards.
+- **Dashboard:** `ListGroup` (items: {Name, Route}[]), `FlyoutLink` (children, FlyoutContent).
+- **Profile:** `BankDetails`, `PersonalDetails`. **SplitBill:** `ManageMembers` (list).
+
+Two things the app must provide for some of these:
+- **Router:** `SuccessfulTransferModal`, `SuccessfulRequestModal`, `SuccessfulTopupModal`,
+  `FailedTransferModal`, `FailedRequestModal`, `ListGroup`, `PersonalDetails` call
+  `useNavigate` — render them inside a react-router `<Router>`.
+- **Stores:** `PaymentReceipt` / `SuccessfulTransferModal` read the transaction store
+  (zustand) for their data; populate it before showing them.
+
 ## Idiomatic snippet
 
 ```tsx

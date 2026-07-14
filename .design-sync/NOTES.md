@@ -40,6 +40,44 @@ Synced surface: `frontend/src/components/ui` (8 primitives) → Claude Design pr
   the resting/final state. If you edit those previews, keep the shim.
 - `PageContainer` is full-width → `cfg.overrides.PageContainer.cardMode = "column"`.
 
+## Feature components (curated presentational set, 20)
+
+Added on top of the 8 ui primitives: transaction (PaymentReceipt, RecipientInfo,
+ExchangeRate), landing (RequestMoney, SendMoney), admin (ErrorModal, SuccessModal),
+dashboard (FlyoutLink, ListGroup), SplitBill (ManageMembers, LeaveGroupModal),
+profile (BankDetails, PersonalDetails), modal (Confirmation, Successful/Failed
+Transfer & Request, SuccessfulTopup, HistoryFilter). Data/flow-bound components
+(anything using useQuery/axios/API_URL, admin/SplitBill Group* flows, CurrencyWallet,
+the *ASR transaction forms) were intentionally NOT synced — poor static previews.
+
+Key mechanics:
+- **Feature components are all `export default`** → synth-entry `export *` drops them.
+  `.design-sync/ds-exports.ts` re-exports each as named (`export { default as X }`),
+  wired via `cfg.extraEntries`. Add a new feature component here + in componentSrcMap.
+- **`cfg.provider = DsRouter`** (a MemoryRouter re-exported from the bundle in
+  ds-exports.ts). Router-bound components (useNavigate) crash without it, and a
+  preview-local `MemoryRouter` does NOT work — the bundled component uses the
+  bundle's react-router instance, so the provider must be a bundle export.
+- **Store seeding uses the bundle's store via the global**: PaymentReceipt and
+  SuccessfulTransferModal read the transaction store; a preview-local store import
+  is a different instance. ds-exports.ts exports `useTransactionStore` +
+  `scheduledPaymentStore`, and those previews call
+  `window.FinpayUI.useTransactionStore.setState({...})`. Same rule for any future
+  store-driven preview.
+- **Modals are full-screen `fixed inset-0` overlays** → `cfg.overrides.<Name>` =
+  `{cardMode:"single", viewport:"WxH"}`. Tall content still clips slightly at the
+  top under centering — cosmetic, the substance renders.
+- `[EXPORT_COLLISION]` on ds-exports.ts is benign here (the 20 names live only in
+  the barrel; bindings resolve — verified 28 fn on window.FinpayUI).
+
+## Known render warns (triaged benign — re-syncs should expect these)
+
+- `[RENDER_THIN]` on all 10 modal components (ConfirmationModal, ErrorModal,
+  SuccessModal, LeaveGroupModal, SuccessfulTransferModal, SuccessfulRequestModal,
+  SuccessfulTopupModal, FailedTransferModal, FailedRequestModal, HistoryFilterModal):
+  their `fixed inset-0` root measures 0px height. They render correctly (confirmed
+  from screenshots). Not a defect.
+
 ## Re-sync risks (watch-list)
 
 - **CSS completeness rides on the app's usage.** If UI components gain classes the app
