@@ -293,8 +293,10 @@ describe("Transfer page testing", () => {
     expect(recipient.walletInfo.length).toBeGreaterThan(0);
 
     expect(await screen.findByText(/You send exactly/i)).toBeInTheDocument();
-    expect(screen.getByText('AUD')).toBeInTheDocument();
-    expect(screen.getByText('IDR')).toBeInTheDocument();
+    // getAllByText: the new sidebar shell (Task 2) also lists wallet currency codes,
+    // so exact-text matches for "AUD"/"IDR" are no longer unique on the page.
+    expect(screen.getAllByText('AUD').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('IDR').length).toBeGreaterThan(0);
 
     // Verify exchange rate is displayed (mock rate is IDR 10.000)
     expect(screen.getByText(/1 AUD = 10.000,00000000 IDR/i)).toBeInTheDocument();

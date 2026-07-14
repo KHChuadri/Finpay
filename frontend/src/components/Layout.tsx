@@ -2,16 +2,18 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import useAuthStore from "@/stores/authStore";
 import useDarkModeStore from '@/stores/darkModeStore';
+import Sidebar from '@/components/dashboard/Sidebar';
 
 interface LayoutProps {
   children: React.ReactNode;
   headerRight?: React.ReactNode;
+  title?: string;
 }
 
 const TIMEOUT_DURATION = 3 * 60 * 1000; // 3 minutes
 const WARNING_DURATION = 15 * 1000; // 15 seconds warning before timeout
 
-const Layout = ({ children, headerRight }: LayoutProps) => {
+const Layout = ({ children, headerRight, title = "Home" }: LayoutProps) => {
   const navigate = useNavigate();
   const [activity, setActivity] = useState(Date.now());
   const [warning, setWarning] = useState(false);
@@ -69,44 +71,58 @@ const Layout = ({ children, headerRight }: LayoutProps) => {
     };
   }, [activity, warning, token, resetAuth, navigate]);
 
-  return (
-    <div
-      className="flex flex-col min-h-screen bg-background text-foreground"
-      onClick={updateActivity}
-    >
-      {/* Show Warning Popup */}
-      {warning && token && (
-        <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-warning text-warning-foreground rounded-lg shadow-xl z-20">
-          <p className="font-medium text-center">You&apos;ll be logged out due to inactivity in {countdown} seconds.</p>
-        </div>
-      )}
+  const warningBanner = warning && token && (
+    <div className="px-6 py-3 fixed top-6 left-1/2 w-[90%] max-w-md -translate-x-1/2 bg-warning/10 border border-warning/30 text-warning rounded-[10px] shadow-xl z-20">
+      <p className="font-medium text-center">You&apos;ll be logged out due to inactivity in {countdown} seconds.</p>
+    </div>
+  );
 
-      {/* Shared Header */}
-      <nav className="sticky top-0 z-10 w-full border-b border-border bg-background/70 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <button
-            onClick={() => navigate('/dashboard')}
-            data-testid="finpay-header-logo"
-            className="flex items-center overflow-hidden cursor-pointer"
-          >
-            {darkMode ? <img src={'/FinpayDarkMode.png'} alt="FinPay Logo DarkMode" className="h-9 w-auto" /> :
-            <img src={'/Finpay.png'} alt="FinPay Logo" className="h-9 w-auto" />}
-          </button>
+  // Logged-out / pre-auth passthrough: no dashboard sidebar for landing/admin-login/etc.
+  if (!token) {
+    return (
+      <div
+        className="flex flex-col min-h-screen bg-background text-foreground"
+        onClick={updateActivity}
+      >
+        {warningBanner}
+
+        <nav className="sticky top-0 z-10 w-full border-b border-border bg-background/70 backdrop-blur-md">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+            <button
+              onClick={() => navigate('/dashboard')}
+              data-testid="finpay-header-logo"
+              className="flex items-center overflow-hidden cursor-pointer"
+            >
+              {darkMode ? <img src={'/FinpayDarkMode.png'} alt="FinPay Logo DarkMode" className="h-9 w-auto" /> :
+              <img src={'/Finpay.png'} alt="FinPay Logo" className="h-9 w-auto" />}
+            </button>
+            {headerRight}
+          </div>
+        </nav>
+
+        <main className="flex flex-col flex-grow items-center">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen bg-background text-foreground" onClick={updateActivity}>
+      {warningBanner}
+
+      <Sidebar />
+
+      <div className="flex flex-1 flex-col">
+        <div className="flex h-14 items-center justify-between border-b border-border px-5">
+          <h1 className="text-[15px] font-semibold tracking-tight">{title}</h1>
           {headerRight}
         </div>
-      </nav>
 
-      {/* Page Content */}
-      <main className="flex flex-col flex-grow items-center">
-        {children}
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-border py-6">
-        <div className="mx-auto max-w-6xl px-6 text-center text-sm text-subtle">
-          <p>© 2025 FinPay. All rights reserved.</p>
-        </div>
-      </footer>
+        <main className="flex-1 overflow-y-auto p-[22px]">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };
