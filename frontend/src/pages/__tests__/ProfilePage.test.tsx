@@ -109,7 +109,7 @@ describe("Profile page testing", () => {
 
     await user.click(screen.getByRole('button', { name: /Back to Dashboard/i }));
     expect(screen.getByTestId('location-display')).toHaveTextContent('/dashboard');
-    expect(screen.getByText('Send Transactions')).toBeInTheDocument();
+    expect(screen.getByTestId('wallet-currency')).toBeInTheDocument();
     await user.click(screen.getByTestId("button-profile-icon"));
 
     expect(screen.getByTestId('location-display')).toHaveTextContent('/profile');

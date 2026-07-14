@@ -91,22 +91,12 @@ jest.mock('react-router-dom', () => {
 
 describe("Request balance test", () => {
   it('navigating and rendering initial request list page', async () => {
-    useAuthStore.setState({ userId: '123', isVerified: true, isLocked: false });
+    useAuthStore.setState({ userId: '123', token: 'mock-token', isVerified: true, isLocked: false });
     routeRender('/dashboard');
     
-    const accountHoverBtn = screen.getByTestId('account-header-hover');
-    expect(accountHoverBtn).toBeInTheDocument();
-    
-    fireEvent.mouseEnter(accountHoverBtn);
-    
-    // shows the dropdown of buttons
-    expect(screen.getByText(/Transaction History/i)).toBeInTheDocument();
-    
-    const requestListNav = screen.getByText(/View Requests/i);
+    const requestListNav = screen.getByTestId('sidebar-nav-requests');
     expect(requestListNav).toBeInTheDocument();
-    
-    expect(screen.getByText(/View Scheduled Payments/i)).toBeInTheDocument();
-    
+
     fireEvent.click(requestListNav);
     
     // The request list page (with no requests)
@@ -122,20 +112,15 @@ describe("Request balance test", () => {
   });
 
   it('rendering and filling the fields for making a request', async () => {
-    useAuthStore.setState({ userId: '123', isVerified: true, isLocked: false });
+    // explicit token: null — test 1 leaves a token set (shallow-merged store), which
+    // would otherwise trigger syncUserStatus and race isVerified back to false mid-test
+    useAuthStore.setState({ userId: '123', token: null, isVerified: true, isLocked: false });
     routeRender('/dashboard');
-    
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /Send Transactions/i})).toBeInTheDocument();
-      expect(screen.getByText(/Create and send your transactions to your peers/i)).toBeInTheDocument();
-    });
-    
-    const sendRequestsBtn = screen.getByRole('button', { name: /Send Requests/i});
-    fireEvent.click(sendRequestsBtn);
 
     await waitFor(() => {
-      expect(navMock).toHaveBeenCalledWith('/request/recipient')
+      expect(screen.getByTestId('wallet-currency')).toBeInTheDocument();
     });
+
     routeRender('/request/recipient');
     
     expect(screen.getByText(/Who are you requesting money from?/i)).toBeInTheDocument();
@@ -203,8 +188,7 @@ describe("Request balance test", () => {
     const dashboardReturnBtn = screen.getByTestId('dashboard-request-return');
     fireEvent.click(dashboardReturnBtn);
 
-    // request has been made
-    expect(screen.getByRole('heading', { name: /Send Transactions/i})).toBeInTheDocument();
-    expect(screen.getByText(/Create and send your transactions to your peers/i)).toBeInTheDocument();
-  });  
+    // dashboard (rendered at the top of this test) is still mounted
+    expect(screen.getByTestId('wallet-currency')).toBeInTheDocument();
+  });
 });

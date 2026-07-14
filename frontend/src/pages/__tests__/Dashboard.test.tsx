@@ -13,11 +13,13 @@ import RequestAmount from '@/components/transaction/RequestAmount';
 import Request from '@/components/transaction/Request';
 import Deposit from '@/components/transaction/Deposit';
 import Withdraw from '@/components/transaction/Withdraw';
+import useAuthStore from '@/stores/authStore';
 
 setupTestServer();
 
 describe("Dashboard testing", () => {
   beforeEach(() => {
+    useAuthStore.setState({ userId: '123', token: 'mock-token', isVerified: true, isLocked: false });
     render(
       <MemoryRouter initialEntries={["/dashboard"]}>
         <Routes>
@@ -100,9 +102,6 @@ describe("Dashboard testing", () => {
   });
 
   it('renders the top part of dashboard page', async () => {
-    expect(screen.getByRole('heading', { name: /Send Transactions/i })).toBeInTheDocument();
-    expect(screen.getByText(/Create and send your transactions to your peers/i)).toBeInTheDocument();
-
     expect(screen.getByTestId('Send-dashboard-button')).toBeInTheDocument();
     expect(screen.getByTestId('Deposit-dashboard-button')).toBeInTheDocument();
     expect(screen.getByTestId('Withdraw-dashboard-button')).toBeInTheDocument();
@@ -111,7 +110,7 @@ describe("Dashboard testing", () => {
   });
 
   it('rendering currency wallet UI', async () => {
-    expect(screen.getByRole('heading', { name: /Total balance:/i })).toBeInTheDocument();
+    expect(screen.getByText(/Total balance/i)).toBeInTheDocument();
     expect(screen.getByTestId('wallet-currency')).toBeInTheDocument();
     expect(screen.getByText(/AUD/i)).toBeInTheDocument();
 
@@ -140,22 +139,11 @@ describe("Dashboard testing", () => {
     expect(currencyFilters.length).toBeGreaterThan(0);
   });
 
-  it('the lower part of dashboard', async () => {
-    expect(screen.getByRole('heading', { name: /Send Requests/i })).toBeInTheDocument();
-    expect(screen.getByText(/Create and send transaction request to your peers/i)).toBeInTheDocument();
-    expect(screen.getByTestId('send-requests-button')).toBeInTheDocument();
-
-    expect(screen.getByRole('heading', { name: /User Transactions History/i })).toBeInTheDocument();
-    expect(screen.getByText(/View your transactions transfer and request history here/i)).toBeInTheDocument();
-    expect(screen.getByTestId('view-history-button')).toBeInTheDocument();
-
-  });
-
   it('test navigation to send requests when clicked, then navigating back to dashboard', async () => {
-    const sendRequestsBtn = screen.getByRole('button', { name: /Send Requests/i });
+    const sendRequestsBtn = screen.getByTestId('Send-dashboard-button');
     fireEvent.click(sendRequestsBtn);
 
-    expect(screen.getByText(/Who are you requesting money from?/i)).toBeInTheDocument();
+    expect(screen.getByText(/Who are you sending money to?/i)).toBeInTheDocument();
     expect(screen.getByTestId('email-request-input')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Search saved recipients/i })).toBeInTheDocument();
@@ -166,7 +154,7 @@ describe("Dashboard testing", () => {
   });
 
   it('navigate to history page', async () => {
-    const historyBtn = screen.getByTestId('view-history-button');
+    const historyBtn = screen.getByTestId('sidebar-nav-transactions');
     fireEvent.click(historyBtn);
     expect(await screen.findByTestId('history-page')).toBeInTheDocument();
 

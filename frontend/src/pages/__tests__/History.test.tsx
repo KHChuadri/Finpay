@@ -55,7 +55,7 @@ const renderHistoryFlow = async () => {
 
 // Helper function to navigate to history page
 const navigateToHistoryPage = async (user: ReturnType<typeof userEvent.setup>) => {
-  await user.click(screen.getByTestId("view-history-button"));
+  await user.click(screen.getByTestId("sidebar-nav-transactions"));
 
   await waitFor(() => {
     expect(screen.getByTestId('location-display')).toHaveTextContent('/history');

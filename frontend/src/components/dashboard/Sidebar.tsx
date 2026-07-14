@@ -17,11 +17,11 @@ interface SidebarWallet {
 }
 
 const navItems = [
-  { label: 'Home', icon: Home, route: '/dashboard' },
-  { label: 'Wallets', icon: Wallet, route: '/dashboard' },
-  { label: 'Transactions', icon: ArrowLeftRight, route: '/history' },
-  { label: 'Requests', icon: Inbox, route: '/request/list', count: 3 },
-  { label: 'Groups', icon: Users, route: '/groups' },
+  { label: 'Home', icon: Home, route: '/dashboard', testId: 'sidebar-nav-home' },
+  { label: 'Wallets', icon: Wallet, route: '/dashboard', testId: 'sidebar-nav-wallets' },
+  { label: 'Transactions', icon: ArrowLeftRight, route: '/history', testId: 'sidebar-nav-transactions' },
+  { label: 'Requests', icon: Inbox, route: '/request/list', count: 3, testId: 'sidebar-nav-requests' },
+  { label: 'Groups', icon: Users, route: '/groups', testId: 'sidebar-nav-groups' },
 ];
 
 const Sidebar = () => {
@@ -77,12 +77,13 @@ const Sidebar = () => {
       </div>
 
       <nav className="mt-4 flex flex-col gap-0.5 px-3">
-        {navItems.map(({ label, icon: Icon, route, count }) => {
+        {navItems.map(({ label, icon: Icon, route, count, testId }) => {
           const active = pathname === route;
           return (
             <button
               key={label}
               type="button"
+              data-testid={testId}
               onClick={() => navigate(route)}
               className={cn(
                 'flex items-center gap-2.5 rounded-[8px] px-2.5 py-2 text-[13px] font-medium',

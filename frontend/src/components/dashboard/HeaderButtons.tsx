@@ -1,53 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FiMenu, FiX, FiAlertCircle } from "react-icons/fi";
+import { FiAlertCircle } from "react-icons/fi";
 import { CircleAlert, CircleCheck } from "lucide-react";
 
-import ListGroup from "./ListGroup";
-import FlyoutLink from "./FlyoutLink";
 import { FaRegBell } from "react-icons/fa6";
 import { VscBellDot } from "react-icons/vsc";
 import useAuthStore from "@/stores/authStore";
 import axios from "axios";
 import { API_URL } from "@/constants/API_URL";
+import { Button } from "@/components/ui/Button";
 
+// ponytail: nav moved to sidebar
 function HeaderButtons() {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [newNotif, setNewNotif] = useState(false);
   const userId = useAuthStore((state) => state.userId);
   const isVerified = useAuthStore((state) => state.isVerified);
   const isLocked = useAuthStore((state) => state.isLocked);
   const profileImage = useAuthStore((state) => state.profileImg) || '/profile icon.png';
-
-  const navItemsAccount = [
-    { Name: "Transaction History", Route: "/history" },
-    { Name: "View Requests", Route: "/request/list" },
-    { Name: "View Scheduled Payments", Route: "/view/scheduledPayments" }
-  ];
-  const navItemsTransfer = [
-    { Name: "Send Money", Route: "/transfer/recipient" },
-    { Name: "Currency Exchange", Route: "/conversion" },
-  ];
-  const navItemsFeatures = [
-    { Name: "Challenges", Route: "/view/challenges" },
-    { Name: "Shared Wallet", Route: "/groups" },
-  ];
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setMobileMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  });
 
   useEffect(() => {
     if (!userId) return;
@@ -73,108 +43,57 @@ function HeaderButtons() {
   }, []);
 
   return (
-    <div className="flex items-center gap-2 md:gap-4">
-      {/* Mobile Menu Button */}
+    <div className="flex items-center gap-3">
       <button
-        className="md:hidden p-2 rounded-lg hover:bg-card transition duration-300 cursor-pointer"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-      >
-        {mobileMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+        className="flex size-9 items-center justify-center rounded-[10px] border border-border-strong bg-card2 hover:border-primary hover:text-primary"
+        onClick={() => navigate('/notification')}>
+        {newNotif === false && <FaRegBell className="h-4 w-4" />}
+        {newNotif === true && <VscBellDot className="h-4 w-4" />}
       </button>
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex gap-2 md:gap-4">
-        <FlyoutLink FlyoutContent={<ListGroup items={navItemsAccount} />}>
-          <button data-testid="account-header-hover" className="px-3 py-2 rounded-lg hover:bg-card font-medium cursor-pointer text-sm md:text-base transition duration-300">
-            Account
-          </button>
-        </FlyoutLink>
-
-        <FlyoutLink FlyoutContent={<ListGroup items={navItemsTransfer} />}>
-          <button className="px-3 py-2 rounded-lg hover:bg-card font-medium cursor-pointer text-sm md:text-base transition duration-300">
-            Transfer
-          </button>
-        </FlyoutLink>
-
-        <FlyoutLink FlyoutContent={<ListGroup items={navItemsFeatures} />}>
-          <button data-testid="features-header-hover" className="px-3 py-2 rounded-lg hover:bg-card font-medium cursor-pointer text-sm md:text-base transition duration-300">
-            Features
-          </button>
-        </FlyoutLink>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="absolute top-18 right-6 bg-card shadow-xl rounded-lg px-4 py-2 z-50 md:">
-          <div className="flex flex-col gap-2 items-center">
-            <FlyoutLink FlyoutContent={<ListGroup items={navItemsAccount} />} mobile={true}>
-              <button className="w-full px-4 py-2 rounded-lg hover:bg-secondary transition duration-300 cursor-pointer">
-                Account
-              </button>
-            </FlyoutLink>
-            <FlyoutLink FlyoutContent={<ListGroup items={navItemsTransfer} />} mobile={true}>
-              <button className="w-full px-4 py-2 rounded-lg hover:bg-secondary transition duration-300 cursor-pointer">
-                Transfer
-              </button>
-            </FlyoutLink>
-            <FlyoutLink FlyoutContent={<ListGroup items={navItemsFeatures} />} mobile={true}>
-              <button className="w-full px-4 py-2 rounded-lg hover:bg-secondary transition duration-300 cursor-pointer">
-                Features
-              </button>
-            </FlyoutLink>
-          </div>
-        </div>
-      )}
-
-      {/* Visible Buttons */}
-      <div className="flex items-center gap-4">
-        <div className="relative group">
-          <button
-            onClick={() => navigate("/profile")}
-            className="w-14 h-13 bg-secondary hover:bg-secondary/80 rounded-full border-2 border-background shadow-xl overflow-hidden"
-            data-testid="button-profile-icon"
-          >
-            <img
-              src={profileImage || '/profile icon.png'}
-              alt="Profile"
-              className="w-full h-full object-cover rounded-full cursor-pointer"
-            />
-          </button>
-
-          {/* Status indicator with tooltip */}
-          <div className="absolute bottom-0 right-1 transform translate-x-1/3 shadow-xl">
-            {isLocked ? (
-              <div className="relative">
-                <FiAlertCircle className="w-6 h-6 text-destructive bg-card rounded-full" />
-                <div className="absolute hidden group-hover:block bottom-full left-1/8 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
-                  Account locked - Contact support
-                </div>
-              </div>
-            ) : isVerified ? (
-              <div className="relative">
-                <CircleCheck className="w-6 h-6 text-positive bg-card rounded-full" />
-                <div className="absolute hidden group-hover:block bottom-full -left-2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
-                  Account verified
-                </div>
-              </div>
-            ) : (
-              <div className="relative">
-                <CircleAlert className="w-6 h-6 text-warning bg-card rounded-full" />
-                <div className="absolute hidden group-hover:block bottom-full -left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
-                  Verify your account
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
+      <div className="relative group">
         <button
-          className="flex flex-row size-12 rounded-full items-center justify-center"
-          onClick={() => navigate('/notification')}>
-          {newNotif === false && <FaRegBell className="text-foreground w-3/4 h-3/4 object-cover rounded-full cursor-pointer" />}
-          {newNotif === true && <VscBellDot className="text-foreground w-3/4 h-3/4 object-cover rounded-full cursor-pointer" />}
+          onClick={() => navigate("/profile")}
+          className="h-9 w-9 rounded-full border border-border-strong overflow-hidden"
+          data-testid="button-profile-icon"
+        >
+          <img
+            src={profileImage || '/profile icon.png'}
+            alt="Profile"
+            className="w-full h-full object-cover rounded-full cursor-pointer"
+          />
         </button>
+
+        {/* Status indicator with tooltip */}
+        <div className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4">
+          {isLocked ? (
+            <div className="relative">
+              <FiAlertCircle className="w-4 h-4 text-destructive bg-card rounded-full" />
+              <div className="absolute hidden group-hover:block bottom-full left-1/8 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
+                Account locked - Contact support
+              </div>
+            </div>
+          ) : isVerified ? (
+            <div className="relative">
+              <CircleCheck className="w-4 h-4 text-primary bg-card rounded-full" />
+              <div className="absolute hidden group-hover:block bottom-full -left-2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
+                Account verified
+              </div>
+            </div>
+          ) : (
+            <div className="relative">
+              <CircleAlert className="w-4 h-4 text-warning bg-card rounded-full" />
+              <div className="absolute hidden group-hover:block bottom-full -left-1 transform -translate-x-1/2 mb-2 px-2 py-1 bg-card text-foreground text-xs rounded whitespace-nowrap border border-border">
+                Verify your account
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
+      <Button size="sm" onClick={() => navigate('/transfer/recipient')}>
+        New transfer
+      </Button>
     </div>
   );
 }

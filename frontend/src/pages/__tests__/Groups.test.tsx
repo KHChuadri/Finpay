@@ -47,20 +47,12 @@ jest.mock('react-router-dom', () => {
 
 describe('Group and shared wallet testing', () => {
   it('navigating to splitbill page', () => {
-    useAuthStore.setState({ userId: '123', isVerified: true, isLocked: false });
+    useAuthStore.setState({ userId: '123', token: 'mock-token', isVerified: true, isLocked: false });
     routeRender('/dashboard');
     
-    const featuresHoverBtn = screen.getByTestId('features-header-hover');
-    expect(featuresHoverBtn).toBeInTheDocument();
-    
-    fireEvent.mouseEnter(featuresHoverBtn);
-
-    // shows the dropdown of buttons
-    expect(screen.getByText(/Challenges/i)).toBeInTheDocument();
-    
-    const sharedWalletNav = screen.getByText(/Shared Wallet/i);
+    const sharedWalletNav = screen.getByTestId('sidebar-nav-groups');
     expect(sharedWalletNav).toBeInTheDocument();
-    
+
     fireEvent.click(sharedWalletNav);
 
     waitFor(() => {

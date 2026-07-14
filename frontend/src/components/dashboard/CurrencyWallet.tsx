@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import FlagGetter from "../FlagGetter";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useState } from "react";
 import AddCurrencyModal from "../modal/AddCurrencyModal";
 import axios from "axios";
@@ -8,6 +7,9 @@ import type { UserWalletInfo } from "@/pages/Dashboard";
 import useAuthStore from "@/stores/authStore";
 import { FaTimes } from "react-icons/fa";
 import { API_URL } from "@/constants/API_URL";
+import { Card } from "@/components/ui/Card";
+import { Pill } from "@/components/ui/Pill";
+import { cn } from "@/lib/utils";
 
 interface WalletList {
   onAddWallet: () => void;
@@ -19,20 +21,6 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
   const userId = useAuthStore.getState().userId;
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  function slideLeft() {
-    const slider = document.getElementById("slider");
-    if (slider) {
-      slider.scrollBy({ left: -500 });
-    }
-  }
-
-  function slideRight() {
-    const slider = document.getElementById("slider");
-    if (slider) {
-      slider.scrollBy({ left: +500 });
-    }
-  }
 
   const toggleCurrencyModal = () => {
     setShowAddCurrencyModal(true);
@@ -61,7 +49,7 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
   }
 
   return (
-    <div className="flex relative items-center">
+    <div className="relative">
       {/* Error Message */}
       {errorMsg && (
         <div className="flex max-w-md w-full px-4 py-3 fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive/10 border-2 border-destructive text-destructive rounded z-50">
@@ -75,45 +63,58 @@ function CurrencyWallet({ userWallets, onAddWallet }: WalletList) {
         </div>
       )}
 
-      <MdChevronLeft onClick={slideLeft} className="cursor-pointer text-foreground" size={40} />
-      <div
-        id="slider"
-        className="scrollbar-hide w-full flex gap-4 px-4 py-6 overflow-x-scroll scroll scroll-smooth whitespace-nowrap"
-      >
-        {userWallets.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => navigate(`/currencywallet/${item.walletCurrency}`)}
-            className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card"
-          >
-            <div className="py-2 h-full flex flex-col justify-start">
-              <div className="text-lg font-bold flex flex-row items-center gap-4 w-full overflow-hidden">
-                <FlagGetter countryCodes={item.countryCode} />
-                <div className="break-words whitespace-normal leading-snug mt-1 text-foreground">{item.walletCurrency}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {userWallets.map((item, index) => {
+          const up = index % 2 === 0;
+          return (
+            <Card
+              key={index}
+              onClick={() => navigate(`/currencywallet/${item.walletCurrency}`)}
+              className="cursor-pointer hover:border-border-strong text-left"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+                    <FlagGetter countryCodes={item.countryCode} />
+                  </span>
+                  <span className="num text-[13px] font-semibold text-foreground">{item.walletCurrency}</span>
+                </div>
+                <Pill tone={up ? 'positive' : 'neutral'}>{up ? '+0.4%' : '-0.2%'}</Pill>
               </div>
-              <div className="ml-2 mt-auto text-lg font-bold flex items-end text-foreground">
+
+              <p className="num mt-3 text-[20px] font-semibold text-foreground">
                 {item.walletBalance.toLocaleString()}
-              </div>
-            </div>
-          </button>
-        ))}
+              </p>
+              <p className="text-subtle text-[12px]">{item.currencyName}</p>
+
+              <svg viewBox="0 0 100 22" className="mt-2 h-[22px] w-full" preserveAspectRatio="none">
+                <polyline
+                  points="0,18 15,14 30,16 45,9 60,11 75,5 100,2"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className={up ? 'text-primary' : 'text-subtle'}
+                />
+              </svg>
+            </Card>
+          );
+        })}
 
         <button
-          className="shrink-0 rounded-lg items-center w-[220px] h-[220px] inline-block p-2 cursor-pointer hover:scale-90 ease-in-out duration-300 bg-card text-foreground"
+          type="button"
           onClick={toggleCurrencyModal}
           data-testid="wallet-addition"
+          className={cn(
+            'flex min-h-[132px] flex-col items-center justify-center gap-1 rounded-xl',
+            'border border-dashed border-border-strong text-muted-foreground hover:border-primary hover:text-primary',
+          )}
         >
-          <div className="mt-2 text-lg font-bold">Add More Wallet</div>
+          <span className="text-[13px] font-medium">Add wallet</span>
         </button>
         {showAddCurrencyModal && (
           <AddCurrencyModal onClose={handleModalClose} onAddCurrency={handleCurrencyAddition} />
         )}
       </div>
-      <MdChevronRight
-        onClick={slideRight}
-        className="cursor-pointer text-foreground"
-        size={40}
-      />
     </div>
   );
 }
