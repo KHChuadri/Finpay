@@ -105,7 +105,7 @@ const Sidebar = () => {
               <span className="flex h-5 w-5 items-center justify-center rounded bg-card2 text-[9px] font-mono text-muted-foreground">
                 {wallet.walletCurrency.slice(0, 2).toUpperCase()}
               </span>
-              <span className="flex-1 text-muted-foreground">{wallet.walletCurrency}</span>
+              <span className="num flex-1 text-muted-foreground">{wallet.walletCurrency}</span>
               <span className="num text-foreground">{wallet.walletBalance.toFixed(2)}</span>
             </div>
           ))}
@@ -113,7 +113,7 @@ const Sidebar = () => {
       </div>
 
       <div className="mt-auto flex items-center gap-2 border-t border-border px-3 py-3">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-[11px] font-semibold text-primary-foreground">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-card2 to-hover text-[11px] font-semibold text-foreground">
           {initials}
         </span>
         <div className="min-w-0 flex-1">
