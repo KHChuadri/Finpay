@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/stores/authStore";
 import Layout from "../components/Layout";
 import { useState, useMemo, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
+import { Search } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
 import { useTransactionStore } from "@/stores/transactionStore";
 import Notice from "@/components/Notice";
@@ -63,7 +63,7 @@ const CreateGroup = () => {
     <div className="flex flex-col w-full min-h-screen">
       <Layout>
         <div className="flex flex-col flex-grow items-center justify-center w-full min-h-full">
-          <div className="w-1/2 lg:w-1/3 bg-card flex flex-col rounded-xl my-4">
+          <div className="w-1/2 lg:w-1/3 glass flex flex-col rounded-xl my-4">
             <div className="flex flex-col gap-10 rounded-lg p-10">
               <Notice />
               <div className="flex flex-col gap-5 h-1/2">
@@ -92,7 +92,7 @@ const CreateGroup = () => {
                 <div className="p-6">
                   <div className="relative">
                     <div className="absolute flex items-center inset-y-0 left-0 pl-3 pointer-events-none">
-                      <FiSearch className="text-muted-foreground" />
+                      <Search className="text-muted-foreground" />
                     </div>
                     <input
                       type="text"

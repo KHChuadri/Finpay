@@ -39,7 +39,7 @@ const SplitBill = () => {
       </div>
 
       {/* History Preview */}
-      <div className="flex flex-col w-full items-center py-10 bg-card">
+      <div className="flex flex-col w-full items-center py-10 glass">
         <h2 className="text-2xl font-bold mb-6 text-center">
           What does a shared transaction look like?
         </h2>

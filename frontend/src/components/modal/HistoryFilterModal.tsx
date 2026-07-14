@@ -1,6 +1,6 @@
 import useHistoryStore from "@/stores/historyStore";
 import { useEffect, useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { X } from "lucide-react";
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
@@ -107,7 +107,7 @@ const HistoryFilterModal = () => {
       className='fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/30 z-50'
       data-testid="history-filter-modal"
     >
-      <div className='bg-card border border-border rounded-xl shadow-2xl w-11/12 sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl p-6 mx-4'>
+      <div className='glass rounded-xl w-11/12 sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl p-6 mx-4'>
         {/* Header */}
         <div className='flex justify-between items-center mb-4'>
           <h1 className='font-bold text-2xl text-foreground'>Filters</h1>
@@ -116,7 +116,7 @@ const HistoryFilterModal = () => {
             className='text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
             aria-label="Close modal"
           >
-            <FaTimes className="w-5 h-5" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 

@@ -1,5 +1,7 @@
 .ds-sync/
 ds-bundle/
+.superpowers/
+.serena/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules

@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FiEdit2, FiSun, FiMoon, FiAlertCircle } from "react-icons/fi";
-import { TriangleAlert, X } from "lucide-react";
+import { Pencil, Sun, Moon, CircleAlert, TriangleAlert, X } from "lucide-react";
 
 import Layout from '../components/Layout';
 import LogoutButton from "@/components/dashboard/LogoutButton";
@@ -454,7 +453,7 @@ const ProfilePage = () => {
   return (
     <Layout headerRight={headerButtons}>
       <div className={`flex justify-center items-center py-8 px-4`}>
-        <div className="w-full max-w-2xl rounded-xl shadow-lg overflow-hidden bg-card text-foreground">
+        <div className="w-full max-w-2xl rounded-xl overflow-hidden glass text-foreground">
           {/* Profile Header */}
           <div className="bg-muted px-6 py-4 border-b border-border">
             <div className="flex flex-row items-center gap-6">
@@ -470,7 +469,7 @@ const ProfilePage = () => {
                   </div>
 
                   <label className="absolute bottom-0 right-0 p-2 text-primary-foreground rounded-full shadow-md bg-primary hover:opacity-90 transition-transform transform group-hover:scale-110 cursor-pointer">
-                    <FiEdit2 className="w-4 h-4" />
+                    <Pencil className="w-4 h-4" />
                     <input
                       type="file"
                       accept="image/*"
@@ -513,7 +512,7 @@ const ProfilePage = () => {
                         onClick={toggleDarkMode}
                         className="p-2 rounded-full transition duration-300 cursor-pointer bg-secondary hover:bg-secondary/80"
                       >
-                        {darkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
+                        {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                       </button>
 
                       {isLocked ? (
@@ -605,7 +604,7 @@ const ProfilePage = () => {
                 <div className="flex flex-row items-center">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <FiAlertCircle className="h-5 w-5 text-warning" />
+                      <CircleAlert className="h-5 w-5 text-warning" />
                     </div>
 
                     {checkMissingFields ?
@@ -740,7 +739,7 @@ const ProfilePage = () => {
             {/* Change Account Modal */}
             {changeAccountModal && (
               <div className="flex items-center justify-center fixed inset-0 backdrop-blur-xs z-50">
-                <div className="bg-card p-6 rounded-lg shadow-xl w-100">
+                <div className="glass p-6 rounded-lg w-100">
                   <h2 className="text-xl font-semibold mb-6">Change Account Type</h2>
                   <p className="mb-4 text-md text-foreground">
                     Are you sure you want to change your account type to

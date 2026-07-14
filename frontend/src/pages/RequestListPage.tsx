@@ -121,7 +121,7 @@ const RequestListPage = () => {
                           Requested on: {formatDate(r.requestDate)}
                         </p>
                       </div>
-                      <p data-testid="requester-amount" className="text-lg font-bold text-foreground">
+                      <p data-testid="requester-amount" className="text-lg font-bold text-foreground font-mono tabular-nums">
                         {r.amount.toLocaleString()} {r.currency}
                       </p>
                     </div>

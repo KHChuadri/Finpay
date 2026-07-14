@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import HeaderButtons from '../components/dashboard/HeaderButtons';
-import { FaSearch, FaTrophy, FaCalendarAlt, FaCoins, FaPlay, FaCheckCircle, FaClock } from 'react-icons/fa';
+import { Search, Trophy, Calendar, Coins, Play, CheckCircle2, Clock } from 'lucide-react';
 import useAuthStore from '../stores/authStore';
 import axios from 'axios';
 import { API_URL } from '@/constants/API_URL';
@@ -234,28 +234,28 @@ const ChallengesList = () => {
 
           <div className='flex flex-col items-end gap-1'>
             {challenge.isCompleted && (
-              <div className='flex items-center gap-1 text-positive font-bold text-sm'>
-                <FaTrophy className='w-4 h-4' />
+              <div className='inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium bg-positive/15 text-positive'>
+                <Trophy className='w-4 h-4 text-primary' />
                 COMPLETED
               </div>
             )}
             {expired && !challenge.isCompleted && (
-              <div className='text-muted-foreground font-bold text-sm'>EXPIRED</div>
+              <div className='inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-destructive/15 text-destructive'>EXPIRED</div>
             )}
             {challenge.hasStarted && !challenge.isCompleted && !expired && (
-              <div className='flex items-center gap-1 text-positive font-bold text-sm'>
-                <FaClock className='w-4 h-4' />
+              <div className='inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium bg-warning/15 text-warning'>
+                <Clock className='w-4 h-4 text-warning' />
                 IN PROGRESS
               </div>
             )}
             {!challenge.hasStarted && !expired && (
-              <div className='flex items-center gap-1 text-muted-foreground font-bold text-sm'>
-                <FaPlay className='w-4 h-4' />
+              <div className='inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium bg-muted text-muted-foreground'>
+                <Play className='w-4 h-4' />
                 AVAILABLE
               </div>
             )}
-            <div className='flex items-center gap-1 text-subtle font-mono font-bold'>
-              <FaCoins className='w-4 h-4' />
+            <div className='flex items-center gap-1 text-subtle font-mono tabular-nums font-bold'>
+              <Coins className='w-4 h-4 text-primary' />
               {challenge.exp} EXP
             </div>
           </div>
@@ -269,7 +269,7 @@ const ChallengesList = () => {
           <div className='mb-4'>
             <div className='flex justify-between items-center mb-2'>
               <span className='text-sm text-muted-foreground'>Progress</span>
-              <span className='text-sm font-bold text-foreground'>
+              <span className='text-sm font-bold font-mono tabular-nums text-foreground'>
                 {formatCurrency(challenge.currentProgress)} / {formatCurrency(challenge.amountToGoal)}
               </span>
             </div>
@@ -279,7 +279,7 @@ const ChallengesList = () => {
             <div className='flex justify-between items-center mt-1'>
               <span className='text-xs text-muted-foreground'>{progress.toFixed(1)}% complete</span>
               {!challenge.isCompleted && !expired && (
-                <span className='text-xs text-muted-foreground'>
+                <span className='text-xs font-mono tabular-nums text-muted-foreground'>
                   {formatCurrency(challenge.amountToGoal - challenge.currentProgress)} remaining
                 </span>
               )}
@@ -291,14 +291,14 @@ const ChallengesList = () => {
         {!challenge.hasStarted && (
           <div className='mb-4 p-3 bg-muted rounded-lg'>
             <div className='text-sm text-muted-foreground mb-1'>Goal Amount</div>
-            <div className='text-lg font-bold text-foreground'>{formatCurrency(challenge.amountToGoal)}</div>
+            <div className='text-lg font-bold font-mono tabular-nums text-foreground'>{formatCurrency(challenge.amountToGoal)}</div>
           </div>
         )}
 
         {/* Dates */}
         <div className='flex items-center justify-between text-sm text-muted-foreground'>
           <div className='flex items-center gap-1'>
-            <FaCalendarAlt className='w-3 h-3' />
+            <Calendar className='w-3 h-3' />
             <span>{formatDate(challenge.startDate)} - {formatDate(challenge.endDate)}</span>
           </div>
 
@@ -345,14 +345,14 @@ const ChallengesList = () => {
           <div className='flex flex-col sm:flex-row w-full md:w-auto gap-4 items-stretch'>
             <div className='relative flex-grow max-w-md'>
               <div className='absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground'>
-                <FaSearch className='w-4 h-4' />
+                <Search className='w-4 h-4' />
               </div>
               <input
                 type='text'
                 placeholder='Search challenges'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className='w-full pl-12 pr-4 py-2 bg-card border border-border rounded-full text-foreground
+                className='w-full pl-12 pr-4 py-2 glass rounded-full text-foreground
                    focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
               />
             </div>
@@ -360,7 +360,7 @@ const ChallengesList = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className='px-4 py-2 bg-card border border-border rounded-full text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
+              className='px-4 py-2 glass rounded-full text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200'
             >
               <option value="all">All Categories</option>
               <option value="pay">Pay</option>
@@ -394,7 +394,7 @@ const ChallengesList = () => {
             className='flex-1 py-3'
           >
             <div className='flex items-center justify-center gap-2'>
-              <FaPlay className='w-4 h-4' />
+              <Play className='w-4 h-4' />
               Available ({availableChallenges.length})
             </div>
           </Button>
@@ -405,7 +405,7 @@ const ChallengesList = () => {
             className='flex-1 py-3'
           >
             <div className='flex items-center justify-center gap-2'>
-              <FaClock className='w-4 h-4' />
+              <Clock className='w-4 h-4' />
               In Progress ({inProgressChallenges.length})
             </div>
           </Button>
@@ -416,7 +416,7 @@ const ChallengesList = () => {
             className='flex-1 py-3'
           >
             <div className='flex items-center justify-center gap-2'>
-              <FaCheckCircle className='w-4 h-4' />
+              <CheckCircle2 className='w-4 h-4' />
               Completed ({completedChallenges.length + expiredChallenges.length})
             </div>
           </Button>

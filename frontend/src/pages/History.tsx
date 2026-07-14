@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter } from "react-icons/fa";
+import { Search, Filter } from "lucide-react";
 import HeaderButtons from "@/components/dashboard/HeaderButtons";
 import Layout from "@/components/Layout";
 import HistoryFilterModal from "@/components/modal/HistoryFilterModal";
@@ -148,7 +148,7 @@ const History = () => {
           <div className='flex flex-col sm:flex-row w-full md:w-auto gap-4 items-stretch'>
             <div className='relative flex-grow max-w-md'>
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
-                <FaSearch className='w-4 h-4' />
+                <Search className='w-4 h-4' />
               </div>
               <input
                 type='text'
@@ -156,17 +156,17 @@ const History = () => {
                 placeholder='Search by email'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-12 pr-4 py-2 bg-card border border-border text-foreground placeholder:text-subtle rounded-full focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200"
+                className="w-full pl-12 pr-4 py-2 glass text-foreground placeholder:text-subtle rounded-full focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200"
               />
             </div>
 
             <button
               onClick={() => setShowModal(true)}
               data-testid='history-filters-button'
-              className="flex flex-row rounded-full pl-6 pr-6 py-2 items-center justify-center bg-card text-foreground hover:bg-muted
-                gap-2 font-bold transition-colors shadow-md cursor-pointer"
+              className="flex flex-row rounded-full pl-6 pr-6 py-2 items-center justify-center glass text-foreground hover:bg-muted
+                gap-2 font-bold transition-colors cursor-pointer"
             >
-              <FaFilter />
+              <Filter className='h-5 w-5' />
               <p>Filters</p>
             </button>
           </div>
@@ -178,7 +178,7 @@ const History = () => {
         <div data-testid='history-timeline' className='flex flex-col ml-5 mr-5 w-full p-4 gap-2 overflow-y-auto flex-grow justify-center items-center h-full'>
           {filteredData.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full">
-              <div className="bg-card border border-border p-8 rounded-2xl shadow-sm max-w-md w-full text-center">
+              <div className="glass p-8 rounded-2xl max-w-md w-full text-center">
                 <div className="text-6xl mb-4">📭</div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No transactions found</h3>
                 <p className="text-muted-foreground mb-4">
@@ -233,7 +233,7 @@ const History = () => {
                           </div>
                         </div>
                         <div className='flex flex-col items-end'>
-                          <div className={`font-bold ${amountColor}`}>
+                          <div className={`font-bold font-mono tabular-nums ${amountColor}`}>
                             {`${amountSign} ${formatCurrency(item.amountDest, item.currencyDest)}`}
                           </div>
                           <div className='text-muted-foreground text-sm'>
