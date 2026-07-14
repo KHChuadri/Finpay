@@ -73,7 +73,7 @@ const CurrencyConversionPage = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='relative w-1/2 lg:w-1/3 glass flex flex-col rounded-xl px-6 py-6 gap-2'>
+          <div className='relative w-1/2 lg:w-1/3 bg-card border border-border flex flex-col rounded-xl px-6 py-6 gap-2'>
             <h1 className='font-bold text-2xl font-sans py-2'>Convert Currency</h1>
 
             <X
