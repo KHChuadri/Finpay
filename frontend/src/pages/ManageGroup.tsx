@@ -110,7 +110,7 @@ const ManageGroup = () => {
             </button>
           </div>
 
-          <div className="glass p-6 rounded-xl">
+          <div className="bg-card border border-border p-6 rounded-xl">
             {activeTab === "group" &&
               (group ? (
                 <Groups list={group} onProcessed={onUpdate} />

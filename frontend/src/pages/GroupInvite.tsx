@@ -57,7 +57,7 @@ const GroupInvite = () => {
     <div className='flex flex-col w-full h-screen'>
       <Layout>
         <div className='flex flex-col flex-grow items-center justify-center w-full h-full'>
-          <div className='w-1/2 lg:w-1/3 glass flex flex-col rounded-xl'>
+          <div className='w-1/2 lg:w-1/3 bg-card border border-border flex flex-col rounded-xl'>
             <div className='flex flex-col gap-12 rounded-lg p-10'>
               <div className='flex flex-col gap-5 h-1/2'>
                 {errorMsg && <p className='text-destructive'>{errorMsg}</p>}

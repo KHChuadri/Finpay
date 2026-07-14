@@ -191,7 +191,7 @@ const GroupPage = () => {
             <p className="text-muted-foreground">{group?.description}</p>
           </div>
 
-          <div className="glass p-6 rounded-xl space-y-4">
+          <div className="bg-card border border-border p-6 rounded-xl space-y-4">
             <div className="flex items-center gap-3">
               {currency && (
                 <FlagGetter countryCodes={currency.countryCode.toLowerCase()} />
@@ -225,7 +225,7 @@ const GroupPage = () => {
             </div>
           </div>
 
-          <div className="glass p-6 rounded-xl space-y-2">
+          <div className="bg-card border border-border p-6 rounded-xl space-y-2">
             <h3 className="text-xl font-semibold">
               Shared wallet transactions history
             </h3>
