@@ -121,7 +121,7 @@ const LandingPage = () => {
             </button>
           </div>
 
-          <div className="bg-card border border-border p-6 rounded-xl">
+          <div className="glass p-6 rounded-xl">
             {activeTab === 'send' && <SendMoneyCard transferCompleted={transferCompleted} onTransfer={handleTransfer} />}
             {activeTab === 'request' && <RequestMoneyCard transferCompleted={transferCompleted} onTransfer={handleTransfer} />}
           </div>
